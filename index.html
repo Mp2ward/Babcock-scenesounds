@@ -718,9 +718,12 @@
   .lpm-view { display:none; }
   .lpm-view.active { display:block; }
 
-  .lpm-course-row { display:block; width:100%; text-align:left; border:none; border-top:1px solid #D8DEE8; background:#FFFFFF; padding:14px 4px; cursor:pointer; }
-  .lpm-course-row:last-of-type { border-bottom:1px solid #D8DEE8; }
-  .lpm-course-row:hover { background:#F7F9FC; }
+  .lpm-course-row-wrap { display:flex; align-items:stretch; gap:0; border-top:1px solid #D8DEE8; }
+  .lpm-course-row-wrap:last-of-type { border-bottom:1px solid #D8DEE8; }
+  .lpm-course-row-wrap:hover { background:#F7F9FC; }
+  .lpm-course-row { display:block; flex:1; min-width:0; text-align:left; border:none; background:none; padding:14px 4px; cursor:pointer; }
+  .lpm-course-delete { flex-shrink:0; width:44px; border:none; background:none; color:#A32D2D; font-size:1.05rem; cursor:pointer; opacity:0.6; }
+  .lpm-course-delete:hover { opacity:1; background:#FCEEEE; }
   .lpm-course-name { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; }
   .lpm-course-meta { font-size:0.8rem; color:#6B7A94; margin-top:3px; }
 
@@ -4600,10 +4603,22 @@ function lpmRenderCourseList() {
     return;
   }
   wrap.innerHTML = list.slice().reverse().map(c => `
-    <button class="lpm-course-row" onclick="lpmOpenCourse('${c.id}')">
-      <div class="lpm-course-name">${c.courseName || 'Untitled course'}</div>
-      <div class="lpm-course-meta">${c.startDate || '—'} · ${(c.learners||[]).length} learner${(c.learners||[]).length===1?'':'s'} · ${lpmRecordCount(c)} recorded observations</div>
-    </button>`).join('');
+    <div class="lpm-course-row-wrap">
+      <button class="lpm-course-row" onclick="lpmOpenCourse('${c.id}')">
+        <div class="lpm-course-name">${c.courseName || 'Untitled course'}</div>
+        <div class="lpm-course-meta">${c.startDate || '—'} · ${(c.learners||[]).length} learner${(c.learners||[]).length===1?'':'s'} · ${lpmRecordCount(c)} recorded observations</div>
+      </button>
+      <button class="lpm-course-delete" onclick="event.stopPropagation();lpmDeleteCourseFromList('${c.id}')" aria-label="Delete course record">🗑</button>
+    </div>`).join('');
+}
+
+function lpmDeleteCourseFromList(id) {
+  const list = lpmLoadCourses();
+  const course = list.find(c => c.id === id);
+  const name = course ? (course.courseName || 'this course record') : 'this course record';
+  if (!confirm('Delete "' + name + '"? This removes all its learners and recorded observations and cannot be undone.')) return;
+  lpmSaveCourses(list.filter(c => c.id !== id));
+  lpmRenderCourseList();
 }
 
 function lpmRecordCount(c) {
@@ -4924,23 +4939,27 @@ function lpmDeleteRecord(idx) {
 // ---- Summary ----
 function lpmRenderSummary() {
   const c = lpmCourse;
+  if (!c.qa) c.qa = {};
   let html = `<div class="sc-h2" style="margin-top:0;">${lpmEsc(c.courseName || 'Untitled course')}</div>
     <div class="sc-note">${c.startDate||'—'} to ${c.endDate||'—'} · ${c.location||'Location not set'} · Instructor: ${c.instructor||'—'}</div>`;
 
   if (!c.learners.length) {
     html += `<div class="rn-empty">Add learners to see a summary.</div>`;
   } else {
-    c.learners.forEach(l => {
-      const recs = c.records.filter(r => r.learnerId === l.id);
-      const p = recs.filter(r=>r.outcome==='P').length;
-      const r = recs.filter(r=>r.outcome==='R').length;
-      const o = recs.filter(r=>r.outcome==='O').length;
+    c.learners.forEach((l, li) => {
+      let p = 0, r = 0, notYet = 0;
+      LPM_QA_ITEMS.forEach(q => {
+        const val = c.qa['row' + li + '_' + q.key];
+        if (val === 'P') p++;
+        else if (val === 'R') r++;
+        else notYet++;
+      });
       html += `<div class="rn-summary-card">
         <div class="rn-summary-name">${lpmEsc(l.name || 'Unnamed learner')}</div>
         <div class="rn-summary-counts">
           <span class="rn-m-p">${p} pass</span>
           <span class="rn-m-r">${r} referral</span>
-          <span class="rn-m-n">${o} observed</span>
+          <span class="rn-m-n">${notYet} not yet assessed</span>
         </div>
       </div>`;
     });
@@ -4958,29 +4977,39 @@ function lpmRenderSummary() {
 
 function lpmEmailSummary() {
   const c = lpmCourse;
+  if (!c.qa) c.qa = {};
   let body = `Course: ${c.courseName||'Untitled'}%0D%0ADates: ${c.startDate||'—'} to ${c.endDate||'—'}%0D%0ALocation: ${c.location||'—'}%0D%0AInstructor: ${c.instructor||'—'}%0D%0A%0D%0A`;
-  c.learners.forEach(l => {
-    const recs = c.records.filter(r => r.learnerId === l.id);
-    const p = recs.filter(r=>r.outcome==='P').length;
-    const r = recs.filter(r=>r.outcome==='R').length;
-    const o = recs.filter(r=>r.outcome==='O').length;
-    body += `${l.name || 'Unnamed'} — ${p} pass, ${r} referral, ${o} observed%0D%0A`;
+  c.learners.forEach((l, li) => {
+    let p = 0, r = 0, notYet = 0;
+    LPM_QA_ITEMS.forEach(q => {
+      const val = c.qa['row' + li + '_' + q.key];
+      if (val === 'P') p++;
+      else if (val === 'R') r++;
+      else notYet++;
+    });
+    body += `${l.name || 'Unnamed'} — ${p} pass, ${r} referral, ${notYet} not yet assessed%0D%0A`;
   });
   window.location.href = `mailto:?subject=${encodeURIComponent('Course record — ' + (c.courseName||'Untitled'))}&body=${body}`;
 }
 
 function lpmExportCsv() {
   const c = lpmCourse;
-  let csv = 'Learner,Date,Competency,Context,Outcome,Notes\n';
+  if (!c.qa) c.qa = {};
+  let csv = 'Learner,' + LPM_QA_ITEMS.map(q => cellHeader(q.label)).join(',') + '\n';
+  function cellHeader(t) { return '"' + String(t).replace(/"/g,'""') + '"'; }
   const cell = t => '"' + String(t || '').replace(/"/g,'""') + '"';
-  c.records.forEach(r => {
-    const learner = c.learners.find(l => l.id === r.learnerId);
-    csv += [cell(learner ? learner.name : 'Unlisted'), cell(r.date), cell(r.competency), cell(r.context), cell(r.outcome), cell(r.notes)].join(',') + '\n';
+  c.learners.forEach((l, li) => {
+    const row = [cell(l.name || 'Unnamed')];
+    LPM_QA_ITEMS.forEach(q => {
+      const val = c.qa['row' + li + '_' + q.key];
+      row.push(cell(val === 'P' ? 'Pass' : val === 'R' ? 'Referral' : 'Not yet assessed'));
+    });
+    csv += row.join(',') + '\n';
   });
   const blob = new Blob([csv], {type:'text/csv'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = (c.courseName || 'course') .replace(/[^a-z0-9]+/gi,'-') + '-' + c.startDate + '.csv';
+  a.download = (c.courseName || 'course').replace(/[^a-z0-9]+/gi,'-') + '-' + c.startDate + '.csv';
   a.click();
   URL.revokeObjectURL(a.href);
 }
