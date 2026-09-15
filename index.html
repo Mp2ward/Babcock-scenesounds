@@ -67,6 +67,8 @@
     gap: 12px;
     flex-wrap: nowrap;
     overflow: hidden;
+    height: 55px;
+    box-sizing: border-box;
   }
   .logo {
     font-family: 'Public Sans', sans-serif;
@@ -177,7 +179,7 @@
   .tabs::-webkit-scrollbar { display: none; }
   .tabs-search-sticky {
     position: sticky;
-    top: 65px;
+    top: 55px;
     z-index: 90;
     background: rgba(255,255,255,0.97);
     backdrop-filter: blur(12px);
@@ -207,6 +209,10 @@
     border-radius: 50%;
     margin-right: 8px;
     vertical-align: middle;
+  }
+  @media (max-width:480px) {
+    .tab { padding:12px 12px; font-size:0.72rem; letter-spacing:0.03em; }
+    .tab .tab-dot { width:6px; height:6px; margin-right:5px; }
   }
 
   /* Grid */
@@ -281,6 +287,10 @@
     color: var(--muted);
     letter-spacing: 0.04em;
     line-height: 1.3;
+  }
+  @media (max-width:480px) {
+    .btn-label { font-size: 0.74rem; letter-spacing: 0.01em; }
+    .btn-sub { font-size: 0.64rem; }
   }
   .play-indicator {
     width: 28px; height: 28px;
@@ -451,15 +461,24 @@
               border:1px solid #D8DEE8; background:#FFFFFF; cursor:pointer;
               text-align:left; width:100%; box-sizing:border-box; transition:all 0.18s; }
   .hub-tile:hover { background:#F7F9FC; border-color:#2B5BD7; }
-  .hub-tile.primary { border:2px solid #2B5BD7; padding:17px 19px; }
+  .hub-tile.primary { border:1px solid #D8DEE8; }
   .hub-accent { width:4px; align-self:stretch; flex-shrink:0; }
   .hub-emoji { font-size:1.6rem; line-height:1; flex-shrink:0; }
   .hub-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.1rem;
-               letter-spacing:0.05em; color:#0D1B4C; line-height:1.25; }
+               letter-spacing:0.05em; color:#0D1B4C; line-height:1.25;
+               overflow-wrap:break-word; word-break:break-word; }
   .hub-sub { font-size:0.8rem; color:#6B7A94; margin-top:3px; line-height:1.4; }
   .hub-badge { background:#EAF0FC; color:#0C447C; font-family:'Public Sans',sans-serif;
                font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase;
                padding:4px 10px; border-radius:4px; flex-shrink:0; }
+
+  @media (max-width:480px) {
+    .hub-tile { padding:14px 14px; gap:12px; }
+    .hub-emoji { font-size:1.3rem; }
+    .hub-title { font-size:0.86rem; letter-spacing:0.02em; }
+    .hub-sub { font-size:0.72rem; }
+    .hub-badge { font-size:0.6rem; padding:3px 8px; letter-spacing:0.06em; }
+  }
   .hub-chev { color:#8494AC; font-size:1.1rem; flex-shrink:0; }
   .back-hub { background:none; border:1px solid rgba(255,255,255,0.28); color:#B8CBEC;
               padding:6px 12px; border-radius:6px; cursor:pointer; display:none;
@@ -470,6 +489,11 @@
     .header-contact { display:none; }
     .brand-sub { display:none; }
     header .status-bar { display:none !important; }
+  }
+  @media (max-width:480px) {
+    .brand-logo { height:22px; }
+    .brand-title { font-size:0.9rem; letter-spacing:0.03em; }
+    .brand-divider { height:20px; }
   }
   .stub { max-width:720px; margin:0 auto; padding:56px 20px; text-align:center; }
   .stub-icon { font-size:2.4rem; margin-bottom:14px; }
@@ -725,6 +749,27 @@
     .lpm-record-row:not(.head) { padding:12px 0; }
   }
 
+  /* ---- QA overview grid ---- */
+  .lpm-ov-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .lpm-ov-table { border-collapse:collapse; font-size:0.76rem; min-width:100%; }
+  .lpm-ov-table th, .lpm-ov-table td { border:1px solid #D8DEE8; padding:0; text-align:center; }
+  .lpm-ov-corner { position:sticky; left:0; z-index:3; background:#0D1B4C; min-width:150px; text-align:left !important; padding:8px 10px !important; }
+  .lpm-ov-head-name { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.68rem; letter-spacing:0.04em; color:#FFFFFF; }
+  .lpm-ov-col-head { background:#F7F9FC; min-width:64px; padding:6px 4px !important; vertical-align:bottom; }
+  .lpm-ov-col-num { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.68rem; color:#0D1B4C; display:block; }
+  .lpm-ov-col-label { font-size:0.6rem; color:#6B7A94; line-height:1.25; display:block; margin-top:2px; }
+  .lpm-ov-learner-cell { position:sticky; left:0; z-index:2; background:#FFFFFF; text-align:left !important; padding:0 !important; min-width:150px; }
+  .lpm-ov-learner-input { width:100%; box-sizing:border-box; border:none; padding:8px 10px; font-family:'Public Sans',sans-serif; font-weight:600; font-size:0.78rem; color:#0D1B4C; background:transparent; }
+  .lpm-ov-learner-input:focus { background:#F7F9FC; outline:1px solid #2B5BD7; outline-offset:-1px; }
+  .lpm-ov-learner-input::placeholder { color:#B8C2D0; font-weight:400; }
+  .lpm-ov-cell { padding:0 !important; height:38px; cursor:pointer; }
+  .lpm-ov-tick { width:100%; height:38px; border:none; background:none; cursor:pointer; font-size:0.95rem; font-weight:700; color:#D8DEE8; }
+  .lpm-ov-tick.p { background:#E3F5EC; color:#0F6E56; }
+  .lpm-ov-tick.r { background:#FCEBEB; color:#A32D2D; }
+  .lpm-ov-legend { display:flex; gap:16px; flex-wrap:wrap; margin:14px 0 18px; font-size:0.78rem; color:#6B7A94; }
+  .lpm-ov-legend span { display:inline-flex; align-items:center; gap:6px; }
+  .lpm-ov-swatch { width:16px; height:16px; display:inline-block; border:1px solid #D8DEE8; }
+
 </style>
 </head>
 <body>
@@ -801,7 +846,7 @@ window.addEventListener('load', function () {
         <div class="hub-title">RUN A SCENARIO</div>
         <div class="hub-sub">Cards and sound together</div>
       </div>
-      <span class="hub-badge">Start here</span>
+      <span class="hub-chev">&rsaquo;</span>
     </button>
 
     <button class="hub-tile" onclick="showView('lpm');lpmShowPick();">
@@ -1155,12 +1200,14 @@ window.addEventListener('load', function () {
       <div class="rn-steps rn-no-print" id="lpmSteps">
         <button class="rn-step" onclick="lpmShowStep('details')">Course details</button>
         <button class="rn-step" onclick="lpmShowStep('learners')">Learners</button>
+        <button class="rn-step" onclick="lpmShowStep('overview')">QA overview</button>
         <button class="rn-step" onclick="lpmShowStep('record')">Competency record</button>
         <button class="rn-step" onclick="lpmShowStep('summary')">Summary</button>
       </div>
 
       <div class="rn-panel" id="lpmPanel-details"></div>
       <div class="rn-panel" id="lpmPanel-learners"></div>
+      <div class="rn-panel" id="lpmPanel-overview"></div>
       <div class="rn-panel" id="lpmPanel-record"></div>
       <div class="rn-panel" id="lpmPanel-summary"></div>
 
@@ -4519,7 +4566,7 @@ const LPM_STORE_KEY = 'lpm_courses';
 let lpmCurrentId = null;
 let lpmCourse = null;
 let lpmStepIdx = 0;
-const LPM_STEPS = ['details','learners','record','summary'];
+const LPM_STEPS = ['details','learners','overview','record','summary'];
 
 function lpmLoadCourses() {
   try { return JSON.parse(localStorage.getItem(LPM_STORE_KEY) || '[]'); }
@@ -4593,12 +4640,13 @@ function lpmOpenCourse(id) {
   document.getElementById('lpmCourseSub').textContent = (lpmCourse.instructor ? 'Instructor: ' + lpmCourse.instructor : 'No instructor set') + ' · ' + (lpmCourse.learners.length) + ' learners';
 
   document.getElementById('lpmSteps').innerHTML = LPM_STEPS.map((k,i) => {
-    const labels = {details:'Course details', learners:'Learners', record:'Competency record', summary:'Summary'};
+    const labels = {details:'Course details', learners:'Learners', overview:'QA overview', record:'Competency record', summary:'Summary'};
     return `<button class="rn-step" id="lpmStep${i}" onclick="lpmShowStep('${k}')">${labels[k]}</button>`;
   }).join('');
 
   lpmRenderDetails();
   lpmRenderLearners();
+  lpmRenderOverview();
   lpmRenderRecord();
   lpmRenderSummary();
   lpmShowStep('details');
@@ -4613,6 +4661,7 @@ function lpmShowStep(key) {
   });
   document.querySelectorAll('.lpm-view#lpm-course .rn-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('lpmPanel-' + key).classList.add('active');
+  if (key === 'overview') lpmRenderOverview();
   if (key === 'record') lpmRenderRecord();
   if (key === 'summary') lpmRenderSummary();
   window.scrollTo(0,0);
@@ -4661,6 +4710,85 @@ function lpmSetDetail(key, val) {
 }
 
 // ---- Learners ----
+// ---- QA overview: one-page mandatory practical assessment grid ----
+const LPM_QA_ITEMS = [
+  {key:'abls', label:'Adult BLS'},
+  {key:'cbls', label:'Child BLS'},
+  {key:'ibls', label:'Infant BLS'},
+  {key:'airway', label:'Airway & Ventilation'},
+  {key:'trauma', label:'Prehospital Trauma Care'},
+  {key:'medical', label:'Prehospital Medical Care'}
+];
+
+function lpmOverviewDisplayLearners() {
+  // Display-only padding to always show 12 rows — never mutates the real learner list
+  const real = lpmCourse.learners.slice(0, 12);
+  const padded = real.slice();
+  while (padded.length < 12) padded.push({id:'__pad'+padded.length, name:'', __pad:true});
+  return padded;
+}
+
+function lpmRenderOverview() {
+  if (!lpmCourse.qa) lpmCourse.qa = {};
+  const displayLearners = lpmOverviewDisplayLearners();
+
+  let html = `<div class="sc-h2" style="margin-top:0;">Mandatory practical assessments — quick overview</div>
+    <div class="sc-note">Learners 1–12 down the left, the six FREC 3 mandatory practical assessments across the top. Tap a cell to cycle blank → Pass → Referral → blank. One page, whole cohort, at a glance.</div>
+
+    <div class="lpm-ov-legend">
+      <span><span class="lpm-ov-swatch" style="background:#FFFFFF;"></span> Not yet assessed</span>
+      <span><span class="lpm-ov-swatch" style="background:#E3F5EC;color:#0F6E56;"></span> Pass</span>
+      <span><span class="lpm-ov-swatch" style="background:#FCEBEB;color:#A32D2D;"></span> Referral</span>
+    </div>
+
+    <div class="lpm-ov-wrap"><table class="lpm-ov-table">
+    <tr>
+      <th class="lpm-ov-corner"><span class="lpm-ov-head-name">Learner</span></th>
+      ${LPM_QA_ITEMS.map(q => `<th class="lpm-ov-col-head"><span class="lpm-ov-col-num">${q.label.split(' ')[0]}</span><span class="lpm-ov-col-label">${q.label}</span></th>`).join('')}
+    </tr>`;
+
+  displayLearners.forEach((l, li) => {
+    html += `<tr>
+      <td class="lpm-ov-learner-cell">
+        <input class="lpm-ov-learner-input" value="${lpmEsc(l.name)}" placeholder="Learner ${li+1}" oninput="lpmOvSetLearnerName(${li}, this.value)">
+      </td>
+      ${LPM_QA_ITEMS.map(q => {
+        const cellKey = 'row' + li + '_' + q.key;
+        const val = lpmCourse.qa[cellKey] || '';
+        const cls = val === 'P' ? 'p' : val === 'R' ? 'r' : '';
+        const label = val === 'P' ? 'P' : val === 'R' ? 'R' : '';
+        return `<td class="lpm-ov-cell"><button class="lpm-ov-tick ${cls}" onclick="lpmOvCycle('${cellKey}', this)">${label}</button></td>`;
+      }).join('')}
+    </tr>`;
+  });
+
+  html += `</table></div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;" class="rn-no-print">
+      <button class="rn-nav-btn primary" onclick="window.print()">Print / save as PDF</button>
+    </div>`;
+
+  document.getElementById('lpmPanel-overview').innerHTML = html;
+}
+
+function lpmOvSetLearnerName(i, val) {
+  // If typing into a display-only padded row, promote it into the real learner list
+  while (lpmCourse.learners.length <= i) {
+    lpmCourse.learners.push({id:'L'+Date.now()+Math.random().toString(36).slice(2,6)+lpmCourse.learners.length, name:''});
+  }
+  lpmCourse.learners[i].name = val;
+  lpmPersist();
+}
+
+function lpmOvCycle(cellKey, btn) {
+  const cur = lpmCourse.qa[cellKey] || '';
+  const next = cur === '' ? 'P' : cur === 'P' ? 'R' : '';
+  if (next === '') { delete lpmCourse.qa[cellKey]; } else { lpmCourse.qa[cellKey] = next; }
+  lpmPersist();
+  btn.className = 'lpm-ov-tick' + (next === 'P' ? ' p' : next === 'R' ? ' r' : '');
+  btn.textContent = next;
+}
+
 function lpmRenderLearners() {
   const c = lpmCourse;
   let html = `<div class="sc-h2" style="margin-top:0;">Learners on this course</div>
