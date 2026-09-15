@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Scene Sounds">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -45,7 +45,7 @@
   }
 
   body {
-    font-family: 'Barlow', sans-serif;
+    font-family: 'Public Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -64,10 +64,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 12px;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
   .logo {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Public Sans', sans-serif;
     font-weight: 900;
     font-size: 1.6rem;
     letter-spacing: 0.08em;
@@ -114,7 +116,7 @@
   }
   .np-info { flex: 1; }
   .np-title {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Public Sans', sans-serif;
     font-weight: 700;
     font-size: 1rem;
     letter-spacing: 0.04em;
@@ -153,7 +155,7 @@
     color: var(--muted);
     padding: 7px 14px;
     border-radius: 6px;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Public Sans', sans-serif;
     font-weight: 600;
     font-size: 0.8rem;
     letter-spacing: 0.1em;
@@ -183,7 +185,7 @@
   }
   .tab {
     padding: 16px 20px;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Public Sans', sans-serif;
     font-weight: 700;
     font-size: 1rem;
     letter-spacing: 0.1em;
@@ -211,7 +213,7 @@
   .grid-section { display: none; padding: 24px 16px; }
   .grid-section.active { display: block; }
   .section-label {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Public Sans', sans-serif;
     font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: 0.18em;
@@ -266,7 +268,7 @@
     display: block;
   }
   .btn-label {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Public Sans', sans-serif;
     font-weight: 700;
     font-size: 0.9rem;
     letter-spacing: 0.04em;
@@ -334,7 +336,7 @@
     border: 1px solid var(--border);
   }
   .vol-label {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Public Sans', sans-serif;
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.12em;
@@ -359,7 +361,7 @@
     cursor: pointer;
   }
   .vol-val {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Public Sans', sans-serif;
     font-weight: 700;
     font-size: 0.85rem;
     color: var(--muted);
@@ -378,7 +380,7 @@
     line-height: 1.5;
     margin-bottom: 24px;
   }
-  .info-banner strong { color: var(--fire); font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.06em; }
+  .info-banner strong { color: var(--fire); font-family: 'Public Sans', sans-serif; letter-spacing: 0.06em; }
 
   .sound-btn.coming-soon {
     background: rgba(13,27,76,0.02) !important;
@@ -400,10 +402,12 @@
   header, header * { color:#FFFFFF; }
   .brand-logo { height:30px; width:auto; display:block; }
   .brand-divider { width:1px; height:26px; background:rgba(255,255,255,0.28); }
-  .brand-title { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.15rem;
-                 letter-spacing:0.08em; color:#FFFFFF; line-height:1; white-space:nowrap; }
+  .brand-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.15rem;
+                 letter-spacing:0.08em; color:#FFFFFF; line-height:1; white-space:nowrap;
+                 overflow:hidden; text-overflow:ellipsis; }
   .brand-sub { font-size:0.58rem; letter-spacing:0.16em; text-transform:uppercase;
-               color:#8FA8D8; margin-top:3px; white-space:nowrap; }
+               color:#8FA8D8; margin-top:3px; white-space:nowrap;
+               overflow:hidden; text-overflow:ellipsis; }
   header .status-bar { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.18); color:#B8CBEC; }
   header button, header a { border-color:rgba(255,255,255,0.28) !important; color:#B8CBEC !important; }
   header button:hover, header a:hover { border-color:#8FF5C0 !important; color:#8FF5C0 !important; }
@@ -428,7 +432,7 @@
                 flex-wrap:wrap; gap:16px; }
   .footer-logos { display:flex; align-items:center; gap:18px; }
   .footer-logos img { height:34px; width:auto; opacity:0.9; }
-  .footer-links { display:flex; gap:18px; font-family:'Space Grotesk',sans-serif;
+  .footer-links { display:flex; gap:18px; font-family:'Public Sans',sans-serif;
                   font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; }
   .footer-links a { color:#6B7A94; text-decoration:none; }
   .footer-links a:hover { color:#2B5BD7; }
@@ -438,31 +442,30 @@
   .app-view { display:none; }
   .app-view.active { display:flex; flex-direction:column; min-height:calc(100vh - 160px); }
   .hub { max-width:720px; margin:0 auto; padding:32px 20px 48px; width:100%; }
-  .hub-eyebrow { font-family:'Barlow',sans-serif; font-size:0.85rem; font-weight:500; color:#6B7A94; margin-bottom:6px; }
-  .hub-h { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.9rem;
+  .hub-eyebrow { font-family:'Public Sans',sans-serif; font-size:0.85rem; font-weight:500; color:#6B7A94; margin-bottom:6px; }
+  .hub-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.9rem;
            letter-spacing:0.04em; color:#0D1B4C; margin-bottom:4px; }
   .hub-p { font-size:0.9rem; color:#6B7A94; margin-bottom:26px; }
   .hub-tile { display:flex; align-items:center; gap:16px; padding:18px 20px;
               border:1px solid #D8DEE8; background:#FFFFFF; cursor:pointer;
-              margin-bottom:12px; text-align:left; width:100%; transition:all 0.18s; }
+              margin-bottom:12px; text-align:left; width:100%; min-height:76px;
+              box-sizing:border-box; transition:all 0.18s; }
   .hub-tile:hover { background:#F7F9FC; border-color:#2B5BD7; }
-  .hub-tile.primary { border:2px solid #2B5BD7; }
+  .hub-tile.primary { border:2px solid #2B5BD7; padding:17px 19px; }
   .hub-accent { width:4px; align-self:stretch; flex-shrink:0; }
   .hub-emoji { font-size:1.6rem; line-height:1; flex-shrink:0; }
-  .hub-title { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.1rem;
+  .hub-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.1rem;
                letter-spacing:0.05em; color:#0D1B4C; line-height:1.1; }
   .hub-sub { font-size:0.8rem; color:#6B7A94; margin-top:3px; }
-  .hub-badge { background:#EAF0FC; color:#0C447C; font-family:'Space Grotesk',sans-serif;
+  .hub-badge { background:#EAF0FC; color:#0C447C; font-family:'Public Sans',sans-serif;
                font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase;
                padding:4px 10px; border-radius:4px; flex-shrink:0; }
   .hub-chev { color:#8494AC; font-size:1.1rem; flex-shrink:0; }
   .back-hub { background:none; border:1px solid rgba(255,255,255,0.28); color:#B8CBEC;
               padding:6px 12px; border-radius:6px; cursor:pointer; display:none;
-              font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:0.75rem;
+              font-family:'Public Sans',sans-serif; font-weight:600; font-size:0.75rem;
               letter-spacing:0.1em; text-transform:uppercase; flex-shrink:0; }
   .back-hub:hover { border-color:#8FF5C0; color:#8FF5C0; }
-  header { display:flex; align-items:center; justify-content:space-between; gap:12px;
-           padding:10px 16px; flex-wrap:nowrap; overflow:hidden; }
   @media (max-width:640px) {
     .header-contact { display:none; }
     .brand-sub { display:none; }
@@ -470,7 +473,7 @@
   }
   .stub { max-width:720px; margin:0 auto; padding:56px 20px; text-align:center; }
   .stub-icon { font-size:2.4rem; margin-bottom:14px; }
-  .stub-h { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.4rem;
+  .stub-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.4rem;
             letter-spacing:0.04em; color:#0D1B4C; margin-bottom:8px; }
   .stub-p { font-size:0.9rem; color:#6B7A94; line-height:1.7; max-width:420px; margin:0 auto; }
 
@@ -484,25 +487,25 @@
   .sc-tile.sc-locked { opacity:0.45; cursor:default; }
   .sc-tile.sc-locked:hover { border-color:#D8DEE8; background:#FFFFFF; }
   .sc-tile-icon { font-size:1.5rem; margin-bottom:10px; display:block; }
-  .sc-tile-num { font-family:'Space Grotesk',sans-serif; font-size:0.66rem; letter-spacing:0.14em; text-transform:uppercase; color:#6B7A94; margin-bottom:4px; }
-  .sc-tile-title { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; line-height:1.2; }
+  .sc-tile-num { font-family:'Public Sans',sans-serif; font-size:0.66rem; letter-spacing:0.14em; text-transform:uppercase; color:#6B7A94; margin-bottom:4px; }
+  .sc-tile-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; line-height:1.2; }
   .sc-tile-sub { font-size:0.76rem; color:#6B7A94; margin-top:4px; }
 
-  .sc-back { background:none; border:1px solid #D8DEE8; color:#6B7A94; padding:6px 14px; border-radius:6px; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:20px; }
+  .sc-back { background:none; border:1px solid #D8DEE8; color:#6B7A94; padding:6px 14px; border-radius:6px; cursor:pointer; font-family:'Public Sans',sans-serif; font-weight:600; font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:20px; }
   .sc-back:hover { border-color:#2B5BD7; color:#2B5BD7; }
 
   .sc-detail-head { margin-bottom:20px; }
-  .sc-detail-eyebrow { font-family:'Barlow',sans-serif; font-size:0.82rem; font-weight:500; color:#2B5BD7; margin-bottom:6px; }
-  .sc-detail-title { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.7rem; color:#0D1B4C; line-height:1.1; }
+  .sc-detail-eyebrow { font-family:'Public Sans',sans-serif; font-size:0.82rem; font-weight:500; color:#2B5BD7; margin-bottom:6px; }
+  .sc-detail-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.7rem; color:#0D1B4C; line-height:1.1; }
   .sc-detail-sub { font-size:0.88rem; color:#6B7A94; margin-top:4px; }
 
   .sc-tabs { display:flex; gap:2px; border-bottom:1px solid #D8DEE8; margin-bottom:20px; overflow-x:auto; }
-  .sc-tab { background:none; border:none; padding:10px 16px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:0.82rem; letter-spacing:0.06em; color:#6B7A94; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
+  .sc-tab { background:none; border:none; padding:10px 16px; font-family:'Public Sans',sans-serif; font-weight:600; font-size:0.82rem; letter-spacing:0.06em; color:#6B7A94; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
   .sc-tab.active { color:#0D1B4C; border-bottom-color:#2B5BD7; }
   .sc-tab-panel { display:none; padding-bottom:48px; }
   .sc-tab-panel.active { display:block; }
 
-  .sc-h2 { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.15rem; color:#0D1B4C; margin:24px 0 10px; letter-spacing:0.02em; }
+  .sc-h2 { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.15rem; color:#0D1B4C; margin:24px 0 10px; letter-spacing:0.02em; }
   .sc-h2:first-child { margin-top:0; }
   .sc-p { font-size:0.9rem; color:#33415C; line-height:1.7; margin-bottom:12px; }
   .sc-quote { background:#F7F9FC; border-left:3px solid #2B5BD7; padding:12px 16px; font-size:0.9rem; color:#33415C; font-style:italic; line-height:1.6; margin-bottom:16px; }
@@ -512,59 +515,59 @@
   .sc-list li::before { content:'—'; position:absolute; left:0; color:#8494AC; }
 
   .sc-badge-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
-  .sc-badge { background:#EAF0FC; color:#0C447C; font-family:'Space Grotesk',sans-serif; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; padding:5px 12px; border-radius:4px; }
+  .sc-badge { background:#EAF0FC; color:#0C447C; font-family:'Public Sans',sans-serif; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; padding:5px 12px; border-radius:4px; }
 
   .sc-table { width:100%; border-collapse:collapse; font-size:0.84rem; margin-bottom:16px; }
-  .sc-table th { background:#F7F9FC; text-align:left; padding:8px 10px; font-family:'Space Grotesk',sans-serif; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color:#6B7A94; border-bottom:1px solid #D8DEE8; }
+  .sc-table th { background:#F7F9FC; text-align:left; padding:8px 10px; font-family:'Public Sans',sans-serif; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color:#6B7A94; border-bottom:1px solid #D8DEE8; }
   .sc-table td { padding:8px 10px; border-bottom:1px solid #EEF1F5; color:#33415C; vertical-align:top; }
   .sc-table tr:nth-child(even) td { background:#FAFBFC; }
 
   .sc-stage-card { border:1px solid #D8DEE8; margin-bottom:16px; overflow:hidden; }
-  .sc-stage-head { background:#0D1B4C; color:#FFFFFF; padding:10px 16px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.92rem; letter-spacing:0.04em; }
+  .sc-stage-head { background:#0D1B4C; color:#FFFFFF; padding:10px 16px; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.92rem; letter-spacing:0.04em; }
   .sc-stage-body { padding:16px; }
 
   .sc-note { background:#FFF8E8; border-left:3px solid #C8960C; padding:12px 16px; font-size:0.84rem; color:#5C4A0C; margin-bottom:16px; line-height:1.6; }
   .sc-critical { background:#FCEEEE; border:1px solid #E8BEBE; padding:10px 14px; margin-bottom:8px; }
-  .sc-critical-issue { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.86rem; color:#8A2222; }
+  .sc-critical-issue { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.86rem; color:#8A2222; }
   .sc-critical-resp { font-size:0.82rem; color:#5C2C2C; margin-top:3px; line-height:1.5; }
 
   .sc-role-card { border:1px solid #D8DEE8; margin-bottom:20px; overflow:hidden; }
-  .sc-role-head { padding:12px 16px; color:#FFFFFF; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.03em; }
+  .sc-role-head { padding:12px 16px; color:#FFFFFF; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.03em; }
   .sc-role-body { padding:16px; }
   .sc-role-meta { display:grid; gap:10px; margin-bottom:14px; }
   .sc-role-meta-item { background:#F7F9FC; padding:10px 12px; }
-  .sc-role-meta-label { font-family:'Space Grotesk',sans-serif; font-size:0.64rem; letter-spacing:0.1em; text-transform:uppercase; color:#6B7A94; margin-bottom:3px; }
+  .sc-role-meta-label { font-family:'Public Sans',sans-serif; font-size:0.64rem; letter-spacing:0.1em; text-transform:uppercase; color:#6B7A94; margin-bottom:3px; }
   .sc-role-meta-val { font-size:0.86rem; color:#0D1B4C; line-height:1.5; }
 
   .sc-assess-group { margin-bottom:28px; }
-  .sc-assess-group-title { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.95rem; color:#0D1B4C; margin-bottom:2px; }
+  .sc-assess-group-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.95rem; color:#0D1B4C; margin-bottom:2px; }
   .sc-assess-row { border:1px solid #D8DEE8; border-top:none; padding:12px 14px; }
   .sc-assess-group > .sc-assess-row:first-of-type { border-top:1px solid #D8DEE8; }
-  .sc-assess-ref { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.72rem; letter-spacing:0.06em; color:#2B5BD7; margin-bottom:3px; }
+  .sc-assess-ref { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.72rem; letter-spacing:0.06em; color:#2B5BD7; margin-bottom:3px; }
   .sc-assess-crit { font-size:0.88rem; color:#0D1B4C; font-weight:600; margin-bottom:4px; line-height:1.4; }
   .sc-assess-good { font-size:0.8rem; color:#6B7A94; line-height:1.55; margin-bottom:12px; }
   .sc-assess-learners { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  .sc-learner-label { font-family:'Space Grotesk',sans-serif; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color:#8494AC; margin-bottom:6px; }
+  .sc-learner-label { font-family:'Public Sans',sans-serif; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color:#8494AC; margin-bottom:6px; }
   .sc-pra-group { display:flex; gap:6px; }
-  .sc-pra-btn { flex:1; padding:8px 0; text-align:center; border:1px solid #D8DEE8; background:#FFFFFF; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.74rem; letter-spacing:0.06em; color:#6B7A94; transition:all 0.12s; }
+  .sc-pra-btn { flex:1; padding:8px 0; text-align:center; border:1px solid #D8DEE8; background:#FFFFFF; cursor:pointer; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.74rem; letter-spacing:0.06em; color:#6B7A94; transition:all 0.12s; }
   .sc-pra-btn.p.sel { background:#E3F5EC; border-color:#1D9E75; color:#0F6E56; }
   .sc-pra-btn.r.sel { background:#FCEBEB; border-color:#E24B4A; color:#A32D2D; }
   .sc-pra-btn.n.sel { background:#F1EFE8; border-color:#888780; color:#444441; }
 
   .sc-obs-block { border:1px solid #D8DEE8; margin-bottom:16px; }
-  .sc-obs-head { background:#F7F9FC; padding:10px 14px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.85rem; color:#0D1B4C; border-bottom:1px solid #D8DEE8; }
+  .sc-obs-head { background:#F7F9FC; padding:10px 14px; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.85rem; color:#0D1B4C; border-bottom:1px solid #D8DEE8; }
   .sc-obs-row { display:flex; align-items:center; gap:12px; padding:10px 14px; border-bottom:1px solid #EEF1F5; }
   .sc-obs-row:last-child { border-bottom:none; }
   .sc-obs-text { flex:1; font-size:0.85rem; color:#33415C; line-height:1.5; }
   .sc-obs-checks { display:flex; gap:16px; flex-shrink:0; }
-  .sc-obs-check { display:flex; align-items:center; gap:5px; font-family:'Space Grotesk',sans-serif; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:#8494AC; }
+  .sc-obs-check { display:flex; align-items:center; gap:5px; font-family:'Public Sans',sans-serif; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:#8494AC; }
   .sc-obs-box { width:20px; height:20px; border:1px solid #D8DEE8; background:#FFFFFF; cursor:pointer; }
   .sc-obs-box.sel { background:#2B5BD7; border-color:#2B5BD7; }
 
   .sc-variant-toggle { display:flex; gap:8px; margin-bottom:20px; }
   .sc-variant-btn { flex:1; border:1px solid #D8DEE8; background:#FFFFFF; padding:10px 14px; cursor:pointer; text-align:left; }
   .sc-variant-btn.sel { border-color:#2B5BD7; background:#EAF0FC; }
-  .sc-variant-label { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.82rem; color:#0D1B4C; }
+  .sc-variant-label { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.82rem; color:#0D1B4C; }
   .sc-variant-sub { font-size:0.72rem; color:#6B7A94; margin-top:2px; }
 
   .sc-safety-check { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid #F0F2F6; }
@@ -574,7 +577,7 @@
 
   .sc-cue-card { background:#1A1208; border:1px solid #4A3A12; margin-bottom:20px; }
   .sc-cue-head { background:#2E2208; padding:10px 16px; display:flex; align-items:center; gap:8px; }
-  .sc-cue-label { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase; color:#F0C040; }
+  .sc-cue-label { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase; color:#F0C040; }
   .sc-cue-body { padding:16px; }
   .sc-cue-body .sc-table th { background:#2E2208; color:#D8C088; }
   .sc-cue-body .sc-table td { color:#E8D8B0; border-bottom-color:#3A2E10; }
@@ -585,7 +588,7 @@
   .sc-reveal-yes { color:#0F6E56; font-weight:700; font-size:0.78rem; }
   .sc-reveal-no { color:#8494AC; font-size:0.78rem; }
 
-  .sc-cmd-table td:first-child { font-family:'Space Grotesk',sans-serif; font-weight:700; color:#0D1B4C; white-space:nowrap; }
+  .sc-cmd-table td:first-child { font-family:'Public Sans',sans-serif; font-weight:700; color:#0D1B4C; white-space:nowrap; }
   .sc-outcome-p { color:#0F6E56; font-weight:700; }
   .sc-outcome-r { color:#A32D2D; font-weight:700; }
   .sc-outcome-n { color:#444441; font-weight:700; }
@@ -593,6 +596,97 @@
   @media (max-width:600px) {
     .sc-assess-learners { grid-template-columns:1fr; }
     .sc-role-meta { grid-template-columns:1fr; }
+  }
+
+
+  /* ---- Run a Scenario ---- */
+  .rn-view { display:none; }
+  .rn-view.active { display:block; }
+  .rn-wrap { max-width:920px; margin:0 auto; padding:24px 20px 60px; }
+
+  .rn-pick-row { display:block; width:100%; text-align:left; border:none; border-top:1px solid #D8DEE8; background:#FFFFFF; padding:16px 4px; cursor:pointer; }
+  .rn-pick-row:last-of-type { border-bottom:1px solid #D8DEE8; }
+  .rn-pick-row:hover { background:#F7F9FC; }
+  .rn-pick-row.rn-locked { opacity:0.4; cursor:default; }
+  .rn-pick-row.rn-locked:hover { background:#FFFFFF; }
+  .rn-pick-num { font-family:'Public Sans',sans-serif; font-size:0.78rem; color:#6B7A94; margin-bottom:3px; }
+  .rn-pick-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.05rem; color:#0D1B4C; line-height:1.2; }
+  .rn-pick-sub { font-size:0.84rem; color:#6B7A94; margin-top:3px; }
+
+  .rn-head { border-bottom:1px solid #D8DEE8; padding-bottom:16px; margin-bottom:18px; }
+  .rn-head-meta { font-family:'Public Sans',sans-serif; font-size:0.84rem; color:#2B5BD7; margin-bottom:4px; }
+  .rn-head-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.6rem; color:#0D1B4C; line-height:1.15; }
+  .rn-head-sub { font-size:0.88rem; color:#6B7A94; margin-top:4px; }
+
+  .rn-sound { border:1px solid #D8DEE8; margin-bottom:20px; }
+  .rn-sound-bar { display:flex; align-items:center; gap:12px; padding:12px 16px; cursor:pointer; background:#F7F9FC; }
+  .rn-sound-bar:hover { background:#EFF3F9; }
+  .rn-sound-label { flex:1; min-width:0; }
+  .rn-sound-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.95rem; color:#0D1B4C; }
+  .rn-sound-sub { font-size:0.78rem; color:#6B7A94; margin-top:2px; }
+  .rn-sound-body { max-height:0; overflow:hidden; transition:max-height 0.25s ease; }
+  .rn-sound-body.open { max-height:600px; overflow:visible; }
+  .rn-sound-inner { padding:14px 16px; border-top:1px solid #D8DEE8; }
+  .rn-mix-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #EEF1F5; }
+  .rn-mix-row:last-child { border-bottom:none; }
+  .rn-mix-name { flex:1; min-width:0; font-size:0.86rem; color:#33415C; }
+  .rn-mix-slider { width:110px; flex-shrink:0; }
+  .rn-play-btn { border:1px solid #2B5BD7; background:#FFFFFF; color:#2B5BD7; padding:5px 14px; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.74rem; cursor:pointer; flex-shrink:0; }
+  .rn-play-btn.on { background:#2B5BD7; color:#FFFFFF; }
+  .rn-mix-actions { display:flex; gap:8px; margin-top:12px; }
+  .rn-mix-all { flex:1; border:1px solid #2B5BD7; background:#2B5BD7; color:#FFFFFF; padding:10px; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.82rem; cursor:pointer; }
+  .rn-mix-stop { flex:1; border:1px solid #C74444; background:#FFFFFF; color:#C74444; padding:10px; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.82rem; cursor:pointer; }
+
+  .rn-steps { display:flex; gap:2px; border-bottom:1px solid #D8DEE8; margin-bottom:20px; overflow-x:auto; }
+  .rn-step { background:none; border:none; padding:10px 14px; font-family:'Public Sans',sans-serif; font-weight:500; font-size:0.82rem; color:#6B7A94; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
+  .rn-step.active { color:#0D1B4C; font-weight:700; border-bottom-color:#2B5BD7; }
+  .rn-step.done { color:#0E7C86; }
+
+  .rn-panel { display:none; }
+  .rn-panel.active { display:block; }
+
+  .rn-nav { display:flex; justify-content:space-between; gap:12px; margin-top:28px; padding-top:18px; border-top:1px solid #D8DEE8; }
+  .rn-nav-btn { border:1px solid #D8DEE8; background:#FFFFFF; color:#33415C; padding:10px 20px; font-family:'Public Sans',sans-serif; font-weight:500; font-size:0.85rem; cursor:pointer; }
+  .rn-nav-btn:hover { border-color:#2B5BD7; color:#2B5BD7; }
+  .rn-nav-btn.primary { background:#2B5BD7; border-color:#2B5BD7; color:#FFFFFF; font-weight:700; }
+  .rn-nav-btn:disabled { opacity:0.35; cursor:default; }
+
+  .rn-check { display:flex; align-items:flex-start; gap:12px; padding:11px 0; border-bottom:1px solid #EEF1F5; cursor:pointer; }
+  .rn-check:last-child { border-bottom:none; }
+  .rn-check-box { width:22px; height:22px; border:1.5px solid #B8C2D0; flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; }
+  .rn-check-box.on { background:#0E7C86; border-color:#0E7C86; }
+  .rn-check-box.on::after { content:'✓'; color:#FFFFFF; font-size:0.85rem; font-weight:700; }
+  .rn-check-text { font-size:0.88rem; color:#33415C; line-height:1.55; }
+
+  .rn-learners { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:22px; }
+  .rn-learner-field label { display:block; font-family:'Public Sans',sans-serif; font-size:0.8rem; color:#6B7A94; margin-bottom:5px; }
+  .rn-learner-field input { width:100%; box-sizing:border-box; }
+
+  .rn-session-meta { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+
+  .rn-matrix-wrap { overflow-x:auto; }
+  .rn-matrix { width:100%; border-collapse:collapse; font-size:0.82rem; }
+  .rn-matrix th { background:#0D1B4C; color:#FFFFFF; text-align:left; padding:9px 10px; font-family:'Public Sans',sans-serif; font-weight:500; font-size:0.74rem; white-space:nowrap; }
+  .rn-matrix td { padding:8px 10px; border-bottom:1px solid #EEF1F5; color:#33415C; vertical-align:top; }
+  .rn-matrix tr:nth-child(even) td { background:#FAFBFC; }
+  .rn-m-p { color:#0F6E56; font-weight:700; }
+  .rn-m-r { color:#A32D2D; font-weight:700; }
+  .rn-m-n { color:#8494AC; }
+
+  .rn-summary-card { border:1px solid #D8DEE8; padding:16px; margin-bottom:12px; }
+  .rn-summary-name { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; margin-bottom:8px; }
+  .rn-summary-counts { display:flex; gap:20px; font-size:0.85rem; }
+
+  .rn-empty { padding:40px 20px; text-align:center; color:#8494AC; font-size:0.9rem; }
+
+  @media (max-width:640px) {
+    .rn-learners, .rn-session-meta { grid-template-columns:1fr; }
+  }
+
+  @media print {
+    header, .rn-steps, .rn-nav, .rn-sound, .app-footer, #mixerBtn, .rn-no-print { display:none !important; }
+    .rn-wrap { max-width:100%; padding:0; }
+    body { background:#FFFFFF; }
   }
 
 </style>
@@ -624,12 +718,12 @@ window.addEventListener('load', function () {
       <div class="brand-sub">Emergency Care Training</div>
     </div>
   </a>
-  <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+  <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-top:2px;">
     <div class="status-bar" id="statusBar" style="display:none;">
       <span class="dot"></span>STANDBY
     </div>
     <button class="back-hub" id="backHub" onclick="showView('hub')">&larr; Menu</button>
-    <a href="mailto:info@scenesounds.app" class="header-contact" style="background:none;border:1px solid;padding:6px 14px;border-radius:6px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;flex-shrink:0;transition:all 0.2s;">Contact</a>
+    <a href="mailto:info@scenesounds.app" class="header-contact" style="background:none;border:1px solid;padding:6px 14px;border-radius:6px;font-family:'Public Sans',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;flex-shrink:0;transition:all 0.2s;">Contact</a>
   </div>
 </header>
 
@@ -663,7 +757,7 @@ window.addEventListener('load', function () {
       <span class="hub-chev">&rsaquo;</span>
     </button>
 
-    <button class="hub-tile primary" onclick="showView('run')">
+    <button class="hub-tile primary" onclick="showView('run');rnRenderPick();">
       <div class="hub-accent" style="background:#2B5BD7;"></div>
       <span class="hub-emoji">▶️</span>
       <div style="flex:1;min-width:0;">
@@ -721,7 +815,7 @@ window.addEventListener('load', function () {
         width:100%;box-sizing:border-box;
         background:#FFFFFF;border:1px solid var(--border);border-radius:8px;
         padding:9px 12px 9px 34px;
-        font-family:'Barlow',sans-serif;font-size:0.88rem;color:var(--text);
+        font-family:'Public Sans',sans-serif;font-size:0.88rem;color:var(--text);
         outline:none;transition:border-color 0.2s;
       "
       onfocus="this.style.borderColor='var(--fire)'"
@@ -810,9 +904,9 @@ window.addEventListener('load', function () {
   <!-- Builder — Pro only -->
   <div id="scenario-builder-locked" hidden style="display:none;background:var(--surface);border:1px solid rgba(92,107,138,0.2);border-radius:14px;padding:28px 20px;margin-bottom:32px;text-align:center;">
     <div style="font-size:2rem;margin-bottom:12px;">🔒</div>
-    <div style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.08em;color:#5C6B8A;margin-bottom:8px;">MAKE YOUR OWN</div>
+    <div style="font-family:'Public Sans',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.08em;color:#5C6B8A;margin-bottom:8px;">MAKE YOUR OWN</div>
     <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:20px;">Build and save your own custom scenarios.<br>Available on Pro.</p>
-    <button onclick="showPricingModal()" style="background:var(--fire);color:#FFFFFF;border:none;border-radius:7px;padding:11px 28px;font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">⚡ Try Pro — £3.99/mo</button>
+    <button onclick="showPricingModal()" style="background:var(--fire);color:#FFFFFF;border:none;border-radius:7px;padding:11px 28px;font-family:'Public Sans',sans-serif;font-weight:900;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">⚡ Try Pro — £3.99/mo</button>
   </div>
 
   <!-- Builder — shown to Pro users -->
@@ -826,32 +920,32 @@ window.addEventListener('load', function () {
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
       <span style="font-size:1.4rem;">🛠️</span>
       <div>
-        <div style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.08em;color:#5C6B8A;">MAKE YOUR OWN</div>
+        <div style="font-family:'Public Sans',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.08em;color:#5C6B8A;">MAKE YOUR OWN</div>
         <div style="font-size:0.7rem;color:var(--muted);margin-top:1px;">Pick sounds, set volumes, name it, save it</div>
       </div>
     </div>
 
     <!-- Name field -->
     <div style="margin-bottom:16px;">
-      <label style="font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;">Scenario Name</label>
+      <label style="font-family:'Public Sans',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;">Scenario Name</label>
       <input id="custom-name" type="text" placeholder="e.g. Mountain Rescue, Urban Patrol…" maxlength="40" style="
         width:100%;background:#FFFFFF;border:1px solid var(--border);
         border-radius:8px;padding:10px 14px;
-        font-family:'Barlow',sans-serif;font-size:0.9rem;color:var(--text);
+        font-family:'Public Sans',sans-serif;font-size:0.9rem;color:var(--text);
         outline:none;transition:border-color 0.2s;
       " onfocus="this.style.borderColor='#5C6B8A'" onblur="this.style.borderColor='var(--border)'">
     </div>
 
     <!-- Icon picker -->
     <div style="margin-bottom:16px;">
-      <label style="font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">Icon</label>
+      <label style="font-family:'Public Sans',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">Icon</label>
       <div style="display:flex;flex-wrap:wrap;gap:6px;" id="icon-picker">
       </div>
     </div>
 
     <!-- Sound selector -->
     <div style="margin-bottom:18px;">
-      <label style="font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:10px;">Select Sounds & Set Volumes</label>
+      <label style="font-family:'Public Sans',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:10px;">Select Sounds & Set Volumes</label>
       <div id="builder-sound-list" style="display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;padding-right:4px;"></div>
     </div>
 
@@ -859,7 +953,7 @@ window.addEventListener('load', function () {
     <button onclick="saveCustomScenario()" style="
       width:100%;background:#5C6B8A;border:none;color:#FFFFFF;
       padding:12px;border-radius:8px;
-      font-family:'Space Grotesk',sans-serif;font-weight:900;
+      font-family:'Public Sans',sans-serif;font-weight:900;
       font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;
       cursor:pointer;transition:opacity 0.2s;
     " onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">💾 Save Scenario</button>
@@ -921,12 +1015,64 @@ window.addEventListener('load', function () {
 
 <!-- ============ RUN A SCENARIO ============ -->
 <div class="app-view" id="view-run">
-  <div class="stub">
-    <div class="stub-icon">▶️</div>
-    <div class="stub-h">Run a scenario</div>
-    <div class="stub-p">Pick a scenario and the brief, patient card and soundscape run together. Content is being added.</div>
+
+  <div class="rn-view active" id="rn-pick">
+    <div class="rn-wrap">
+      <div class="hub-eyebrow">Babcock International</div>
+      <div class="hub-h">Run a scenario</div>
+      <div class="hub-p">Pick a scenario to run the brief, safety checks, sound and assessment together.</div>
+      <div id="rnPickList"></div>
+    </div>
   </div>
+
+  <div class="rn-view" id="rn-session">
+    <div class="rn-wrap">
+
+      <button class="sc-back rn-no-print" onclick="rnExit()">&larr; All scenarios</button>
+
+      <div class="rn-head">
+        <div class="rn-head-meta" id="rnHeadMeta"></div>
+        <div class="rn-head-title" id="rnHeadTitle"></div>
+        <div class="rn-head-sub" id="rnHeadSub"></div>
+      </div>
+
+      <div class="rn-sound rn-no-print" id="rnSoundTile">
+        <div class="rn-sound-bar" onclick="rnToggleSound()">
+          <div class="rn-sound-label">
+            <div class="rn-sound-title">Scene sound mix</div>
+            <div class="rn-sound-sub" id="rnSoundSub">Tap to open</div>
+          </div>
+          <span id="rnSoundChevron" style="color:#6B7A94;transition:transform 0.25s;">▾</span>
+        </div>
+        <div class="rn-sound-body" id="rnSoundBody">
+          <div class="rn-sound-inner" id="rnSoundInner"></div>
+        </div>
+      </div>
+
+      <div class="rn-steps rn-no-print" id="rnSteps"></div>
+
+      <div id="rnPanels"></div>
+
+      <div class="rn-nav rn-no-print">
+        <button class="rn-nav-btn" id="rnPrev" onclick="rnGo(-1)">← Back</button>
+        <button class="rn-nav-btn primary" id="rnNext" onclick="rnGo(1)">Next →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="rn-view" id="rn-matrix">
+    <div class="rn-wrap">
+      <button class="sc-back rn-no-print" onclick="rnShowPick()">&larr; Back</button>
+      <div class="hub-eyebrow">Course record</div>
+      <div class="hub-h">Learner matrix</div>
+      <div class="hub-p">Every recorded session on this device, grouped by learner.</div>
+      <div id="rnMatrixBody"></div>
+    </div>
+  </div>
+
 </div>
+
 
 <!-- Active Sounds Mixer Panel -->
 <div id="mixerBtn" style="display:none; position:fixed; bottom:0; left:0; right:0; z-index:300;">
@@ -948,20 +1094,20 @@ window.addEventListener('load', function () {
       <span style="display:block;width:3px;background:var(--fire);border-radius:2px;animation:wave 1s ease-in-out 0.45s infinite;"></span>
     </div>
     <div style="flex:1;">
-      <div id="mixerTitle" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.05em;">ACTIVE MIXER</div>
+      <div id="mixerTitle" style="font-family:'Public Sans',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.05em;">ACTIVE MIXER</div>
       <div id="mixerCount" style="font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:1px;">0 sounds looping</div>
     </div>
     <div id="mixerChevron" style="color:var(--muted);font-size:0.8rem;transition:transform 0.3s;">▲</div>
     <button onclick="event.stopPropagation();pauseAll()" id="pauseAllBtn" style="
       background:none;border:1px solid var(--border);color:var(--muted);
       padding:6px 12px;border-radius:6px;
-      font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.75rem;
+      font-family:'Public Sans',sans-serif;font-weight:600;font-size:0.75rem;
       letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;
     ">⏸ Pause</button>
     <button onclick="event.stopPropagation();stopAll()" style="
       background:none;border:1px solid var(--border);color:var(--muted);
       padding:6px 12px;border-radius:6px;
-      font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.75rem;
+      font-family:'Public Sans',sans-serif;font-weight:600;font-size:0.75rem;
       letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;
     ">■ Stop</button>
   </div>
@@ -977,9 +1123,9 @@ window.addEventListener('load', function () {
     <div style="padding: 6px 16px 16px;">
       <!-- Master volume -->
       <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(43,91,215,0.06);border:1px solid rgba(43,91,215,0.15);border-radius:10px;margin-bottom:14px;">
-        <span style="font-family:'Space Grotesk',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--fire);width:52px;flex-shrink:0;">MASTER</span>
+        <span style="font-family:'Public Sans',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--fire);width:52px;flex-shrink:0;">MASTER</span>
         <input type="range" id="masterVolSlider" class="master-vol-slider" min="0" max="100" value="80" oninput="setMasterVolume(this.value)" style="flex:1;-webkit-appearance:none;height:3px;background:var(--border);border-radius:2px;outline:none;">
-        <span id="masterVolVal" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.82rem;color:var(--muted);width:32px;text-align:right;">80%</span>
+        <span id="masterVolVal" style="font-family:'Public Sans',sans-serif;font-weight:700;font-size:0.82rem;color:var(--muted);width:32px;text-align:right;">80%</span>
       </div>
       <!-- Per-sound rows injected here -->
       <div id="mixerRows"></div>
@@ -1410,13 +1556,13 @@ function updateMixer() {
     row.innerHTML = `
       <span style="font-size:1.2rem;flex-shrink:0;">${sound.icon}</span>
       <div style="flex:1;min-width:0;">
-        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${sound.label}</div>
+        <div style="font-family:'Public Sans',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${sound.label}</div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:5px;">
           <span style="font-size:0.62rem;color:#6B7A94;letter-spacing:0.06em;flex-shrink:0;">VOL</span>
           <input type="range" min="0" max="100" value="${vol}"
             style="-webkit-appearance:none;flex:1;height:3px;background:#D8DEE8;border-radius:2px;outline:none;accent-color:${color};"
             oninput="setSoundVolume('${id}', this.value)" onchange="setSoundVolume('${id}', this.value)">
-          <span id="vol-val-${id}" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.75rem;color:#6B7A94;width:30px;text-align:right;">${vol}%</span>
+          <span id="vol-val-${id}" style="font-family:'Public Sans',sans-serif;font-weight:700;font-size:0.75rem;color:#6B7A94;width:30px;text-align:right;">${vol}%</span>
         </div>
       </div>
       <button onclick="stopSingle('${id}')" style="
@@ -1779,8 +1925,8 @@ function buildScenarios() {
         <span style="font-size:2rem;line-height:1;flex-shrink:0;">${sc.icon}</span>
         <div style="flex:1;min-width:0;">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-            <span style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.05em;">${sc.label}</span>
-            <span style="font-family:'Space Grotesk',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:0.12em;color:${sc.color};background:${sc.color}18;border:1px solid ${sc.color}44;border-radius:4px;padding:1px 7px;">${sc.tag}</span>
+            <span style="font-family:'Public Sans',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.05em;">${sc.label}</span>
+            <span style="font-family:'Public Sans',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:0.12em;color:${sc.color};background:${sc.color}18;border:1px solid ${sc.color}44;border-radius:4px;padding:1px 7px;">${sc.tag}</span>
           </div>
           <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;">${sc.sub}</div>
           <div style="display:flex;flex-wrap:wrap;gap:5px;">${layerPreviews}</div>
@@ -1857,14 +2003,14 @@ function buildBuilderSoundList() {
         onchange="toggleBuilderSound('${sound.id}', this.checked)">
       <span style="font-size:1.1rem;flex-shrink:0;">${sound.icon}</span>
       <div style="flex:1;min-width:0;">
-        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.04em;color:${color};">${sound.label}</div>
+        <div style="font-family:'Public Sans',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.04em;color:${color};">${sound.label}</div>
         <div style="font-size:0.62rem;color:var(--muted);">${sound.sub}</div>
       </div>
       <div id="bvol-wrap-${sound.id}" style="display:none;align-items:center;gap:6px;min-width:110px;">
         <input type="range" id="bvol-${sound.id}" min="0" max="100" value="80"
           style="-webkit-appearance:none;width:70px;height:3px;background:#D8DEE8;border-radius:2px;outline:none;accent-color:${color};"
           oninput="updateBuilderVol('${sound.id}', this.value)">
-        <span id="bvol-val-${sound.id}" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.72rem;color:var(--muted);width:28px;text-align:right;">80%</span>
+        <span id="bvol-val-${sound.id}" style="font-family:'Public Sans',sans-serif;font-weight:700;font-size:0.72rem;color:var(--muted);width:28px;text-align:right;">80%</span>
       </div>
     `;
     list.appendChild(row);
@@ -1969,8 +2115,8 @@ function renderCustomScenarios() {
         <span style="font-size:2rem;line-height:1;flex-shrink:0;">${sc.icon}</span>
         <div style="flex:1;min-width:0;">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-            <span style="font-family:'Space Grotesk',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.05em;">${sc.name}</span>
-            <span style="font-family:'Space Grotesk',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:0.12em;color:#5C6B8A;background:#5C6B8A18;border:1px solid #5C6B8A44;border-radius:4px;padding:1px 7px;">CUSTOM</span>
+            <span style="font-family:'Public Sans',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.05em;">${sc.name}</span>
+            <span style="font-family:'Public Sans',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:0.12em;color:#5C6B8A;background:#5C6B8A18;border:1px solid #5C6B8A44;border-radius:4px;padding:1px 7px;">CUSTOM</span>
           </div>
           <div style="font-size:0.7rem;color:var(--muted);margin-bottom:8px;">Saved ${sc.savedAt} · ${sc.layers.length} sounds</div>
           <div style="display:flex;flex-wrap:wrap;gap:5px;">${layerPreviews}</div>
@@ -2029,7 +2175,7 @@ renderCustomScenarios();
    onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 16px rgba(43,91,215,0.35)'"
    title="Share Feedback">
   <span style="font-size:0.75rem;">💬</span>
-  <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#F7F9FC;">Feedback</span>
+  <span style="font-family:'Public Sans',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#F7F9FC;">Feedback</span>
 </div>
 
 <!-- Feedback tooltip removed -->
@@ -3620,6 +3766,642 @@ function scRenderReference() {
 
 // Build grid once sounds/scenarios are ready
 scRenderGrid();
+</script>
+<script>
+// ============================================================
+// RUN A SCENARIO
+// ============================================================
+
+const RN_MIXES = {
+  1: { label:'Nightclub interior', sounds:[
+        {id:'pub_crowd', vol:0.75},
+        {id:'night_ambience', vol:0.45},
+        {id:'argument', vol:0.3}
+      ]},
+  2: { label:'Outdoor public space', sounds:[
+        {id:'traffic', vol:0.6},
+        {id:'crowd_fire', vol:0.55},
+        {id:'wind', vol:0.35},
+        {id:'construction', vol:0.25}
+      ]},
+  3: { label:'Quiet pub garden', sounds:[
+        {id:'pub_crowd', vol:0.4},
+        {id:'wind', vol:0.3}
+      ]}
+};
+
+const RN_STORE_KEY = 'rn_course_sessions';
+
+let rnScenarioId = null;
+let rnDetail = null;
+let rnSteps = [];
+let rnStepIdx = 0;
+let rnSoundOpen = false;
+let rnSession = null;
+
+function rnLoadSessions() {
+  try { return JSON.parse(localStorage.getItem(RN_STORE_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+function rnSaveSessions(list) {
+  try { localStorage.setItem(RN_STORE_KEY, JSON.stringify(list)); return true; }
+  catch(e) { return false; }
+}
+
+function rnShowView(name) {
+  document.querySelectorAll('.rn-view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById('rn-' + name);
+  if (el) el.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function rnShowPick() {
+  rnRenderPick();
+  rnShowView('pick');
+}
+
+function rnExit() {
+  stopAll();
+  rnShowPick();
+}
+
+function rnRenderPick() {
+  const wrap = document.getElementById('rnPickList');
+  if (!wrap) return;
+  let html = SC_SCENARIOS.map(s => {
+    const ready = s.ready;
+    return `<button class="rn-pick-row ${ready ? '' : 'rn-locked'}" ${ready ? `onclick="rnStart(${s.id})"` : 'disabled'}>
+      <div class="rn-pick-num">Scenario ${String(s.id).padStart(2,'0')}</div>
+      <div class="rn-pick-title">${s.title}</div>
+      <div class="rn-pick-sub">${s.sub}</div>
+    </button>`;
+  }).join('');
+
+  const sessions = rnLoadSessions();
+  html += `<div style="margin-top:28px;display:flex;gap:10px;flex-wrap:wrap;">
+    <button class="rn-nav-btn" onclick="rnShowMatrix()">Course matrix (${sessions.length} session${sessions.length===1?'':'s'})</button>
+  </div>`;
+
+  wrap.innerHTML = html;
+}
+
+function rnStart(id) {
+  const d = scGetDetail(id);
+  if (!d) return;
+  rnScenarioId = id;
+  rnDetail = d;
+  rnStepIdx = 0;
+  rnSoundOpen = false;
+
+  rnSession = {
+    id: 'S' + Date.now(),
+    scenarioId: id,
+    scenarioTitle: d.title,
+    date: new Date().toISOString().slice(0,10),
+    instructor: '',
+    variant: (d.variants && d.variants[0]) ? d.variants[0].id : null,
+    stagesRun: '',
+    learners: [ {name:'', results:{}}, {name:'', results:{}} ],
+    checks: {},
+    observations: {},
+    notes: ''
+  };
+
+  document.getElementById('rnHeadMeta').textContent = d.eyebrow;
+  document.getElementById('rnHeadTitle').textContent = d.title;
+  document.getElementById('rnHeadSub').textContent = d.sub;
+
+  rnBuildSteps();
+  rnRenderSound();
+  rnRenderSteps();
+  rnRenderPanels();
+  rnShowStep(0);
+  rnShowView('session');
+}
+
+function rnBuildSteps() {
+  rnSteps = [];
+  rnSteps.push({key:'safety', label:'Safety'});
+  rnSteps.push({key:'brief', label:'Brief'});
+  if (rnDetail.roles) rnSteps.push({key:'roles', label:'Roles'});
+  rnSteps.push({key:'assess', label:'Assessment'});
+  rnSteps.push({key:'debrief', label:'Debrief'});
+  rnSteps.push({key:'record', label:'Record'});
+}
+
+function rnRenderSteps() {
+  document.getElementById('rnSteps').innerHTML = rnSteps.map((s,i) =>
+    `<button class="rn-step" id="rnStep${i}" onclick="rnShowStep(${i})">${s.label}</button>`
+  ).join('');
+}
+
+function rnShowStep(i) {
+  if (i < 0 || i >= rnSteps.length) return;
+  rnStepIdx = i;
+  document.querySelectorAll('.rn-step').forEach((b,bi) => {
+    b.classList.toggle('active', bi === i);
+    b.classList.toggle('done', bi < i);
+  });
+  document.querySelectorAll('.rn-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('rnPanel-' + rnSteps[i].key);
+  if (panel) panel.classList.add('active');
+
+  document.getElementById('rnPrev').disabled = (i === 0);
+  const next = document.getElementById('rnNext');
+  next.textContent = (i === rnSteps.length - 1) ? 'Done' : 'Next →';
+  window.scrollTo(0,0);
+}
+
+function rnGo(delta) {
+  const target = rnStepIdx + delta;
+  if (target >= rnSteps.length) { rnExit(); return; }
+  rnShowStep(target);
+}
+
+// ---- Sound tile ----
+function rnToggleSound() {
+  rnSoundOpen = !rnSoundOpen;
+  document.getElementById('rnSoundBody').classList.toggle('open', rnSoundOpen);
+  document.getElementById('rnSoundChevron').style.transform = rnSoundOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+function rnFindSound(id) {
+  return sounds.find(s => s.id === id) || null;
+}
+
+function rnRenderSound() {
+  const mix = RN_MIXES[rnScenarioId];
+  const inner = document.getElementById('rnSoundInner');
+  if (!mix) {
+    document.getElementById('rnSoundSub').textContent = 'No preset mix for this scenario';
+    inner.innerHTML = '<p class="sc-p">No preset sound mix has been defined.</p>';
+    return;
+  }
+  document.getElementById('rnSoundSub').textContent = mix.label + ' · ' + mix.sounds.length + ' sounds';
+
+  let html = mix.sounds.map(m => {
+    const s = rnFindSound(m.id);
+    if (!s) return '';
+    return `<div class="rn-mix-row">
+      <div class="rn-mix-name">${s.label}</div>
+      <input type="range" class="rn-mix-slider" min="0" max="100" step="1" value="${Math.round(m.vol*100)}"
+             oninput="rnSetVol('${m.id}', this.value)">
+      <button class="rn-play-btn btn-${m.id}" id="rnPlay-${m.id}" onclick="rnTogglePlay('${m.id}')">Play</button>
+    </div>`;
+  }).join('');
+
+  html += `<div class="rn-mix-actions">
+    <button class="rn-mix-all" onclick="rnPlayAll()">Play full mix</button>
+    <button class="rn-mix-stop" onclick="rnStopAll()">Stop all</button>
+  </div>`;
+
+  inner.innerHTML = html;
+}
+
+function rnSetVol(id, val) {
+  const v = Number(val) / 100;
+  soundVolumes[id] = v;
+  // Live nodes don't expose a volume setter — restart the sound at the new level if it's currently playing
+  if (activeNodes[id]) {
+    const s = rnFindSound(id);
+    if (s) {
+      activeNodes[id].stop();
+      delete activeNodes[id];
+      activeNodes[id] = s.url ? makeRealAudio(s, v) : makeOscillator(s, v);
+    }
+  }
+  updateMixer();
+}
+
+function rnTogglePlay(id) {
+  const s = rnFindSound(id);
+  if (!s) return;
+  toggleSound(s);
+  rnSyncPlayButtons();
+}
+
+function rnPlayAll() {
+  const mix = RN_MIXES[rnScenarioId];
+  if (!mix) return;
+  mix.sounds.forEach(m => {
+    const s = rnFindSound(m.id);
+    if (!s) return;
+    soundVolumes[m.id] = m.vol;
+    if (!activeNodes[m.id]) toggleSound(s);
+  });
+  rnSyncPlayButtons();
+}
+
+function rnStopAll() {
+  stopAll();
+  rnSyncPlayButtons();
+}
+
+function rnSyncPlayButtons() {
+  const mix = RN_MIXES[rnScenarioId];
+  if (!mix) return;
+  mix.sounds.forEach(m => {
+    const btn = document.getElementById('rnPlay-' + m.id);
+    if (!btn) return;
+    const on = !!activeNodes[m.id];
+    btn.classList.toggle('on', on);
+    btn.textContent = on ? 'Stop' : 'Play';
+  });
+}
+
+// ---- Panels ----
+function rnRenderPanels() {
+  const wrap = document.getElementById('rnPanels');
+  let html = '';
+  rnSteps.forEach(s => {
+    html += `<div class="rn-panel" id="rnPanel-${s.key}">${rnPanelHTML(s.key)}</div>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function rnPanelHTML(key) {
+  if (key === 'safety')  return rnSafetyHTML();
+  if (key === 'brief')   return rnBriefHTML();
+  if (key === 'roles')   return rnRolesHTML();
+  if (key === 'assess')  return rnAssessHTML();
+  if (key === 'debrief') return rnDebriefHTML();
+  if (key === 'record')  return rnRecordHTML();
+  return '';
+}
+
+function rnCheckList(items, group) {
+  return items.map((t,i) => {
+    const k = group + '_' + i;
+    return `<div class="rn-check" onclick="rnToggleCheck('${k}', this)">
+      <div class="rn-check-box" id="rnChk-${k}"></div>
+      <div class="rn-check-text">${t}</div>
+    </div>`;
+  }).join('');
+}
+
+function rnToggleCheck(k, el) {
+  rnSession.checks[k] = !rnSession.checks[k];
+  const box = el.querySelector('.rn-check-box');
+  box.classList.toggle('on', !!rnSession.checks[k]);
+}
+
+function rnSafetyHTML() {
+  const d = rnDetail;
+  let html = `<div class="sc-h2" style="margin-top:0;">Pre-scenario safety check</div>
+    <div class="sc-note">Work through before the crew enters. Tap each line to confirm.</div>`;
+
+  if (d.safety && d.safety.siteSuitability) {
+    html += `<div class="sc-h2">Site and setup</div>` + rnCheckList(d.safety.siteSuitability, 'site');
+  }
+  if (d.safety && d.safety.bloodSystem) {
+    html += `<div class="sc-h2">Simulated blood system</div>` + rnCheckList(d.safety.bloodSystem, 'blood');
+  }
+  if (d.safety && d.safety.ppe) {
+    html += `<div class="sc-h2">PPE</div>` + rnCheckList(d.safety.ppe, 'ppe');
+  }
+
+  const limits = (d.safety && d.safety.interventionLimits) ? d.safety.interventionLimits : SC_REFERENCE.safety;
+  html += `<div class="sc-h2">Live casualty limits</div>` + rnCheckList(limits, 'limits');
+
+  html += `<div class="sc-h2">Exercise commands</div>
+    <table class="sc-table sc-cmd-table"><tr><th>Command</th><th>Meaning</th></tr>
+    ${SC_REFERENCE.commands.map(c=>`<tr><td>${c[0]}</td><td>${c[1]}</td></tr>`).join('')}</table>`;
+
+  if (d.variants) {
+    html += `<div class="sc-h2">Variant running today</div>
+      <div class="sc-variant-toggle">
+      ${d.variants.map(v => `<button class="sc-variant-btn ${rnSession.variant===v.id?'sel':''}" onclick="rnSetVariant('${v.id}', this)">
+        <div class="sc-variant-label">${v.label}</div><div class="sc-variant-sub">${v.sub}</div></button>`).join('')}
+      </div>`;
+  }
+
+  return html;
+}
+
+function rnSetVariant(vid, el) {
+  rnSession.variant = vid;
+  el.parentNode.querySelectorAll('.sc-variant-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function rnBriefHTML() {
+  const b = rnDetail.brief;
+  let html = `<div class="sc-h2" style="margin-top:0;">Crew deployment brief</div>
+    <div class="sc-quote">${b.deployment}</div>`;
+
+  html += `<div class="sc-badge-row">
+    <span class="sc-badge">${b.delivery}</span>
+    <span class="sc-badge">Endpoints: ${b.endpoints}</span>
+  </div>`;
+
+  if (b.findings) {
+    html += `<div class="sc-h2">Starting findings</div>
+      <table class="sc-table">${b.findings.map(f=>`<tr><td style="width:35%;"><strong>${f[0]}</strong></td><td>${f[1]}</td></tr>`).join('')}</table>`;
+  }
+
+  if (b.stages) {
+    b.stages.forEach(st => {
+      html += `<div class="sc-stage-card">
+        <div class="sc-stage-head">Stage ${st.n} — ${st.name}</div>
+        <div class="sc-stage-body">`;
+      if (st.intro) html += `<p class="sc-p">${st.intro}</p>`;
+      if (st.findings) {
+        html += `<table class="sc-table">${st.findings.map(f=>`<tr><td style="width:35%;"><strong>${f[0]}</strong></td><td>${f[1]}</td></tr>`).join('')}</table>`;
+      }
+      if (st.endpoint) html += `<div class="sc-note"><strong>Endpoint —</strong> ${st.endpoint}</div>`;
+      html += `</div></div>`;
+    });
+  }
+
+  if (b.landlordInfo) {
+    html += `<div class="sc-h2">${b.landlordInfo.title}</div>
+      <table class="sc-table sc-reveal-table"><tr><th>Information</th><th>Volunteered?</th><th>Release rule</th></tr>
+      ${b.landlordInfo.rows.map(r => `<tr><td><strong>${r[0]}</strong></td><td class="${r[1]==='Yes'?'sc-reveal-yes':'sc-reveal-no'}">${r[1]}</td><td>${r[2]}</td></tr>`).join('')}
+      </table>`;
+  }
+
+  html += `<div class="sc-h2">Critical / must-act points</div>`;
+  b.critical.forEach(c => {
+    html += `<div class="sc-critical"><div class="sc-critical-issue">${c[0]}</div><div class="sc-critical-resp">${c[1]}</div></div>`;
+  });
+
+  return html;
+}
+
+function rnRolesHTML() {
+  let html = `<div class="sc-h2" style="margin-top:0;">Role-player cards</div>
+    <div class="sc-note">Brief each role player before the crew enters.</div>`;
+  rnDetail.roles.forEach(r => {
+    html += `<div class="sc-role-card">
+      <div class="sc-role-head" style="background:${r.colour};">${r.label}</div>
+      <div class="sc-role-body">`;
+    if (r.you) html += `<div class="sc-role-meta"><div class="sc-role-meta-item"><div class="sc-role-meta-label">You are</div><div class="sc-role-meta-val">${r.you}</div></div></div>`;
+    html += `<ul class="sc-list">${r.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `</div></div>`;
+  });
+  return html;
+}
+
+function rnAssessHTML() {
+  const d = rnDetail;
+  let html = `<div class="sc-h2" style="margin-top:0;">Session details</div>
+    <div class="rn-session-meta">
+      <div class="rn-learner-field">
+        <label>Instructor / assessor</label>
+        <input type="text" id="rnInstructor" placeholder="Name" oninput="rnSession.instructor=this.value">
+      </div>
+      <div class="rn-learner-field">
+        <label>Stages run</label>
+        <input type="text" id="rnStagesRun" placeholder="e.g. 1–3" oninput="rnSession.stagesRun=this.value">
+      </div>
+    </div>
+
+    <div class="sc-h2">Learners</div>
+    <div class="rn-learners">
+      <div class="rn-learner-field">
+        <label>Learner 1</label>
+        <input type="text" id="rnL1" placeholder="Full name" oninput="rnSetLearner(0,this.value)">
+      </div>
+      <div class="rn-learner-field">
+        <label>Learner 2</label>
+        <input type="text" id="rnL2" placeholder="Full name (optional)" oninput="rnSetLearner(1,this.value)">
+      </div>
+    </div>
+    <p id="rnLearnerErr" style="color:#C74444;font-size:0.82rem;min-height:18px;margin-bottom:8px;"></p>`;
+
+  d.assessment.forEach((group, gi) => {
+    html += `<div class="sc-assess-group"><div class="sc-assess-group-title">${group.group}</div>`;
+    group.items.forEach((item, ii) => {
+      const [ref, crit, good] = item;
+      const key = gi + '_' + ii;
+      html += `<div class="sc-assess-row">
+        <div class="sc-assess-ref">${ref}</div>
+        <div class="sc-assess-crit">${crit}</div>
+        <div class="sc-assess-good">${good}</div>
+        <div class="sc-assess-learners">
+          <div><div class="sc-learner-label" id="rnLbl1-${key}">Learner 1</div>${rnPra(key,0)}</div>
+          <div><div class="sc-learner-label" id="rnLbl2-${key}">Learner 2</div>${rnPra(key,1)}</div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  if (d.observations) {
+    html += `<div class="sc-h2">Scenario performance observations</div>
+      <div class="sc-obs-block"><div class="sc-obs-head">Instructor observation — not a QA criterion</div>
+      ${d.observations.map((o,i) => `<div class="rn-check" onclick="rnToggleObs(${i}, this)">
+        <div class="rn-check-box" id="rnObs-${i}"></div>
+        <div class="rn-check-text">${o}</div></div>`).join('')}
+      </div>`;
+  }
+
+  html += `<div class="sc-h2">Session notes</div>
+    <textarea id="rnNotes" rows="4" style="width:100%;box-sizing:border-box;" placeholder="Anything worth recording for the course file" oninput="rnSession.notes=this.value"></textarea>`;
+
+  return html;
+}
+
+function rnPra(key, li) {
+  const mk = (val,label,cls) => `<button class="sc-pra-btn ${cls}" id="rnP-${li}-${key}-${val}" onclick="rnSetPra('${key}',${li},'${val}')">${label}</button>`;
+  return `<div class="sc-pra-group">${mk('P','Pass','p')}${mk('R','Refer','r')}${mk('N','N/A','n')}</div>`;
+}
+
+function rnSetPra(key, li, val) {
+  const res = rnSession.learners[li].results;
+  res[key] = (res[key] === val) ? null : val;
+  ['P','R','N'].forEach(v => {
+    const b = document.getElementById(`rnP-${li}-${key}-${v}`);
+    if (b) b.classList.toggle('sel', res[key] === v);
+  });
+}
+
+function rnSetLearner(i, name) {
+  rnSession.learners[i].name = name.trim();
+  const lbl = name.trim() || ('Learner ' + (i+1));
+  document.querySelectorAll(`[id^="rnLbl${i+1}-"]`).forEach(el => el.textContent = lbl);
+  document.getElementById('rnLearnerErr').textContent = '';
+}
+
+function rnToggleObs(i, el) {
+  rnSession.observations[i] = !rnSession.observations[i];
+  el.querySelector('.rn-check-box').classList.toggle('on', !!rnSession.observations[i]);
+}
+
+function rnDebriefHTML() {
+  let html = `<div class="sc-h2" style="margin-top:0;">Debrief sequence</div>
+    <div class="sc-note">The sequence is fixed. The feedback within it stays fluid and learner-centred.</div>`;
+  SC_REFERENCE.debrief.forEach(s => {
+    html += `<div class="sc-note" style="margin-bottom:8px;"><strong>${s[0]}</strong><br>${s[1]}</div>`;
+  });
+  if (rnDetail.brief.debriefPrompts) {
+    html += `<div class="sc-h2">Scenario-specific prompts</div>
+      <ul class="sc-list">${rnDetail.brief.debriefPrompts.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  }
+  return html;
+}
+
+function rnRecordHTML() {
+  return `<div class="sc-h2" style="margin-top:0;">Save this session</div>
+    <div class="sc-note">Saves to this device and adds the learners to the course matrix. Nothing is sent anywhere automatically.</div>
+    <div id="rnRecordSummary"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;" class="rn-no-print">
+      <button class="rn-nav-btn primary" onclick="rnSaveSession()">Save to course record</button>
+      <button class="rn-nav-btn" onclick="window.print()">Print / save as PDF</button>
+      <button class="rn-nav-btn" onclick="rnEmailSummary()">Email summary</button>
+      <button class="rn-nav-btn" onclick="rnShowMatrix()">View course matrix</button>
+    </div>
+    <p id="rnSaveMsg" style="font-size:0.85rem;margin-top:12px;min-height:20px;"></p>`;
+}
+
+function rnBuildSummary() {
+  const el = document.getElementById('rnRecordSummary');
+  if (!el) return;
+  let html = '';
+  rnSession.learners.forEach(l => {
+    if (!l.name) return;
+    const vals = Object.values(l.results).filter(Boolean);
+    const p = vals.filter(v=>v==='P').length;
+    const r = vals.filter(v=>v==='R').length;
+    const n = vals.filter(v=>v==='N').length;
+    html += `<div class="rn-summary-card">
+      <div class="rn-summary-name">${l.name}</div>
+      <div class="rn-summary-counts">
+        <span class="rn-m-p">${p} pass</span>
+        <span class="rn-m-r">${r} refer</span>
+        <span class="rn-m-n">${n} N/A</span>
+      </div>
+    </div>`;
+  });
+  if (!html) html = `<div class="rn-empty">Add at least one learner name on the assessment step.</div>`;
+  el.innerHTML = html;
+}
+
+function rnSaveSession() {
+  const named = rnSession.learners.filter(l => l.name);
+  const msg = document.getElementById('rnSaveMsg');
+  if (!named.length) {
+    msg.style.color = '#C74444';
+    msg.textContent = 'Add at least one learner name before saving.';
+    return;
+  }
+  const list = rnLoadSessions();
+  const copy = JSON.parse(JSON.stringify(rnSession));
+  copy.learners = named;
+  copy.savedAt = new Date().toISOString();
+  list.push(copy);
+  if (rnSaveSessions(list)) {
+    msg.style.color = '#0F6E56';
+    msg.textContent = 'Saved. ' + named.length + ' learner' + (named.length===1?'':'s') + ' added to the course matrix.';
+  } else {
+    msg.style.color = '#C74444';
+    msg.textContent = 'Could not save — device storage may be full or blocked.';
+  }
+}
+
+function rnEmailSummary() {
+  const named = rnSession.learners.filter(l => l.name);
+  if (!named.length) {
+    const msg = document.getElementById('rnSaveMsg');
+    msg.style.color = '#C74444';
+    msg.textContent = 'Add at least one learner name first.';
+    return;
+  }
+  let body = `Scenario: ${rnSession.scenarioTitle}%0D%0ADate: ${rnSession.date}%0D%0AInstructor: ${rnSession.instructor || '—'}%0D%0AStages run: ${rnSession.stagesRun || '—'}%0D%0A%0D%0A`;
+  named.forEach(l => {
+    const vals = Object.values(l.results).filter(Boolean);
+    const p = vals.filter(v=>v==='P').length;
+    const r = vals.filter(v=>v==='R').length;
+    const n = vals.filter(v=>v==='N').length;
+    body += `${l.name} — ${p} pass, ${r} refer, ${n} N/A%0D%0A`;
+  });
+  if (rnSession.notes) body += `%0D%0ANotes: ${rnSession.notes}`;
+  window.location.href = `mailto:?subject=Scenario record — ${encodeURIComponent(rnSession.scenarioTitle)}&body=${body}`;
+}
+
+// ---- Course matrix ----
+function rnShowMatrix() {
+  rnRenderMatrix();
+  rnShowView('matrix');
+}
+
+function rnRenderMatrix() {
+  const sessions = rnLoadSessions();
+  const el = document.getElementById('rnMatrixBody');
+  if (!sessions.length) {
+    el.innerHTML = `<div class="rn-empty">No sessions recorded yet. Run a scenario and save it to build the course record.</div>`;
+    return;
+  }
+
+  const byLearner = {};
+  sessions.forEach(s => {
+    s.learners.forEach(l => {
+      if (!byLearner[l.name]) byLearner[l.name] = [];
+      const vals = Object.values(l.results).filter(Boolean);
+      byLearner[l.name].push({
+        date: s.date,
+        scenario: s.scenarioTitle,
+        stages: s.stagesRun || '—',
+        p: vals.filter(v=>v==='P').length,
+        r: vals.filter(v=>v==='R').length,
+        n: vals.filter(v=>v==='N').length
+      });
+    });
+  });
+
+  let html = `<div class="rn-matrix-wrap"><table class="rn-matrix">
+    <tr><th>Learner</th><th>Date</th><th>Scenario</th><th>Stages</th><th>Pass</th><th>Refer</th><th>N/A</th></tr>`;
+
+  Object.keys(byLearner).sort().forEach(name => {
+    byLearner[name].forEach((row, i) => {
+      html += `<tr>
+        <td>${i === 0 ? '<strong>'+name+'</strong>' : ''}</td>
+        <td>${row.date}</td>
+        <td>${row.scenario}</td>
+        <td>${row.stages}</td>
+        <td class="rn-m-p">${row.p}</td>
+        <td class="rn-m-r">${row.r}</td>
+        <td class="rn-m-n">${row.n}</td>
+      </tr>`;
+    });
+  });
+
+  html += `</table></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;" class="rn-no-print">
+      <button class="rn-nav-btn" onclick="window.print()">Print / save as PDF</button>
+      <button class="rn-nav-btn" onclick="rnExportCsv()">Export CSV</button>
+      <button class="rn-nav-btn" onclick="rnClearMatrix()">Clear course record</button>
+    </div>`;
+
+  el.innerHTML = html;
+}
+
+function rnExportCsv() {
+  const sessions = rnLoadSessions();
+  if (!sessions.length) return;
+  let csv = 'Learner,Date,Scenario,Stages,Pass,Refer,N/A,Instructor,Notes\n';
+  sessions.forEach(s => {
+    s.learners.forEach(l => {
+      const vals = Object.values(l.results).filter(Boolean);
+      const cell = t => '"' + String(t || '').replace(/"/g,'""') + '"';
+      csv += [cell(l.name), cell(s.date), cell(s.scenarioTitle), cell(s.stagesRun),
+              vals.filter(v=>v==='P').length, vals.filter(v=>v==='R').length, vals.filter(v=>v==='N').length,
+              cell(s.instructor), cell(s.notes)].join(',') + '\n';
+    });
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'course-record-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function rnClearMatrix() {
+  if (!confirm('Clear every saved session on this device? This cannot be undone.')) return;
+  rnSaveSessions([]);
+  rnRenderMatrix();
+}
 </script>
 </body>
 </html>
