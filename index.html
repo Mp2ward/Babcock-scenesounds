@@ -436,8 +436,8 @@
 
 
   .app-view { display:none; }
-  .app-view.active { display:block; }
-  .hub { max-width:720px; margin:0 auto; padding:32px 20px 48px; }
+  .app-view.active { display:flex; flex-direction:column; min-height:calc(100vh - 160px); }
+  .hub { max-width:720px; margin:0 auto; padding:32px 20px 48px; width:100%; }
   .hub-eyebrow { font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; letter-spacing:0.2em;
                  text-transform:uppercase; color:#6B7A94; margin-bottom:6px; }
   .hub-h { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.9rem;
@@ -474,6 +474,93 @@
   .stub-h { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.4rem;
             letter-spacing:0.04em; color:#0D1B4C; margin-bottom:8px; }
   .stub-p { font-size:0.9rem; color:#6B7A94; line-height:1.7; max-width:420px; margin:0 auto; }
+
+
+  /* ---- Scenario Cards ---- */
+  .sc-view { display:none; }
+  .sc-view.active { display:block; }
+  .sc-grid-tiles { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-top:8px; }
+  .sc-tile { border:1px solid #D8DEE8; background:#FFFFFF; padding:18px 16px; text-align:left; cursor:pointer; transition:all 0.15s; }
+  .sc-tile:hover { border-color:#2B5BD7; background:#F7F9FC; }
+  .sc-tile.sc-locked { opacity:0.45; cursor:default; }
+  .sc-tile.sc-locked:hover { border-color:#D8DEE8; background:#FFFFFF; }
+  .sc-tile-icon { font-size:1.5rem; margin-bottom:10px; display:block; }
+  .sc-tile-num { font-family:'Barlow Condensed',sans-serif; font-size:0.66rem; letter-spacing:0.14em; text-transform:uppercase; color:#6B7A94; margin-bottom:4px; }
+  .sc-tile-title { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; line-height:1.2; }
+  .sc-tile-sub { font-size:0.76rem; color:#6B7A94; margin-top:4px; }
+
+  .sc-back { background:none; border:1px solid #D8DEE8; color:#6B7A94; padding:6px 14px; border-radius:6px; cursor:pointer; font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:20px; }
+  .sc-back:hover { border-color:#2B5BD7; color:#2B5BD7; }
+
+  .sc-detail-head { margin-bottom:20px; }
+  .sc-detail-eyebrow { font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; color:#2B5BD7; margin-bottom:6px; }
+  .sc-detail-title { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.7rem; color:#0D1B4C; line-height:1.1; }
+  .sc-detail-sub { font-size:0.88rem; color:#6B7A94; margin-top:4px; }
+
+  .sc-tabs { display:flex; gap:2px; border-bottom:1px solid #D8DEE8; margin-bottom:20px; overflow-x:auto; }
+  .sc-tab { background:none; border:none; padding:10px 16px; font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:0.82rem; letter-spacing:0.06em; color:#6B7A94; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
+  .sc-tab.active { color:#0D1B4C; border-bottom-color:#2B5BD7; }
+  .sc-tab-panel { display:none; padding-bottom:48px; }
+  .sc-tab-panel.active { display:block; }
+
+  .sc-h2 { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.15rem; color:#0D1B4C; margin:24px 0 10px; letter-spacing:0.02em; }
+  .sc-h2:first-child { margin-top:0; }
+  .sc-p { font-size:0.9rem; color:#33415C; line-height:1.7; margin-bottom:12px; }
+  .sc-quote { background:#F7F9FC; border-left:3px solid #2B5BD7; padding:12px 16px; font-size:0.9rem; color:#33415C; font-style:italic; line-height:1.6; margin-bottom:16px; }
+  .sc-list { list-style:none; margin-bottom:16px; }
+  .sc-list li { font-size:0.86rem; color:#33415C; padding:6px 0 6px 18px; position:relative; line-height:1.6; border-bottom:1px solid #F0F2F6; }
+  .sc-list li:last-child { border-bottom:none; }
+  .sc-list li::before { content:'—'; position:absolute; left:0; color:#8494AC; }
+
+  .sc-badge-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .sc-badge { background:#EAF0FC; color:#0C447C; font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; padding:5px 12px; border-radius:4px; }
+
+  .sc-table { width:100%; border-collapse:collapse; font-size:0.84rem; margin-bottom:16px; }
+  .sc-table th { background:#F7F9FC; text-align:left; padding:8px 10px; font-family:'Barlow Condensed',sans-serif; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color:#6B7A94; border-bottom:1px solid #D8DEE8; }
+  .sc-table td { padding:8px 10px; border-bottom:1px solid #EEF1F5; color:#33415C; vertical-align:top; }
+  .sc-table tr:nth-child(even) td { background:#FAFBFC; }
+
+  .sc-stage-card { border:1px solid #D8DEE8; margin-bottom:16px; overflow:hidden; }
+  .sc-stage-head { background:#0D1B4C; color:#FFFFFF; padding:10px 16px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.92rem; letter-spacing:0.04em; }
+  .sc-stage-body { padding:16px; }
+
+  .sc-note { background:#FFF8E8; border-left:3px solid #C8960C; padding:12px 16px; font-size:0.84rem; color:#5C4A0C; margin-bottom:16px; line-height:1.6; }
+  .sc-critical { background:#FCEEEE; border:1px solid #E8BEBE; padding:10px 14px; margin-bottom:8px; }
+  .sc-critical-issue { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.86rem; color:#8A2222; }
+  .sc-critical-resp { font-size:0.82rem; color:#5C2C2C; margin-top:3px; line-height:1.5; }
+
+  .sc-role-card { border:1px solid #D8DEE8; margin-bottom:20px; overflow:hidden; }
+  .sc-role-head { padding:12px 16px; color:#FFFFFF; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.03em; }
+  .sc-role-body { padding:16px; }
+  .sc-role-meta { display:grid; gap:10px; margin-bottom:14px; }
+  .sc-role-meta-item { background:#F7F9FC; padding:10px 12px; }
+  .sc-role-meta-label { font-family:'Barlow Condensed',sans-serif; font-size:0.64rem; letter-spacing:0.1em; text-transform:uppercase; color:#6B7A94; margin-bottom:3px; }
+  .sc-role-meta-val { font-size:0.86rem; color:#0D1B4C; line-height:1.5; }
+
+  .sc-assess-group { margin-bottom:28px; }
+  .sc-assess-group-title { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.95rem; color:#0D1B4C; margin-bottom:2px; }
+  .sc-assess-row { border:1px solid #D8DEE8; border-top:none; padding:12px 14px; }
+  .sc-assess-group > .sc-assess-row:first-of-type { border-top:1px solid #D8DEE8; }
+  .sc-assess-ref { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.72rem; letter-spacing:0.06em; color:#2B5BD7; margin-bottom:3px; }
+  .sc-assess-crit { font-size:0.88rem; color:#0D1B4C; font-weight:600; margin-bottom:4px; line-height:1.4; }
+  .sc-assess-good { font-size:0.8rem; color:#6B7A94; line-height:1.55; margin-bottom:12px; }
+  .sc-assess-learners { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .sc-learner-label { font-family:'Barlow Condensed',sans-serif; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color:#8494AC; margin-bottom:6px; }
+  .sc-pra-group { display:flex; gap:6px; }
+  .sc-pra-btn { flex:1; padding:8px 0; text-align:center; border:1px solid #D8DEE8; background:#FFFFFF; cursor:pointer; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.74rem; letter-spacing:0.06em; color:#6B7A94; transition:all 0.12s; }
+  .sc-pra-btn.p.sel { background:#E3F5EC; border-color:#1D9E75; color:#0F6E56; }
+  .sc-pra-btn.r.sel { background:#FCEBEB; border-color:#E24B4A; color:#A32D2D; }
+  .sc-pra-btn.n.sel { background:#F1EFE8; border-color:#888780; color:#444441; }
+
+  .sc-cmd-table td:first-child { font-family:'Barlow Condensed',sans-serif; font-weight:700; color:#0D1B4C; white-space:nowrap; }
+  .sc-outcome-p { color:#0F6E56; font-weight:700; }
+  .sc-outcome-r { color:#A32D2D; font-weight:700; }
+  .sc-outcome-n { color:#444441; font-weight:700; }
+
+  @media (max-width:600px) {
+    .sc-assess-learners { grid-template-columns:1fr; }
+    .sc-role-meta { grid-template-columns:1fr; }
+  }
 
 </style>
 </head>
@@ -520,6 +607,7 @@ window.addEventListener('load', function () {
   <div class="hub">
     <div class="hub-eyebrow">Babcock International</div>
     <div class="hub-h">Scenario Centre</div>
+    <div class="hub-p" style="margin-bottom:6px;">Interactive emergency care practical scenario and training for professional clinical educators and instructors.</div>
     <div class="hub-p">Choose how you want to run this session.</div>
 
     <button class="hub-tile" onclick="showView('sounds')">
@@ -754,12 +842,47 @@ window.addEventListener('load', function () {
 
 <!-- ============ SCENARIO CARDS ============ -->
 <div class="app-view" id="view-cards">
-  <div class="stub">
-    <div class="stub-icon">🗂️</div>
-    <div class="stub-h">Scenario cards</div>
-    <div class="stub-p">Scenario briefs and patient cards will appear here. Content is being added.</div>
+
+  <!-- Scenario grid -->
+  <div class="sc-view active" id="sc-grid">
+    <div class="hub" style="padding-top:32px;">
+      <div class="hub-eyebrow">Babcock International</div>
+      <div class="hub-h">Scenario cards</div>
+      <div class="hub-p">Select a scenario to view the brief, role-player cards and assessment checklist.</div>
+
+      <div class="sc-grid-tiles" id="scGridTiles"></div>
+    </div>
   </div>
+
+  <!-- Scenario detail -->
+  <div class="sc-view" id="sc-detail">
+    <div class="hub" style="max-width:920px;padding-top:24px;">
+
+      <button class="sc-back" onclick="scShowGrid()">&larr; All scenarios</button>
+
+      <div class="sc-detail-head">
+        <div class="sc-detail-eyebrow" id="scDetailEyebrow">Scenario 01</div>
+        <div class="sc-detail-title" id="scDetailTitle">Nightclub Chest Pain</div>
+        <div class="sc-detail-sub" id="scDetailSub">Suspected cocaine-associated acute coronary syndrome</div>
+      </div>
+
+      <div class="sc-tabs" id="scTabs">
+        <button class="sc-tab active" onclick="scShowTab('brief')">Brief</button>
+        <button class="sc-tab" onclick="scShowTab('roles')">Role cards</button>
+        <button class="sc-tab" onclick="scShowTab('assess')">Assessment</button>
+        <button class="sc-tab" onclick="scShowTab('ref')">Reference</button>
+      </div>
+
+      <div class="sc-tab-panel active" id="scPanel-brief"></div>
+      <div class="sc-tab-panel" id="scPanel-roles"></div>
+      <div class="sc-tab-panel" id="scPanel-assess"></div>
+      <div class="sc-tab-panel" id="scPanel-ref"></div>
+
+    </div>
+  </div>
+
 </div>
+
 
 <!-- ============ RUN A SCENARIO ============ -->
 <div class="app-view" id="view-run">
@@ -1883,7 +2006,6 @@ renderCustomScenarios();
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
     <div class="footer-links">
-      <a href="#" onclick="showView('hub');return false;">Home</a>
       <a href="/terms.html">Terms</a>
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:info@scenesounds.app">Contact</a>
@@ -1958,6 +2080,562 @@ window.addEventListener('load', function () {
   var go = new URLSearchParams(location.search).get('go');
   if (go && document.getElementById('view-' + go)) showView(go);
 });
+</script>
+<script>
+// ============================================================
+// SCENARIO CARDS — DATA
+// ============================================================
+
+const SC_SCENARIOS = [
+  {
+    id: 1,
+    title: 'Nightclub Chest Pain',
+    sub: 'Suspected cocaine-associated acute coronary syndrome',
+    setting: 'Busy nightclub / licensed venue',
+    ready: true,
+    icon: '❤️'
+  },
+  {id:2, title:'Scenario 02', sub:'Not yet added', ready:false, icon:'🩺'},
+  {id:3, title:'Scenario 03', sub:'Not yet added', ready:false, icon:'🚗'},
+  {id:4, title:'Scenario 04', sub:'Not yet added', ready:false, icon:'🔥'},
+  {id:5, title:'Scenario 05', sub:'Not yet added', ready:false, icon:'🫁'},
+  {id:6, title:'Scenario 06', sub:'Not yet added', ready:false, icon:'💊'},
+  {id:7, title:'Scenario 07', sub:'Not yet added', ready:false, icon:'🧠'},
+  {id:8, title:'Scenario 08', sub:'Not yet added', ready:false, icon:'🩸'},
+  {id:9, title:'Scenario 09', sub:'Not yet added', ready:false, icon:'🦴'},
+  {id:10, title:'Scenario 10', sub:'Not yet added', ready:false, icon:'👶'},
+  {id:11, title:'Scenario 11', sub:'Not yet added', ready:false, icon:'⚡'},
+  {id:12, title:'Scenario 12', sub:'Not yet added', ready:false, icon:'🌡️'},
+];
+
+// Full detail for Scenario 01 — everything else stubbed until content supplied
+const SC_DETAIL_01 = {
+
+  eyebrow: 'Scenario 01 · Busy nightclub / licensed venue',
+  title: 'Nightclub Chest Pain',
+  sub: 'Suspected cocaine-associated acute coronary syndrome',
+
+  brief: {
+    purpose: 'A fire crew is flagged down by nightclub security while an ambulance is reportedly being awaited for a person in their 20s. The scenario tests whether the crew can build a clinical picture from limited information, manage environmental and human-factor pressures, obtain a sensitive history, identify a high-acuity acute coronary syndrome-type presentation, escalate appropriately and respond to deterioration.',
+    deployment: '"You are a fire crew who have been flagged down by nightclub security. They are awaiting an ambulance for a person in their 20s who has become unwell inside and they are concerned about them. No further information is available at this stage."',
+    delivery: 'Live casualty; manikin; controlled live-to-manikin transition',
+    endpoints: 'Stage 1, Stage 2 or Stage 3 + ATMIST handover',
+    equipment: [
+      'Standard FREC/LFB response equipment appropriate to session; pulse oximeter; tympanic thermometer',
+      'Oxygen cylinder; adult non-rebreather mask; BVM; OPA/NPA set',
+      'Adult airway/resuscitation manikin for optional Stage 2 skill insertion and mandatory Stage 3 CPR',
+      'AED trainer and accessories; patient record/check card where used locally',
+      'Optional Scene Sounds device/speaker and optional moulage kit'
+    ],
+    note: 'LFB scenario note: blood pressure and blood glucose are not required observations in this design, based on the operating practice supplied for this project.',
+    humanFactors: [
+      'Expose learners to cognitive load, distraction, competing priorities and span-of-control decisions.',
+      'Observe whether one crew member can maintain patient focus while the other manages security/crowd/communications when appropriate.',
+      'Look for fixation, loss of situational awareness, poor delegation or allowing venue priorities to override patient safety.',
+      'Good performance is calm, proportionate and task-focused; aggressive confrontation with security is not required.'
+    ],
+    resources: [
+      {name:'Scene Sounds', use:'Nightclub bass, loud music, crowd noise, raised voices and general venue ambience. Increase or reduce audio load according to learner level.'},
+      {name:'Low light', use:'Dim lighting where safe and operationally practical.'},
+      {name:'Security officer role', use:'Played by spare learner or additional instructor where available.'},
+      {name:'Crowd pressure', use:'Simulated background movement/noise without physical obstruction.'},
+      {name:'Advanced security inject', use:'Security becomes increasingly insistent that the patient be removed outside immediately to an inappropriate assessment area. They must not become threatening or physically obstructive.'},
+      {name:'Optional friend/bystander', use:'Can add information, distraction or confirmation that cocaine may have been used, but should not reveal the whole history automatically.'}
+    ],
+
+    stages: [
+      {
+        n: 1, name: 'Alert patient',
+        findings: [
+          ['Danger','Noisy, unpredictable environment, low light'],
+          ['Response','Alert; GCS 15; orientated; paranoid/agitated but not confused.'],
+          ['Catastrophic bleeding','None.'],
+          ['Airway','Patent; talking in full sentences.'],
+          ['Breathing','RR 28–30/min; visibly tachypnoeic; SpO2 97% on room air.'],
+          ['Circulation','Pulse approximately 140/min; pale lips; marked diaphoresis.'],
+          ['Disability','Pupils very large and equal. FAST negative if performed. No focal deficit. 37.8°C tympanic.'],
+          ['Exposure','No traumatic injury. Proportionate exposure may look for clues to substance use; no required track marks.']
+        ],
+        history: [
+          ['Presenting Complaint','Sudden severe central chest pain after taking cocaine.'],
+          ['Signs & Symptoms','10/10 chest pain, shortness of breath, nausea, one episode of vomiting, pallor, diaphoresis, agitation/paranoia, large pupils, mild hyperthermia.'],
+          ['Allergies','No known allergies.'],
+          ['Medications','No regular medicines; semi-regular recreational cocaine use.'],
+          ['Past medical history','Appendicitis approximately one year ago; otherwise no significant known history.'],
+          ['Last ins & outs','Burger King at lunch; two 330 ml beers; vomited once; no loose bowels or polyuria.'],
+          ['Events leading up to incident','Cocaine shortly before onset; new dealer, never bought from them before; patient reluctant to disclose unless approached respectfully.'],
+          ['Recent travel','No reproductive symptoms; recent 14-night Marbella holiday; friends have patient\'s phone and patient is preoccupied with finding them.']
+        ],
+        goodPractice: [
+          'Recognises environmental hazards and uses security to create working space where appropriate.',
+          'Considers moving to a quieter location only if it improves assessment and does not create delay or a worse environment.',
+          'Confirms or updates the ambulance response rather than relying on vague third-party information.',
+          'Completes structured primary and secondary assessment and obtains a sensitive history.',
+          'Recognises high-acuity circulation findings and serious ACS-type presentation.',
+          'With SpO2 97% on room air, does not give routine oxygen solely because MI/ACS is suspected; continues monitoring.',
+          'Maintains calm communication, consent and team situational awareness.'
+        ],
+        notPenalise: [
+          'A FAST/BEFAST check is not particularly indicated here but is not wrong if performed without delaying priorities; result is negative.',
+          'Remaining in the current area is acceptable if the scene is safe and workable; moving to a quieter area is not mandatory.',
+          'Reasonable additional assessment is not a failure if it does not delay priority actions.'
+        ],
+        endpoint: 'Once the intended assessment, history, ambulance escalation and oxygen decision learning points have been achieved, the instructor may: (a) bring in the ambulance crew for ATMIST and call End Ex; or (b) progress to Stage 2.'
+      },
+      {
+        n: 2, name: 'Unresponsive but breathing',
+        intro: 'The patient becomes less animated and then unresponsive. If airway adjunct insertion is an intended skill, use \'Rest stop\' and transition to a manikin. A live casualty may be retained if only recognition, manual airway positioning, oxygen decision-making and sizing of adjuncts are required.',
+        findings: [
+          ['Response','Unresponsive.'],
+          ['Catastrophic bleeding','None.'],
+          ['Airway','Snoring/tongue obstruction.'],
+          ['Breathing','Present; RR 22/min.'],
+          ['SpO2','93%.'],
+          ['Circulation','Pulse approximately 170/min; pale/diaphoretic.'],
+          ['Expected response','Full primary survey again; manage airway; oxygen; update ambulance response; reassess.']
+        ],
+        goodPractice: [
+          'Recognises the change and starts a complete primary survey again.',
+          'Recognises snoring as airway obstruction and uses appropriate manual airway manoeuvres.',
+          'Considers OPA/NPA; sizes/selects on live casualty, inserts only on manikin.',
+          'Administers high-concentration oxygen at 15 L/min via non-rebreather mask while spontaneous breathing remains adequate, subject to current organisational protocol.',
+          'Monitors response and prepares for BVM support if breathing becomes inadequate.',
+          'Updates/expedites ambulance support.'
+        ],
+        endpoint: 'Instructor may bring in ambulance crew for ATMIST and End Ex, or continue until the patient\'s breathing subtly deteriorates to agonal gasps.'
+      },
+      {
+        n: 3, name: 'Cardiac arrest',
+        intro: 'If a live casualty is still in use, call \'Rest stop\' and transition to a manikin before resuscitation. Resume with \'As detailed, get to work\'.',
+        findings: [
+          ['Response','No response.'],
+          ['Catastrophic bleeding','None.'],
+          ['Airway','Maintained/open.'],
+          ['Breathing','No normal breathing; occasional agonal gasps.'],
+          ['Circulation','Cardiac arrest state; no pulse for scenario purposes.'],
+          ['Expected response','Full primary survey again; recognise arrest; update ambulance service; commence BLS/AED/BVM.']
+        ],
+        goodPractice: [
+          'Recognises agonal breathing as abnormal.',
+          'Reassesses the patient in full DRCABC.',
+          'Does not delay CPR.',
+          'Commences high-quality adult BLS on manikin, obtains AED and follows prompts safely.',
+          'Uses BVM and oxygen appropriately and minimises interruptions to compressions.',
+          'Manages airway effectively (NPA, OPA, postural drainage, suction if required).',
+          'Updates ambulance service to cardiac arrest status and maintains clear team roles.'
+        ]
+      }
+    ],
+
+    oxygenNote: 'A major learning point is the change in oxygen decision: Stage 1 SpO2 97% on room air — no routine oxygen solely for suspected ACS; Stage 2 unresponsive patient with airway compromise and SpO2 93% — high-concentration oxygen is expected, subject to current organisational protocol.',
+
+    critical: [
+      ['CPR attempted on live casualty', 'Call STILL immediately. Major safety breach.'],
+      ['OPA/NPA insertion attempted on live casualty', 'Stop the action immediately; insertion is manikin-only.'],
+      ['Effective BVM seal/ventilation attempted on live casualty', 'Stop the action immediately.'],
+      ['Agonal breathing not recognised in Stage 3', 'Critical learning point; CPR should not be delayed.'],
+      ['Unsafe pressure from security overrides patient safety', 'Intervene if required; explore decision-making and span of control in debrief.'],
+      ['Failure to escalate/confirm ambulance support despite high acuity', 'Relevant to referral/escalation criteria and debrief.']
+    ],
+
+    debriefPrompts: [
+      'Why did you give or withhold oxygen in Stage 1? What changed in Stage 2?',
+      'What made you decide whether to trust or verify the ambulance call?',
+      'How did the environment and security officer affect your attention and span of control?',
+      'How did you obtain the cocaine history, and did your communication style affect disclosure?',
+      'When the patient became unresponsive, did you deliberately restart the whole primary survey?',
+      'What did the snoring tell you about the airway?',
+      'If Stage 3 ran: what told you the breathing was agonal rather than adequate?',
+      'What would you change in task allocation or communication next time?'
+    ],
+
+    governance: 'This design sheet is a training and scenario-assessment aid. It does not replace Qualsafe\'s official assessment materials, current Resuscitation Council UK guidance, current JRCALC guidance or Babcock/LFB organisational protocols. C3 3.3 medication administration remains conditional in this draft because the local Babcock/LFB medication pathway for this scenario has not been supplied.'
+  },
+
+  roles: [
+    {
+      label: 'Card A — Live patient',
+      colour: '#0E7C86',
+      you: 'Person in your 20s who has become acutely unwell in a nightclub.',
+      startingBehaviour: 'Pale, very sweaty, pacing, animated, rapid speech, clutching chest, friendly but anxious/paranoid. Initially reluctant to sit.',
+      doNotVolunteer: 'Cocaine use, dealer details or complete history unless asked appropriately.',
+      points: [
+        'Severe central chest pain, sudden onset, 10/10; short of breath; nauseated; vomited once.',
+        'Strong sense of impending doom; repeatedly ask for water.',
+        'Friends have your phone; you feel you must find them.',
+        'If asked respectfully about drugs/substances: semi-regular recreational cocaine use; new dealer; first time buying from them; symptoms began after cocaine.',
+        'No allergies; no regular medicines; appendicitis one year ago.',
+        'Burger King at lunch; two 330 ml beers; no diarrhoea or polyuria; recent 14-night Marbella holiday.'
+      ],
+      safety: [
+        'You may stop at any time. \'STILL\' or \'No Duffs\' means stop simulation immediately.',
+        'No CPR, airway adjunct insertion or effective BVM ventilation on you.',
+        'Outer clothing may only be cut if pre-agreed and supplied for that purpose; shorts/underwear are never cut or removed.',
+        'If Stage 2 remains live, become unresponsive and simulate snoring only as safely briefed. Never allow an airway to be inserted.'
+      ]
+    },
+    {
+      label: 'Card B — Security officer',
+      colour: '#1E5FA8',
+      points: [
+        'Flag down the fire crew. Tell them an ambulance has been called for a person in their 20s who is very sweaty, panicky and complaining of chest pain/difficulty breathing.',
+        'You do not know the medical history and have not seen drug use.',
+        'You can help create space, manage the crowd and identify a quieter area if asked.',
+        'Core version: cooperative and concerned.',
+        'Advanced inject only when directed by instructor: become increasingly insistent that the patient must be moved outside immediately to an unsuitable assessment area because they are disrupting the venue.',
+        'Do not become threatening, abusive, physically obstructive or unsafe. The purpose is to create competing demands, not confrontation.',
+        'If learners manage you calmly and delegate effectively, cooperate.'
+      ]
+    },
+    {
+      label: 'Card C — Optional friend / bystander',
+      colour: '#5C6B8A',
+      points: [
+        'You are a friend or acquaintance from the venue. You are worried but distracted.',
+        'You may confirm that the patient was with friends and had been drinking a small amount.',
+        'Do not immediately reveal cocaine use. If asked directly and the instructor wants the clue released, say you think the patient may have taken cocaine but you did not see how much.',
+        'You may add mild cognitive load by asking if the patient will be OK or by asking whether you should find the other friends.',
+        'Do not obstruct assessment, become aggressive or introduce new clinical facts not on this card.'
+      ]
+    }
+  ],
+
+  // Assessment checklist — grouped exactly as the source document groups them
+  assessment: [
+    {
+      group: 'Stage 1 — Core criteria',
+      items: [
+        ['C1 1.4','Identify need for establishing and maintaining consent','Learner establishes and maintains consent while the patient is alert and recognises capacity/consent implications as the condition changes.'],
+        ['C1 2.1','Assess factors that impact on scene, first responders and patient safety','Recognises low light, noise, crowd pressure, patient anxiety and cognitive load; considers the effect on crew and patient safety.'],
+        ['C1 2.2','Perform a dynamic scene risk assessment','Identifies hazards, who may be harmed, practical precautions and reviews the assessment when circumstances change.'],
+        ['C1 2.3','Demonstrate safe approach and initial scene management','Approaches safely, establishes one patient, uses security appropriately, considers environmental effects and need for extra resources.'],
+        ['C1 2.7','Demonstrate how to call for assistance from the emergency services and clinical support','Does not rely on an unverified third-party ambulance call; confirms or updates the ambulance response with useful clinical information.'],
+        ['C1 3.2','Communicate with patient prior to and during assessment','Introduces self, explains assessment, gains/maintains consent and uses calm, respectful communication despite agitation/paranoia.'],
+        ['C1 3.3','Perform a patient assessment on a patient in a life-threatening / non-life-threatening condition','Uses a structured systematic approach, obtains RR, SpO2 and pulse, assesses consciousness, airway, breathing, circulation, pain and reassesses after change.'],
+        ['C1 3.4','Provide emergency care to a patient in a life-threatening / non-life-threatening condition','Prioritises interventions from assessment findings, reassures, monitors, escalates and responds appropriately to deterioration.'],
+        ['C1 3.5','Apply appropriate interventions based on risk or threat assessment and respond to situational or environmental changes','Adapts to noise, crowd, low light and competing demands without losing patient focus; resists inappropriate pressure to move the patient.'],
+        ['C3 1.1','Establish the presenting complaint and its potential cause','Establishes sudden severe chest pain and explores causation, including cocaine use, without anchoring on anxiety/intoxication.'],
+        ['C3 1.2','Perform a structured patient assessment','Assesses consciousness, work of breathing, pulse, skin, pupils and relevant top-to-toe findings within the available LFB observation set.'],
+        ['C3 1.3','Obtain a patient history','Obtains allergies, presenting complaint, past history, social/recreational drug history and relevant events using respectful questioning.'],
+        ['C3 1.4','Determine the severity of a patient\'s condition','Recognises a high-acuity presentation based on symptoms, vital signs, examination and history despite young age and initial normoxia.'],
+        ['C3 1.5','Identify appropriate referral pathways','Identifies NHS Ambulance Service/next echelon as the appropriate referral pathway.'],
+        ['C3 1.7','Make an immediate referral to the next echelon of care','Provides an accurate structured appraisal by radio/telephone and escalates deterioration promptly.'],
+        ['C3 3.1','Identify characteristics and clinical features of medical emergencies','Recognises clinical features consistent with a serious acute coronary syndrome presentation and does not dismiss the presentation because of age or cocaine use.'],
+        ['C3 3.2','Demonstrate prehospital emergency care for medical emergencies','Applies a structured approach to suspected ACS, maintains normal physiology, monitors and uses oxygen only where appropriate.'],
+        ['C1 8.1','Identify the indications, contraindications and cautions for administration of medical gases','Stage 1: recognises that routine oxygen is not indicated solely for suspected ACS when SpO2 is 97% on room air, subject to current organisational protocol.']
+      ]
+    },
+    {
+      group: 'Stage 1 — Conditional / supporting criteria',
+      items: [
+        ['C1 1.3','Identify factors that can affect first responders\' performances and how to address them','Use only if the instructor explicitly explores human factors and mitigation, normally in debrief or an oral knowledge check.'],
+        ['C1 3.1','Conduct a patient assessment using the patient assessment triangle tool','Conditional: only claim if the Patient Assessment Triangle is explicitly used or verbalised: appearance, work of breathing and circulation.'],
+        ['C3 1.6','Record assessment findings and interventions','Conditional/core if paperwork is used: records findings and interventions accurately and confidentially.'],
+        ['C3 3.3','Demonstrate safe administration of medications for an acute medical emergency','Conditional pending current Babcock/LFB medication protocol. Qualsafe indicative content includes aspirin for ACS; do not claim unless this is included in the local delivery pathway.']
+      ]
+    },
+    {
+      group: 'Stage 2 — Additional criteria only',
+      items: [
+        ['C1 4.4','Demonstrate dynamic airway assessment','Stage 2: promptly identifies snoring/tongue obstruction and reassesses airway after interventions.'],
+        ['C1 5.3','Demonstrate how to clear, manage and maintain a patient\'s airway','Stage 2: uses appropriate manual airway manoeuvres and maintains a patent airway; checks effectiveness.'],
+        ['C1 5.4','Demonstrate how to select, size and insert airway adjuncts','Stage 2: sizes/selects OPA/NPA correctly. Insertion is only assessed on a manikin, never a live casualty.'],
+        ['C1 5.5','Respond to changes in patient\'s condition to maintain airway patency','Stage 2: recognises the new obstruction, acts promptly and continues reassessment.'],
+        ['C1 5.8','Recognise the need for clinical support to provide airway management','Stage 2 supporting evidence: expedites/updates ambulance support where airway management needs exceed or may exceed current scope.'],
+        ['C1 8.3','Administer medical gases to a patient at the appropriate dose using appropriate adjuncts','Stage 2: with deterioration and SpO2 93%, administers high-concentration oxygen at 15 L/min by non-rebreather mask while spontaneous breathing is adequate.'],
+        ['C1 8.4','Monitor the effects of medical gases','Stage 2: monitors SpO2 and other available vital signs following oxygen administration.'],
+        ['C3 4.4','Demonstrate the assessment and management of an unconscious patient','Stage 2: reassesses fully, manages airway, monitors respirations/SpO2, administers oxygen and seeks/updates clinical assistance.']
+      ]
+    },
+    {
+      group: 'Stage 2 — Conditional criterion',
+      items: [
+        ['C1 8.6','Record the administration of medical gases','Conditional: claim only where the learner records oxygen administration on the appropriate record.']
+      ]
+    },
+    {
+      group: 'Stage 3 — Additional criteria only',
+      items: [
+        ['C1 6.2','Demonstrate how to open patient\'s airway and check for breathing','Stage 3: repeats airway opening and checks for normal breathing promptly.'],
+        ['C1 6.3','Justify when to commence cardiopulmonary resuscitation','Stage 3: recognises agonal gasps as abnormal breathing and commences CPR without avoidable delay.'],
+        ['C1 6.4','Demonstrate basic life support for an adult on a manikin','Stage 3: high-quality compressions, minimal interruption, safe AED use and BVM/oxygen including effective two-person technique where taught.'],
+        ['C1 7.1','Justify when to use an automated external defibrillator','Stage 3: recognises unresponsive/not breathing normally and applies AED without avoidable delay.'],
+        ['C1 7.2','Demonstrate effective use of an automated external defibrillator','Stage 3: prepares AED/patient, positions pads correctly and follows a safe shock sequence.'],
+        ['C1 6.8','Perform a patient handover to the next echelon of care','At any selected endpoint: states immediate concerns first and gives an accurate ATMIST (or other approved structured) handover.']
+      ]
+    }
+  ]
+};
+
+// Reference material — shared across all scenarios, not duplicated
+const SC_REFERENCE = {
+  commands: [
+    ['As detailed, get to work / Get to work','Start of exercise.'],
+    ['Rest','Pause to address a learning point or minor safety issue.'],
+    ['STILL','Immediate stop for a major safety concern. All activity ceases at once.'],
+    ['No Duffs','Something is real — for example a genuine injury, illness or incident.'],
+    ['End Ex','Exercise activity has ended; briefing/debriefing continues.'],
+    ['Knock off, make up','Briefings are complete; make up kit ready for redeployment.']
+  ],
+  safety: [
+    'Outer clothing may only be cut when pre-agreed and specifically provided for that purpose.',
+    'Shorts and underwear must NEVER be cut or removed.',
+    'NO CPR on a live casualty.',
+    'NO OPA or NPA insertion. Learners may select and size only.',
+    'NO effective BVM seal and NO positive-pressure ventilation.',
+    'NO invasive procedure.',
+    'NO intentionally painful intervention or excessive pressure/restriction.',
+    'Equipment such as splints, binders, dressings or tourniquets must only be applied within the instructor\'s briefed safe limits.',
+    'The casualty must never be lifted, dragged or otherwise moved by the learners — casualty will move themselves when requested.',
+    'The casualty may withdraw at any time for any reason.'
+  ],
+  debrief: [
+    ['1. Welfare','Ask: "Is everyone fit, well and feeling emotionally safe?" Do not move into educational feedback until the group is comfortable to continue.'],
+    ['2. Real-world check','Ask: "Are there any accidents, injuries or illnesses to report?" Real issues take priority.'],
+    ['3. Individual self-reflection','Ask each participating crew member: how did it go; what went well; what would you do differently; what have you learned?'],
+    ['4. Constructive peer assessment','Ask observers what went particularly well, and what they might have changed from the outside looking in. Remind them that observing with time and space to think is very different from being directly involved.'],
+    ['5. Instructor top-up','Instructor speaks last. Confirm strengths, clarify or correct missed points and relate feedback to the actual learning objectives.'],
+    ['6. Close','Confirm key learning and questions. When all briefing is complete: "Knock off, make up."']
+  ],
+  atmist: [['A','Age'],['T','Time / timeline'],['M','Mechanism of injury/illness'],['I','Illness/injuries found/suspected'],['S','Signs, symptoms, trends and relevant vital signs'],['T','Treatment/interventions and response']],
+  outcomes: [
+    ['Pass','Criterion demonstrated to the expected standard for the scenario without unsafe prompting.'],
+    ['Refer','Criterion not demonstrated to the required standard, required significant correction, or contained an error meaning the objective was not achieved on this occasion.'],
+    ['N/A','Criterion was not tested because the relevant stage/branch was not activated, the evidence opportunity did not arise, or a stated local protocol dependency was not included.']
+  ]
+};
+
+
+// ============================================================
+// SCENARIO CARDS — RENDER + INTERACTION
+// ============================================================
+
+let scCurrentId = null;
+
+function scRenderGrid() {
+  const wrap = document.getElementById('scGridTiles');
+  if (!wrap) return;
+  wrap.innerHTML = SC_SCENARIOS.map(s => `
+    <button class="sc-tile ${s.ready ? '' : 'sc-locked'}" ${s.ready ? `onclick="scOpen(${s.id})"` : 'disabled'}>
+      <span class="sc-tile-icon">${s.icon}</span>
+      <div class="sc-tile-num">Scenario ${String(s.id).padStart(2,'0')}</div>
+      <div class="sc-tile-title">${s.title}</div>
+      <div class="sc-tile-sub">${s.sub}</div>
+    </button>
+  `).join('');
+}
+
+function scShowGrid() {
+  document.getElementById('sc-grid').classList.add('active');
+  document.getElementById('sc-detail').classList.remove('active');
+}
+
+function scOpen(id) {
+  if (id !== 1) return; // only scenario 01 has content currently
+  scCurrentId = id;
+  const d = SC_DETAIL_01;
+  document.getElementById('scDetailEyebrow').textContent = d.eyebrow;
+  document.getElementById('scDetailTitle').textContent = d.title;
+  document.getElementById('scDetailSub').textContent = d.sub;
+
+  scRenderBrief(d);
+  scRenderRoles(d);
+  scRenderAssessment(d);
+  scRenderReference();
+
+  document.getElementById('sc-grid').classList.remove('active');
+  document.getElementById('sc-detail').classList.add('active');
+  scShowTab('brief');
+  window.scrollTo(0,0);
+}
+
+function scShowTab(name) {
+  document.querySelectorAll('.sc-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sc-tab-panel').forEach(p => p.classList.remove('active'));
+  const idx = ['brief','roles','assess','ref'].indexOf(name);
+  const tabBtns = document.querySelectorAll('#scTabs .sc-tab');
+  if (tabBtns[idx]) tabBtns[idx].classList.add('active');
+  document.getElementById('scPanel-' + name).classList.add('active');
+}
+
+function scRenderBrief(d) {
+  const b = d.brief;
+  let html = '';
+
+  html += `<div class="sc-h2">Scenario purpose</div><p class="sc-p">${b.purpose}</p>`;
+
+  html += `<div class="sc-h2">Crew deployment brief</div><div class="sc-quote">${b.deployment}</div>`;
+
+  html += `<div class="sc-badge-row">
+    <span class="sc-badge">${b.delivery}</span>
+    <span class="sc-badge">Endpoints: ${b.endpoints}</span>
+  </div>`;
+
+  html += `<div class="sc-h2">Human factors intent</div><ul class="sc-list">${b.humanFactors.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+
+  html += `<div class="sc-h2">Scene picture and optional resources</div>
+    <table class="sc-table"><tr><th>Resource / inject</th><th>Use</th></tr>
+    ${b.resources.map(r=>`<tr><td><strong>${r.name}</strong></td><td>${r.use}</td></tr>`).join('')}
+    </table>`;
+
+  html += `<div class="sc-h2">Equipment</div><ul class="sc-list">${b.equipment.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  html += `<div class="sc-note">${b.note}</div>`;
+
+  b.stages.forEach(st => {
+    html += `<div class="sc-stage-card">
+      <div class="sc-stage-head">Stage ${st.n} — ${st.name}</div>
+      <div class="sc-stage-body">`;
+    if (st.intro) html += `<p class="sc-p">${st.intro}</p>`;
+
+    html += `<div class="sc-h2" style="margin-top:0;">Findings</div>
+      <table class="sc-table">${st.findings.map(f=>`<tr><td style="width:35%;"><strong>${f[0]}</strong></td><td>${f[1]}</td></tr>`).join('')}</table>`;
+
+    if (st.history) {
+      html += `<div class="sc-h2">PSAMPLER history</div>
+        <table class="sc-table">${st.history.map(h=>`<tr><td style="width:35%;"><strong>${h[0]}</strong></td><td>${h[1]}</td></tr>`).join('')}</table>`;
+    }
+
+    html += `<div class="sc-h2">Good practice</div><ul class="sc-list">${st.goodPractice.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+
+    if (st.notPenalise) {
+      html += `<div class="sc-h2">What not to penalise</div><ul class="sc-list">${st.notPenalise.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    }
+    if (st.endpoint) {
+      html += `<div class="sc-note"><strong>Progression trigger / endpoint —</strong> ${st.endpoint}</div>`;
+    }
+    html += `</div></div>`;
+  });
+
+  html += `<div class="sc-note">${d.brief.oxygenNote}</div>`;
+
+  html += `<div class="sc-h2">Critical safety / must-act points</div>`;
+  d.brief.critical.forEach(c => {
+    html += `<div class="sc-critical"><div class="sc-critical-issue">${c[0]}</div><div class="sc-critical-resp">${c[1]}</div></div>`;
+  });
+
+  html += `<div class="sc-h2">Scenario-specific debrief prompts</div><ul class="sc-list">${d.brief.debriefPrompts.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+
+  html += `<div class="sc-note">${d.brief.governance}</div>`;
+
+  document.getElementById('scPanel-brief').innerHTML = html;
+}
+
+function scRenderRoles(d) {
+  let html = '';
+  d.roles.forEach(r => {
+    html += `<div class="sc-role-card">
+      <div class="sc-role-head" style="background:${r.colour};">${r.label}</div>
+      <div class="sc-role-body">`;
+    if (r.you || r.startingBehaviour || r.doNotVolunteer) {
+      html += `<div class="sc-role-meta">`;
+      if (r.you) html += `<div class="sc-role-meta-item"><div class="sc-role-meta-label">You are</div><div class="sc-role-meta-val">${r.you}</div></div>`;
+      if (r.startingBehaviour) html += `<div class="sc-role-meta-item"><div class="sc-role-meta-label">Starting behaviour</div><div class="sc-role-meta-val">${r.startingBehaviour}</div></div>`;
+      if (r.doNotVolunteer) html += `<div class="sc-role-meta-item"><div class="sc-role-meta-label">Do not volunteer</div><div class="sc-role-meta-val">${r.doNotVolunteer}</div></div>`;
+      html += `</div>`;
+    }
+    html += `<ul class="sc-list">${r.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    if (r.safety) {
+      html += `<div class="sc-h2" style="font-size:0.9rem;">Patient safety</div><ul class="sc-list">${r.safety.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    }
+    html += `</div></div>`;
+  });
+  document.getElementById('scPanel-roles').innerHTML = html;
+}
+
+function scStorageKey(scenarioId) {
+  const d = new Date();
+  const dateStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  return `sc_assess_${scenarioId}_${dateStr}`;
+}
+
+function scLoadState(scenarioId) {
+  try {
+    const raw = localStorage.getItem(scStorageKey(scenarioId));
+    return raw ? JSON.parse(raw) : {};
+  } catch(e) { return {}; }
+}
+
+function scSaveState(scenarioId, state) {
+  try { localStorage.setItem(scStorageKey(scenarioId), JSON.stringify(state)); } catch(e) {}
+}
+
+function scRenderAssessment(d) {
+  const state = scLoadState(scCurrentId);
+  let html = `<div class="sc-note">Tap Pass / Refer / N/A for each learner. Saved automatically to this device for today's date. Record only evidence actually observed — this does not replace official Qualsafe assessment paperwork.</div>`;
+
+  d.assessment.forEach((group, gi) => {
+    html += `<div class="sc-assess-group"><div class="sc-assess-group-title">${group.group}</div>`;
+    group.items.forEach((item, ii) => {
+      const [ref, crit, good] = item;
+      const key = `${gi}_${ii}`;
+      html += `<div class="sc-assess-row">
+        <div class="sc-assess-ref">${ref}</div>
+        <div class="sc-assess-crit">${crit}</div>
+        <div class="sc-assess-good">${good}</div>
+        <div class="sc-assess-learners">
+          <div>
+            <div class="sc-learner-label">Learner 1</div>
+            ${scPraGroup(key, 'l1', state)}
+          </div>
+          <div>
+            <div class="sc-learner-label">Learner 2</div>
+            ${scPraGroup(key, 'l2', state)}
+          </div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  document.getElementById('scPanel-assess').innerHTML = html;
+}
+
+function scPraGroup(key, learner, state) {
+  const current = (state[key] && state[key][learner]) || null;
+  const mk = (val, label, cls) => `<button class="sc-pra-btn ${cls} ${current===val?'sel':''}" onclick="scSetPra('${key}','${learner}','${val}')">${label}</button>`;
+  return `<div class="sc-pra-group">${mk('P','Pass','p')}${mk('R','Refer','r')}${mk('N','N/A','n')}</div>`;
+}
+
+function scSetPra(key, learner, val) {
+  const state = scLoadState(scCurrentId);
+  if (!state[key]) state[key] = {};
+  state[key][learner] = (state[key][learner] === val) ? null : val; // tap again to clear
+  scSaveState(scCurrentId, state);
+  const scrollY = window.scrollY;
+  scRenderAssessment(SC_DETAIL_01);
+  window.scrollTo(0, scrollY);
+}
+
+function scRenderReference() {
+  const r = SC_REFERENCE;
+  let html = '';
+
+  html += `<div class="sc-h2" style="margin-top:0;">Exercise control commands</div>
+    <table class="sc-table sc-cmd-table"><tr><th>Command</th><th>Meaning</th></tr>
+    ${r.commands.map(c=>`<tr><td>${c[0]}</td><td>${c[1]}</td></tr>`).join('')}</table>`;
+
+  html += `<div class="sc-h2">Live casualty intervention limits</div><ul class="sc-list">${r.safety.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+
+  html += `<div class="sc-h2">ATMIST handover</div>
+    <table class="sc-table">${r.atmist.map(a=>`<tr><td style="width:15%;"><strong>${a[0]}</strong></td><td>${a[1]}</td></tr>`).join('')}</table>`;
+
+  html += `<div class="sc-h2">Assessment outcomes</div>
+    <table class="sc-table">
+    <tr><td style="width:20%;" class="sc-outcome-p">Pass</td><td>${r.outcomes[0][1]}</td></tr>
+    <tr><td class="sc-outcome-r">Refer</td><td>${r.outcomes[1][1]}</td></tr>
+    <tr><td class="sc-outcome-n">N/A</td><td>${r.outcomes[2][1]}</td></tr>
+    </table>`;
+
+  html += `<div class="sc-h2">Debrief sequence</div>`;
+  r.debrief.forEach(step => {
+    html += `<div class="sc-note" style="margin-bottom:8px;"><strong>${step[0]}</strong><br>${step[1]}</div>`;
+  });
+
+  document.getElementById('scPanel-ref').innerHTML = html;
+}
+
+// Build grid once sounds/scenarios are ready
+scRenderGrid();
 </script>
 </body>
 </html>
