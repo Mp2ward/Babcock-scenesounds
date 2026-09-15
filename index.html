@@ -446,17 +446,17 @@
   .hub-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.9rem;
            letter-spacing:0.04em; color:#0D1B4C; margin-bottom:4px; }
   .hub-p { font-size:0.9rem; color:#6B7A94; margin-bottom:26px; }
+  .hub-tiles { display:grid; grid-template-rows:repeat(4, 1fr); gap:12px; margin-bottom:12px; }
   .hub-tile { display:flex; align-items:center; gap:16px; padding:18px 20px;
               border:1px solid #D8DEE8; background:#FFFFFF; cursor:pointer;
-              margin-bottom:12px; text-align:left; width:100%; min-height:76px;
-              box-sizing:border-box; transition:all 0.18s; }
+              text-align:left; width:100%; box-sizing:border-box; transition:all 0.18s; }
   .hub-tile:hover { background:#F7F9FC; border-color:#2B5BD7; }
   .hub-tile.primary { border:2px solid #2B5BD7; padding:17px 19px; }
   .hub-accent { width:4px; align-self:stretch; flex-shrink:0; }
   .hub-emoji { font-size:1.6rem; line-height:1; flex-shrink:0; }
   .hub-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.1rem;
-               letter-spacing:0.05em; color:#0D1B4C; line-height:1.1; }
-  .hub-sub { font-size:0.8rem; color:#6B7A94; margin-top:3px; }
+               letter-spacing:0.05em; color:#0D1B4C; line-height:1.25; }
+  .hub-sub { font-size:0.8rem; color:#6B7A94; margin-top:3px; line-height:1.4; }
   .hub-badge { background:#EAF0FC; color:#0C447C; font-family:'Public Sans',sans-serif;
                font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase;
                padding:4px 10px; border-radius:4px; flex-shrink:0; }
@@ -689,6 +689,42 @@
     body { background:#FFFFFF; }
   }
 
+
+  /* ---- Learner Practical Matrix ---- */
+  .lpm-view { display:none; }
+  .lpm-view.active { display:block; }
+
+  .lpm-course-row { display:block; width:100%; text-align:left; border:none; border-top:1px solid #D8DEE8; background:#FFFFFF; padding:14px 4px; cursor:pointer; }
+  .lpm-course-row:last-of-type { border-bottom:1px solid #D8DEE8; }
+  .lpm-course-row:hover { background:#F7F9FC; }
+  .lpm-course-name { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; }
+  .lpm-course-meta { font-size:0.8rem; color:#6B7A94; margin-top:3px; }
+
+  .lpm-field { margin-bottom:16px; }
+  .lpm-field label { display:block; font-family:'Public Sans',sans-serif; font-size:0.8rem; color:#6B7A94; margin-bottom:5px; }
+  .lpm-field input, .lpm-field select, .lpm-field textarea { width:100%; box-sizing:border-box; }
+  .lpm-field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+  .lpm-learner-card { border:1px solid #D8DEE8; padding:14px 16px; margin-bottom:10px; display:flex; align-items:center; gap:12px; }
+  .lpm-learner-card input { flex:1; }
+  .lpm-learner-remove { border:1px solid #E8BEBE; background:#FCEEEE; color:#A32D2D; padding:6px 12px; font-family:'Public Sans',sans-serif; font-size:0.76rem; cursor:pointer; flex-shrink:0; }
+  .lpm-add-learner { border:1px dashed #B8C2D0; background:none; color:#6B7A94; padding:12px; width:100%; font-family:'Public Sans',sans-serif; font-weight:600; font-size:0.85rem; cursor:pointer; }
+  .lpm-add-learner:hover { border-color:#2B5BD7; color:#2B5BD7; }
+
+  .lpm-comp-add { border:1px solid #D8DEE8; padding:16px; margin-bottom:20px; }
+  .lpm-comp-add .lpm-field-row { margin-bottom:12px; }
+
+  .lpm-record-row { display:grid; grid-template-columns:120px 1fr 1fr 1fr auto; gap:10px; align-items:center; padding:9px 0; border-bottom:1px solid #EEF1F5; font-size:0.83rem; }
+  .lpm-record-row.head { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.7rem; letter-spacing:0.06em; text-transform:uppercase; color:#6B7A94; border-bottom:1px solid #D8DEE8; }
+  .lpm-record-del { border:none; background:none; color:#C74444; cursor:pointer; font-size:0.78rem; }
+
+  @media (max-width:640px) {
+    .lpm-field-row { grid-template-columns:1fr; }
+    .lpm-record-row { grid-template-columns:1fr; gap:2px; }
+    .lpm-record-row.head { display:none; }
+    .lpm-record-row:not(.head) { padding:12px 0; }
+  }
+
 </style>
 </head>
 <body>
@@ -737,6 +773,7 @@ window.addEventListener('load', function () {
     <div class="hub-p" style="margin-bottom:6px;">Interactive emergency care practical scenario and training for professional clinical educators and instructors.</div>
     <div class="hub-p">Choose how you want to run this session.</div>
 
+    <div class="hub-tiles">
     <button class="hub-tile" onclick="showView('sounds')">
       <div class="hub-accent" style="background:#2B5BD7;"></div>
       <span class="hub-emoji">🎛️</span>
@@ -766,6 +803,17 @@ window.addEventListener('load', function () {
       </div>
       <span class="hub-badge">Start here</span>
     </button>
+
+    <button class="hub-tile" onclick="showView('lpm');lpmShowPick();">
+      <div class="hub-accent" style="background:#4A6B52;"></div>
+      <span class="hub-emoji">📋</span>
+      <div style="flex:1;min-width:0;">
+        <div class="hub-title">LEARNER PRACTICAL MATRIX</div>
+        <div class="hub-sub">Course details, learner names, live competency record</div>
+      </div>
+      <span class="hub-chev">&rsaquo;</span>
+    </button>
+    </div>
   </div>
 </div>
 
@@ -1073,6 +1121,63 @@ window.addEventListener('load', function () {
 
 </div>
 
+
+<!-- ============ LEARNER PRACTICAL MATRIX ============ -->
+<div class="app-view" id="view-lpm">
+
+  <div class="lpm-view active" id="lpm-pick">
+    <div class="rn-wrap">
+      <div class="hub-eyebrow">Babcock International</div>
+      <div class="hub-h">Learner practical matrix</div>
+      <div class="hub-p">Course details, learner names and live competency records — separate from, and in addition to, any scenario sessions run through Run a Scenario.</div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
+        <button class="rn-nav-btn primary" onclick="lpmNewCourse()">+ New course record</button>
+        <button class="rn-nav-btn" onclick="lpmShowFullMatrix()">View full matrix</button>
+      </div>
+
+      <div class="sc-h2" style="margin-top:0;">Existing course records</div>
+      <div id="lpmCourseList"></div>
+    </div>
+  </div>
+
+  <div class="lpm-view" id="lpm-course">
+    <div class="rn-wrap">
+
+      <button class="sc-back rn-no-print" onclick="lpmShowPick()">&larr; All courses</button>
+
+      <div class="rn-head">
+        <div class="rn-head-meta">Learner practical matrix</div>
+        <div class="rn-head-title" id="lpmCourseTitle">Course record</div>
+        <div class="rn-head-sub" id="lpmCourseSub"></div>
+      </div>
+
+      <div class="rn-steps rn-no-print" id="lpmSteps">
+        <button class="rn-step" onclick="lpmShowStep('details')">Course details</button>
+        <button class="rn-step" onclick="lpmShowStep('learners')">Learners</button>
+        <button class="rn-step" onclick="lpmShowStep('record')">Competency record</button>
+        <button class="rn-step" onclick="lpmShowStep('summary')">Summary</button>
+      </div>
+
+      <div class="rn-panel" id="lpmPanel-details"></div>
+      <div class="rn-panel" id="lpmPanel-learners"></div>
+      <div class="rn-panel" id="lpmPanel-record"></div>
+      <div class="rn-panel" id="lpmPanel-summary"></div>
+
+    </div>
+  </div>
+
+  <div class="lpm-view" id="lpm-full">
+    <div class="rn-wrap">
+      <button class="sc-back rn-no-print" onclick="lpmShowPick()">&larr; Back</button>
+      <div class="hub-eyebrow">Whole course</div>
+      <div class="hub-h">Full learner matrix</div>
+      <div class="hub-p">Every learner, every recorded competency, across every course on this device — including any sessions saved from Run a Scenario.</div>
+      <div id="lpmFullBody"></div>
+    </div>
+  </div>
+
+</div>
 
 <!-- Active Sounds Mixer Panel -->
 <div id="mixerBtn" style="display:none; position:fixed; bottom:0; left:0; right:0; z-index:300;">
@@ -4321,8 +4426,9 @@ function rnEmailSummary() {
 
 // ---- Course matrix ----
 function rnShowMatrix() {
-  rnRenderMatrix();
-  rnShowView('matrix');
+  // Scenario sessions now feed into the single Learner Practical Matrix view
+  showView('lpm');
+  lpmShowFullMatrix();
 }
 
 function rnRenderMatrix() {
@@ -4401,6 +4507,436 @@ function rnClearMatrix() {
   if (!confirm('Clear every saved session on this device? This cannot be undone.')) return;
   rnSaveSessions([]);
   rnRenderMatrix();
+}
+</script>
+<script>
+// ============================================================
+// LEARNER PRACTICAL MATRIX
+// ============================================================
+
+const LPM_STORE_KEY = 'lpm_courses';
+
+let lpmCurrentId = null;
+let lpmCourse = null;
+let lpmStepIdx = 0;
+const LPM_STEPS = ['details','learners','record','summary'];
+
+function lpmLoadCourses() {
+  try { return JSON.parse(localStorage.getItem(LPM_STORE_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+function lpmSaveCourses(list) {
+  try { localStorage.setItem(LPM_STORE_KEY, JSON.stringify(list)); return true; }
+  catch(e) { return false; }
+}
+function lpmPersist() {
+  const list = lpmLoadCourses();
+  const idx = list.findIndex(c => c.id === lpmCourse.id);
+  if (idx >= 0) list[idx] = lpmCourse; else list.push(lpmCourse);
+  lpmSaveCourses(list);
+}
+
+function lpmShowView(name) {
+  document.querySelectorAll('.lpm-view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById('lpm-' + name);
+  if (el) el.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function lpmShowPick() {
+  lpmRenderCourseList();
+  lpmShowView('pick');
+}
+
+function lpmRenderCourseList() {
+  const list = lpmLoadCourses();
+  const wrap = document.getElementById('lpmCourseList');
+  if (!list.length) {
+    wrap.innerHTML = `<div class="rn-empty">No course records yet. Start a new one above.</div>`;
+    return;
+  }
+  wrap.innerHTML = list.slice().reverse().map(c => `
+    <button class="lpm-course-row" onclick="lpmOpenCourse('${c.id}')">
+      <div class="lpm-course-name">${c.courseName || 'Untitled course'}</div>
+      <div class="lpm-course-meta">${c.startDate || '—'} · ${(c.learners||[]).length} learner${(c.learners||[]).length===1?'':'s'} · ${lpmRecordCount(c)} recorded observations</div>
+    </button>`).join('');
+}
+
+function lpmRecordCount(c) {
+  return (c.records || []).length;
+}
+
+function lpmNewCourse() {
+  lpmCourse = {
+    id: 'C' + Date.now(),
+    courseName: '',
+    courseRef: '',
+    startDate: new Date().toISOString().slice(0,10),
+    endDate: '',
+    location: '',
+    instructor: '',
+    learners: [],
+    records: [],
+    createdAt: new Date().toISOString()
+  };
+  lpmPersist();
+  lpmOpenCourse(lpmCourse.id);
+}
+
+function lpmOpenCourse(id) {
+  const list = lpmLoadCourses();
+  const found = list.find(c => c.id === id);
+  if (!found) return;
+  lpmCourse = found;
+  lpmCurrentId = id;
+  document.getElementById('lpmCourseTitle').textContent = lpmCourse.courseName || 'Untitled course';
+  document.getElementById('lpmCourseSub').textContent = (lpmCourse.instructor ? 'Instructor: ' + lpmCourse.instructor : 'No instructor set') + ' · ' + (lpmCourse.learners.length) + ' learners';
+
+  document.getElementById('lpmSteps').innerHTML = LPM_STEPS.map((k,i) => {
+    const labels = {details:'Course details', learners:'Learners', record:'Competency record', summary:'Summary'};
+    return `<button class="rn-step" id="lpmStep${i}" onclick="lpmShowStep('${k}')">${labels[k]}</button>`;
+  }).join('');
+
+  lpmRenderDetails();
+  lpmRenderLearners();
+  lpmRenderRecord();
+  lpmRenderSummary();
+  lpmShowStep('details');
+  lpmShowView('course');
+}
+
+function lpmShowStep(key) {
+  lpmStepIdx = LPM_STEPS.indexOf(key);
+  document.querySelectorAll('#lpmSteps .rn-step').forEach((b,i) => {
+    b.classList.toggle('active', LPM_STEPS[i] === key);
+    b.classList.toggle('done', i < lpmStepIdx);
+  });
+  document.querySelectorAll('.lpm-view#lpm-course .rn-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('lpmPanel-' + key).classList.add('active');
+  if (key === 'record') lpmRenderRecord();
+  if (key === 'summary') lpmRenderSummary();
+  window.scrollTo(0,0);
+}
+
+// ---- Course details ----
+function lpmRenderDetails() {
+  const c = lpmCourse;
+  document.getElementById('lpmPanel-details').innerHTML = `
+    <div class="sc-h2" style="margin-top:0;">Course details</div>
+    <div class="lpm-field">
+      <label>Course name</label>
+      <input type="text" value="${lpmEsc(c.courseName)}" placeholder="e.g. FREC 3 — September cohort" oninput="lpmSetDetail('courseName', this.value)">
+    </div>
+    <div class="lpm-field-row">
+      <div class="lpm-field">
+        <label>Course reference</label>
+        <input type="text" value="${lpmEsc(c.courseRef)}" placeholder="Internal reference" oninput="lpmSetDetail('courseRef', this.value)">
+      </div>
+      <div class="lpm-field">
+        <label>Location</label>
+        <input type="text" value="${lpmEsc(c.location)}" placeholder="Training centre / location" oninput="lpmSetDetail('location', this.value)">
+      </div>
+    </div>
+    <div class="lpm-field-row">
+      <div class="lpm-field">
+        <label>Start date</label>
+        <input type="date" value="${c.startDate||''}" oninput="lpmSetDetail('startDate', this.value)">
+      </div>
+      <div class="lpm-field">
+        <label>End date</label>
+        <input type="date" value="${c.endDate||''}" oninput="lpmSetDetail('endDate', this.value)">
+      </div>
+    </div>
+    <div class="lpm-field">
+      <label>Lead instructor</label>
+      <input type="text" value="${lpmEsc(c.instructor)}" placeholder="Name" oninput="lpmSetDetail('instructor', this.value)">
+    </div>
+  `;
+}
+
+function lpmSetDetail(key, val) {
+  lpmCourse[key] = val;
+  lpmPersist();
+  document.getElementById('lpmCourseTitle').textContent = lpmCourse.courseName || 'Untitled course';
+}
+
+// ---- Learners ----
+function lpmRenderLearners() {
+  const c = lpmCourse;
+  let html = `<div class="sc-h2" style="margin-top:0;">Learners on this course</div>
+    <div class="sc-note">Add every learner once here. They'll appear automatically in the competency record.</div>`;
+
+  c.learners.forEach((l, i) => {
+    html += `<div class="lpm-learner-card">
+      <input type="text" value="${lpmEsc(l.name)}" placeholder="Full name" oninput="lpmSetLearnerName(${i}, this.value)">
+      <button class="lpm-learner-remove" onclick="lpmRemoveLearner(${i})">Remove</button>
+    </div>`;
+  });
+
+  html += `<button class="lpm-add-learner" onclick="lpmAddLearner()">+ Add learner</button>`;
+  document.getElementById('lpmPanel-learners').innerHTML = html;
+}
+
+function lpmAddLearner() {
+  lpmCourse.learners.push({id:'L'+Date.now()+Math.random().toString(36).slice(2,6), name:''});
+  lpmPersist();
+  lpmRenderLearners();
+}
+
+function lpmSetLearnerName(i, val) {
+  lpmCourse.learners[i].name = val;
+  lpmPersist();
+  document.getElementById('lpmCourseSub').textContent = (lpmCourse.instructor ? 'Instructor: ' + lpmCourse.instructor : 'No instructor set') + ' · ' + (lpmCourse.learners.length) + ' learners';
+}
+
+function lpmRemoveLearner(i) {
+  const l = lpmCourse.learners[i];
+  if (!confirm('Remove ' + (l.name || 'this learner') + '? Their recorded observations stay in the record but will show as an unlisted learner.')) return;
+  lpmCourse.learners.splice(i,1);
+  lpmPersist();
+  lpmRenderLearners();
+}
+
+// ---- Competency record ----
+function lpmRenderRecord() {
+  const c = lpmCourse;
+  const learnerOpts = c.learners.filter(l=>l.name).map(l => `<option value="${l.id}">${lpmEsc(l.name)}</option>`).join('');
+
+  let html = `<div class="sc-h2" style="margin-top:0;">Record a competency observed</div>
+    <div class="lpm-comp-add">
+      <div class="lpm-field-row">
+        <div class="lpm-field">
+          <label>Learner</label>
+          <select id="lpmNewLearner">${learnerOpts || '<option value="">Add a learner first</option>'}</select>
+        </div>
+        <div class="lpm-field">
+          <label>Date</label>
+          <input type="date" id="lpmNewDate" value="${new Date().toISOString().slice(0,10)}">
+        </div>
+      </div>
+      <div class="lpm-field">
+        <label>Competency / skill observed</label>
+        <input type="text" id="lpmNewComp" placeholder="e.g. Adult BLS, tourniquet application, ATMIST handover">
+      </div>
+      <div class="lpm-field-row">
+        <div class="lpm-field">
+          <label>Context</label>
+          <input type="text" id="lpmNewContext" placeholder="Practical session, scenario, skills station...">
+        </div>
+        <div class="lpm-field">
+          <label>Outcome</label>
+          <select id="lpmNewOutcome">
+            <option value="P">Pass</option>
+            <option value="R">Referral</option>
+            <option value="O">Observed only</option>
+          </select>
+        </div>
+      </div>
+      <div class="lpm-field">
+        <label>Notes</label>
+        <input type="text" id="lpmNewNotes" placeholder="Optional">
+      </div>
+      <button class="rn-nav-btn primary" onclick="lpmAddRecord()">Add to record</button>
+      <p id="lpmRecordErr" style="color:#C74444;font-size:0.82rem;min-height:18px;margin-top:8px;"></p>
+    </div>
+
+    <div class="sc-h2">Recorded this course</div>
+    <div class="lpm-record-row head"><div>Date</div><div>Learner</div><div>Competency</div><div>Outcome</div><div></div></div>`;
+
+  if (!c.records.length) {
+    html += `<div class="rn-empty">Nothing recorded yet.</div>`;
+  } else {
+    c.records.slice().reverse().forEach((r) => {
+      const realIdx = c.records.indexOf(r);
+      const learner = c.learners.find(l => l.id === r.learnerId);
+      const name = learner ? learner.name : (r.learnerName || 'Unlisted learner');
+      const outcomeClass = r.outcome === 'P' ? 'rn-m-p' : r.outcome === 'R' ? 'rn-m-r' : 'rn-m-n';
+      const outcomeLabel = r.outcome === 'P' ? 'Pass' : r.outcome === 'R' ? 'Referral' : 'Observed';
+      html += `<div class="lpm-record-row">
+        <div>${r.date}</div>
+        <div>${lpmEsc(name)}</div>
+        <div>${lpmEsc(r.competency)}${r.context ? '<br><span style="color:#8494AC;font-size:0.78rem;">'+lpmEsc(r.context)+'</span>' : ''}</div>
+        <div class="${outcomeClass}">${outcomeLabel}</div>
+        <button class="lpm-record-del rn-no-print" onclick="lpmDeleteRecord(${realIdx})">Remove</button>
+      </div>`;
+    });
+  }
+
+  document.getElementById('lpmPanel-record').innerHTML = html;
+}
+
+function lpmAddRecord() {
+  const learnerId = document.getElementById('lpmNewLearner').value;
+  const comp = document.getElementById('lpmNewComp').value.trim();
+  const err = document.getElementById('lpmRecordErr');
+
+  if (!learnerId) { err.textContent = 'Add and select a learner first.'; return; }
+  if (!comp) { err.textContent = 'Enter the competency or skill observed.'; return; }
+  err.textContent = '';
+
+  lpmCourse.records.push({
+    id: 'R'+Date.now()+Math.random().toString(36).slice(2,6),
+    learnerId,
+    date: document.getElementById('lpmNewDate').value || new Date().toISOString().slice(0,10),
+    competency: comp,
+    context: document.getElementById('lpmNewContext').value.trim(),
+    outcome: document.getElementById('lpmNewOutcome').value,
+    notes: document.getElementById('lpmNewNotes').value.trim()
+  });
+  lpmPersist();
+
+  document.getElementById('lpmNewComp').value = '';
+  document.getElementById('lpmNewContext').value = '';
+  document.getElementById('lpmNewNotes').value = '';
+  lpmRenderRecord();
+}
+
+function lpmDeleteRecord(idx) {
+  if (!confirm('Remove this recorded observation?')) return;
+  lpmCourse.records.splice(idx,1);
+  lpmPersist();
+  lpmRenderRecord();
+}
+
+// ---- Summary ----
+function lpmRenderSummary() {
+  const c = lpmCourse;
+  let html = `<div class="sc-h2" style="margin-top:0;">${lpmEsc(c.courseName || 'Untitled course')}</div>
+    <div class="sc-note">${c.startDate||'—'} to ${c.endDate||'—'} · ${c.location||'Location not set'} · Instructor: ${c.instructor||'—'}</div>`;
+
+  if (!c.learners.length) {
+    html += `<div class="rn-empty">Add learners to see a summary.</div>`;
+  } else {
+    c.learners.forEach(l => {
+      const recs = c.records.filter(r => r.learnerId === l.id);
+      const p = recs.filter(r=>r.outcome==='P').length;
+      const r = recs.filter(r=>r.outcome==='R').length;
+      const o = recs.filter(r=>r.outcome==='O').length;
+      html += `<div class="rn-summary-card">
+        <div class="rn-summary-name">${lpmEsc(l.name || 'Unnamed learner')}</div>
+        <div class="rn-summary-counts">
+          <span class="rn-m-p">${p} pass</span>
+          <span class="rn-m-r">${r} referral</span>
+          <span class="rn-m-n">${o} observed</span>
+        </div>
+      </div>`;
+    });
+  }
+
+  html += `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;" class="rn-no-print">
+      <button class="rn-nav-btn primary" onclick="window.print()">Print / save as PDF</button>
+      <button class="rn-nav-btn" onclick="lpmExportCsv()">Export CSV</button>
+      <button class="rn-nav-btn" onclick="lpmEmailSummary()">Email summary</button>
+      <button class="rn-nav-btn" onclick="lpmDeleteCourse()">Delete this course record</button>
+    </div>`;
+
+  document.getElementById('lpmPanel-summary').innerHTML = html;
+}
+
+function lpmEmailSummary() {
+  const c = lpmCourse;
+  let body = `Course: ${c.courseName||'Untitled'}%0D%0ADates: ${c.startDate||'—'} to ${c.endDate||'—'}%0D%0ALocation: ${c.location||'—'}%0D%0AInstructor: ${c.instructor||'—'}%0D%0A%0D%0A`;
+  c.learners.forEach(l => {
+    const recs = c.records.filter(r => r.learnerId === l.id);
+    const p = recs.filter(r=>r.outcome==='P').length;
+    const r = recs.filter(r=>r.outcome==='R').length;
+    const o = recs.filter(r=>r.outcome==='O').length;
+    body += `${l.name || 'Unnamed'} — ${p} pass, ${r} referral, ${o} observed%0D%0A`;
+  });
+  window.location.href = `mailto:?subject=${encodeURIComponent('Course record — ' + (c.courseName||'Untitled'))}&body=${body}`;
+}
+
+function lpmExportCsv() {
+  const c = lpmCourse;
+  let csv = 'Learner,Date,Competency,Context,Outcome,Notes\n';
+  const cell = t => '"' + String(t || '').replace(/"/g,'""') + '"';
+  c.records.forEach(r => {
+    const learner = c.learners.find(l => l.id === r.learnerId);
+    csv += [cell(learner ? learner.name : 'Unlisted'), cell(r.date), cell(r.competency), cell(r.context), cell(r.outcome), cell(r.notes)].join(',') + '\n';
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (c.courseName || 'course') .replace(/[^a-z0-9]+/gi,'-') + '-' + c.startDate + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function lpmDeleteCourse() {
+  if (!confirm('Delete this entire course record, including all learners and recorded observations? This cannot be undone.')) return;
+  const list = lpmLoadCourses().filter(c => c.id !== lpmCourse.id);
+  lpmSaveCourses(list);
+  lpmShowPick();
+}
+
+// ---- Full cross-course matrix ----
+function lpmShowFullMatrix() {
+  lpmRenderFullMatrix();
+  lpmShowView('full');
+}
+
+function lpmRenderFullMatrix() {
+  const courses = lpmLoadCourses();
+  const el = document.getElementById('lpmFullBody');
+
+  const rows = [];
+  courses.forEach(c => {
+    c.records.forEach(r => {
+      const learner = c.learners.find(l => l.id === r.learnerId);
+      rows.push({
+        learner: learner ? learner.name : (r.learnerName || 'Unlisted'),
+        course: c.courseName || 'Untitled course',
+        date: r.date, competency: r.competency, outcome: r.outcome
+      });
+    });
+  });
+
+  const rnSessions = (typeof rnLoadSessions === 'function') ? rnLoadSessions() : [];
+  rnSessions.forEach(s => {
+    (s.learners||[]).forEach(l => {
+      if (!l.name) return;
+      const vals = Object.values(l.results||{}).filter(Boolean);
+      vals.forEach(v => {
+        rows.push({
+          learner: l.name, course: 'Scenario sessions', date: s.date,
+          competency: s.scenarioTitle, outcome: v === 'P' ? 'P' : v === 'R' ? 'R' : 'O'
+        });
+      });
+    });
+  });
+
+  if (!rows.length) {
+    el.innerHTML = `<div class="rn-empty">No records yet across any course.</div>`;
+    return;
+  }
+
+  rows.sort((a,b) => a.learner.localeCompare(b.learner) || a.date.localeCompare(b.date));
+
+  let html = `<div class="rn-matrix-wrap"><table class="rn-matrix">
+    <tr><th>Learner</th><th>Course</th><th>Date</th><th>Competency</th><th>Outcome</th></tr>`;
+  let lastLearner = null;
+  rows.forEach(r => {
+    const outcomeClass = r.outcome === 'P' ? 'rn-m-p' : r.outcome === 'R' ? 'rn-m-r' : 'rn-m-n';
+    const outcomeLabel = r.outcome === 'P' ? 'Pass' : r.outcome === 'R' ? 'Referral' : 'Observed';
+    html += `<tr>
+      <td>${r.learner === lastLearner ? '' : '<strong>'+lpmEsc(r.learner)+'</strong>'}</td>
+      <td>${lpmEsc(r.course)}</td>
+      <td>${r.date}</td>
+      <td>${lpmEsc(r.competency)}</td>
+      <td class="${outcomeClass}">${outcomeLabel}</td>
+    </tr>`;
+    lastLearner = r.learner;
+  });
+  html += `</table></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;" class="rn-no-print">
+      <button class="rn-nav-btn primary" onclick="window.print()">Print / save as PDF</button>
+    </div>`;
+
+  el.innerHTML = html;
+}
+
+function lpmEsc(s) {
+  return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 </script>
 </body>
