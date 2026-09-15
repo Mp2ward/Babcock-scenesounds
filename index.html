@@ -1178,7 +1178,6 @@ window.addEventListener('load', function () {
 
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
         <button class="rn-nav-btn primary" onclick="lpmNewCourse()">+ New course record</button>
-        <button class="rn-nav-btn" onclick="lpmShowFullMatrix()">View full matrix</button>
       </div>
 
       <div class="sc-h2" style="margin-top:0;">Existing course records</div>
@@ -1201,14 +1200,12 @@ window.addEventListener('load', function () {
         <button class="rn-step" onclick="lpmShowStep('details')">Course details</button>
         <button class="rn-step" onclick="lpmShowStep('learners')">Learners</button>
         <button class="rn-step" onclick="lpmShowStep('overview')">QA overview</button>
-        <button class="rn-step" onclick="lpmShowStep('record')">Competency record</button>
         <button class="rn-step" onclick="lpmShowStep('summary')">Summary</button>
       </div>
 
       <div class="rn-panel" id="lpmPanel-details"></div>
       <div class="rn-panel" id="lpmPanel-learners"></div>
       <div class="rn-panel" id="lpmPanel-overview"></div>
-      <div class="rn-panel" id="lpmPanel-record"></div>
       <div class="rn-panel" id="lpmPanel-summary"></div>
 
     </div>
@@ -4566,7 +4563,7 @@ const LPM_STORE_KEY = 'lpm_courses';
 let lpmCurrentId = null;
 let lpmCourse = null;
 let lpmStepIdx = 0;
-const LPM_STEPS = ['details','learners','overview','record','summary'];
+const LPM_STEPS = ['details','learners','overview','summary'];
 
 function lpmLoadCourses() {
   try { return JSON.parse(localStorage.getItem(LPM_STORE_KEY) || '[]'); }
@@ -4640,14 +4637,13 @@ function lpmOpenCourse(id) {
   document.getElementById('lpmCourseSub').textContent = (lpmCourse.instructor ? 'Instructor: ' + lpmCourse.instructor : 'No instructor set') + ' · ' + (lpmCourse.learners.length) + ' learners';
 
   document.getElementById('lpmSteps').innerHTML = LPM_STEPS.map((k,i) => {
-    const labels = {details:'Course details', learners:'Learners', overview:'QA overview', record:'Competency record', summary:'Summary'};
+    const labels = {details:'Course details', learners:'Learners', overview:'QA overview', summary:'Summary'};
     return `<button class="rn-step" id="lpmStep${i}" onclick="lpmShowStep('${k}')">${labels[k]}</button>`;
   }).join('');
 
   lpmRenderDetails();
   lpmRenderLearners();
   lpmRenderOverview();
-  lpmRenderRecord();
   lpmRenderSummary();
   lpmShowStep('details');
   lpmShowView('course');
@@ -4662,7 +4658,6 @@ function lpmShowStep(key) {
   document.querySelectorAll('.lpm-view#lpm-course .rn-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('lpmPanel-' + key).classList.add('active');
   if (key === 'overview') lpmRenderOverview();
-  if (key === 'record') lpmRenderRecord();
   if (key === 'summary') lpmRenderSummary();
   window.scrollTo(0,0);
 }
