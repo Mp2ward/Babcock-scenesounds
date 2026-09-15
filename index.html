@@ -462,6 +462,13 @@
               font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:0.75rem;
               letter-spacing:0.1em; text-transform:uppercase; flex-shrink:0; }
   .back-hub:hover { border-color:#8FF5C0; color:#8FF5C0; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px;
+           padding:10px 16px; flex-wrap:nowrap; overflow:hidden; }
+  @media (max-width:640px) {
+    .header-contact { display:none; }
+    .brand-sub { display:none; }
+    header .status-bar { display:none !important; }
+  }
   .stub { max-width:720px; margin:0 auto; padding:56px 20px; text-align:center; }
   .stub-icon { font-size:2.4rem; margin-bottom:14px; }
   .stub-h { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:1.4rem;
@@ -488,21 +495,21 @@ window.addEventListener('load', function () {
 </script>
 
 <header>
-  <div style="display:flex;align-items:center;gap:14px;">
+  <a href="#" onclick="showView('hub');return false;" style="display:flex;align-items:center;gap:12px;text-decoration:none;min-width:0;">
     <img src="/babcock-logo.png" alt="Babcock" class="brand-logo"
          onerror="this.outerHTML='<span class=&quot;brand-title&quot; style=&quot;font-size:1.3rem&quot;>Babcock</span>'">
     <div class="brand-divider"></div>
-    <div>
+    <div style="min-width:0;">
       <div class="brand-title">SCENARIO CENTRE</div>
       <div class="brand-sub">Emergency Care Training</div>
     </div>
-  </div>
-  <div class="status-bar" id="statusBar" style="display:none;">
-    <span class="dot"></span>STANDBY
-  </div>
-  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+  </a>
+  <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+    <div class="status-bar" id="statusBar" style="display:none;">
+      <span class="dot"></span>STANDBY
+    </div>
     <button class="back-hub" id="backHub" onclick="showView('hub')">&larr; Menu</button>
-    <a href="mailto:info@scenesounds.app" style="background:none;border:1px solid;padding:6px 14px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;flex-shrink:0;transition:all 0.2s;">Contact</a>
+    <a href="mailto:info@scenesounds.app" class="header-contact" style="background:none;border:1px solid;padding:6px 14px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;flex-shrink:0;transition:all 0.2s;">Contact</a>
   </div>
 </header>
 
@@ -1876,6 +1883,7 @@ renderCustomScenarios();
   </div>
   <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
     <div class="footer-links">
+      <a href="#" onclick="showView('hub');return false;">Home</a>
       <a href="/terms.html">Terms</a>
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:info@scenesounds.app">Contact</a>
