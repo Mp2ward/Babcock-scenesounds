@@ -497,7 +497,7 @@ window.addEventListener('load', function () {
       <div class="brand-sub">Emergency Care Training</div>
     </div>
   </div>
-  <div class="status-bar" id="statusBar">
+  <div class="status-bar" id="statusBar" style="display:none;">
     <span class="dot"></span>STANDBY
   </div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
@@ -1214,14 +1214,19 @@ function updateMixer() {
   const btn = document.getElementById('mixerBtn');
   const statusBar = document.getElementById('statusBar');
 
+  var onSoundOrRun = document.getElementById('view-sounds').classList.contains('active') ||
+                      (document.getElementById('view-run') && document.getElementById('view-run').classList.contains('active'));
+
   if (count === 0) {
     btn.style.display = 'none';
     if (mixerOpen) { mixerOpen = false; document.getElementById('mixerPanel').style.maxHeight = '0'; }
     statusBar.className = 'status-bar';
     statusBar.innerHTML = '<span class="dot"></span>STANDBY';
+    statusBar.style.display = onSoundOrRun ? 'flex' : 'none';
   } else {
     btn.style.display = 'block';
     statusBar.className = 'status-bar playing';
+    statusBar.style.display = 'flex';
     statusBar.innerHTML = `<span class="dot"></span>${count} ACTIVE`;
     document.getElementById('mixerCount').textContent = `${count} sound${count !== 1 ? 's' : ''} looping`;
   }
@@ -1936,6 +1941,8 @@ function showView(name) {
   if (el) el.classList.add('active');
   var back = document.getElementById('backHub');
   if (back) back.style.display = (name === 'hub') ? 'none' : 'inline-block';
+  var status = document.getElementById('statusBar');
+  if (status) status.style.display = (name === 'sounds' || name === 'run') ? 'flex' : 'none';
   window.scrollTo(0, 0);
   try { history.replaceState(null, '', name === 'hub' ? location.pathname : '?go=' + name); } catch(e) {}
 }
