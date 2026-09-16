@@ -4904,7 +4904,7 @@ function lpmHandleScan(input) {
   lpmLoadTesseract()
     .then(() => {
       status.innerHTML = `<div class="sc-note">Reading the register — this can take 10–30 seconds on an iPad.</div>`;
-      return Tesseract.recognize(file, 'eng');
+      return lpmPrepImage(file).then(img => Tesseract.recognize(img, 'eng'));
     })
     .then(result => {
       const lines = lpmExtractNameCandidates(result.data.text);
@@ -4919,25 +4919,71 @@ function lpmHandleScan(input) {
 }
 
 function lpmExtractNameCandidates(rawText) {
-  const junkPatterns = [
-    /^\d+$/,                              // bare numbers
-    /\b\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}\b/, // dates
-    /^(course|register|date|name|learner|delegate|signature|instructor|centre|location|attendance|frec|day)\b/i,
-    /^(page|no\.?|ref)\b/i,
-  ];
+  // Words that appear on registers/forms but are never part of a learner's name
+  const stop = new Set(('training pre post declaration form course code venue classroom date name names pay number ' +
+    'signature signatures trainer trainers instructor instructors injury any event events page issue babcock london fire brigade lfb ' +
+    'register learner learners delegate delegates attendance centre center location day start end time by signing this ' +
+    'you are have received full safety brief prior fit able participate exercise completing sustained not the and of to ' +
+    'frec ffdiec beckton total present absent yes no ref copyright').split(' '));
 
-  return rawText
-    .split('\n')
-    .map(l => l.replace(/[|_]+/g, ' ').trim())
-    .filter(l => {
-      if (l.length < 3 || l.length > 40) return false;
-      if (!/[a-zA-Z]{2,}/.test(l)) return false;              // needs actual letters
-      if (junkPatterns.some(p => p.test(l))) return false;
-      const wordCount = l.split(/\s+/).length;
-      if (wordCount < 1 || wordCount > 4) return false;        // names are short
-      return true;
-    })
-    .map(l => l.replace(/\s{2,}/g, ' '));
+  // A name word: capital letter then lowercase letters, allowing O'Connor, McDonald, Smith-Jones
+  const wordRe = /^[A-Z][a-z]*(?:['\u2019\-][A-Z]?[a-z]+)*$|^(?:Mc|Mac|O['\u2019])[A-Z][a-z]+$/;
+  const seen = new Set();
+  const names = [];
+
+  rawText.split('\n').forEach(line => {
+    // Turn anything that isn't a letter, apostrophe or hyphen into a break, so numbers, dates and table lines vanish
+    const tokens = line.replace(/[\u2018\u2019`]/g, "'").replace(/[^A-Za-z'\-]+/g, ' ').trim().split(/\s+/);
+    let run = [];
+    const flush = () => {
+      if (run.length >= 2 && run.length <= 4) {
+        const first = run[0], last = run[run.length - 1];
+        const full = first + ' ' + last;
+        const key = full.toLowerCase();
+        if (!seen.has(key)) { seen.add(key); names.push(full); }
+      }
+      run = [];
+    };
+    tokens.forEach(t => {
+      const clean = t.replace(/^['\-]+|['\-]+$/g, '');
+      const isName = clean.length >= 2 && wordRe.test(clean) && !stop.has(clean.toLowerCase());
+      if (isName) run.push(clean); else flush();
+    });
+    flush();
+  });
+
+  // Skip anyone already on the course
+  const existing = new Set((lpmCourse.learners || []).map(l => (l.name || '').trim().toLowerCase()));
+  return names.filter(n => !existing.has(n.toLowerCase()));
+}
+
+// Upscale, greyscale and boost contrast before OCR — much better on screenshots and phone photos
+function lpmPrepImage(file) {
+  return new Promise(resolve => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const scale = Math.min(3, Math.max(1, 2400 / img.width));
+      const cv = document.createElement('canvas');
+      cv.width = Math.round(img.width * scale);
+      cv.height = Math.round(img.height * scale);
+      const ctx = cv.getContext('2d');
+      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+      try {
+        const d = ctx.getImageData(0, 0, cv.width, cv.height), px = d.data;
+        for (let i = 0; i < px.length; i += 4) {
+          const g = 0.299 * px[i] + 0.587 * px[i+1] + 0.114 * px[i+2];
+          const v = g > 150 ? 255 : g < 90 ? 0 : (g - 90) * 4.25; // push towards black text on white
+          px[i] = px[i+1] = px[i+2] = v;
+        }
+        ctx.putImageData(d, 0, 0);
+      } catch (e) {}
+      URL.revokeObjectURL(url);
+      resolve(cv);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
 }
 
 function lpmShowScanDraft(lines) {
@@ -4954,7 +5000,7 @@ function lpmShowScanDraft(lines) {
     </div>`).join('');
 
   status.innerHTML = `
-    <div class="sc-note">Check this list against the printed register before adding — OCR can misread handwriting or unclear print. Edit or remove any line, then confirm.</div>
+    <div class="sc-note">Found ${lines.length} name${lines.length===1?'':'s'} (first and last name only). Check against the register — OCR can misread unclear print. Edit or remove any line, then confirm.</div>
     <div id="lpmDraftList">${rows}</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 24px;">
       <button class="rn-nav-btn primary" onclick="lpmConfirmScanDraft(${lines.length})">Add these learners</button>
