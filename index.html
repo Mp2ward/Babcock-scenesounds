@@ -434,7 +434,7 @@
   .btn-sub { color:#6B7A94; }
 
   input, select, textarea { background:#F7F9FC !important; color:#0D1B4C !important;
-                            border:1px solid #D8DEE8 !important; }
+                            border:1px solid #D8DEE8 !important; font-size:16px !important; }
   input::placeholder { color:#8494AC !important; }
 
   .app-footer { background:#F7F9FC; border-top:1px solid #D8DEE8; padding:18px 24px;
@@ -4632,9 +4632,11 @@ function lpmNewCourse() {
     startDate: new Date().toISOString().slice(0,10),
     endDate: '',
     location: '',
-    instructor: '',
+    instructor1: '',
+    instructor2: '',
     learners: [],
     records: [],
+    linkedSessionIds: [],
     createdAt: new Date().toISOString()
   };
   lpmPersist();
@@ -4648,7 +4650,7 @@ function lpmOpenCourse(id) {
   lpmCourse = found;
   lpmCurrentId = id;
   document.getElementById('lpmCourseTitle').textContent = lpmCourse.courseName || 'Untitled course';
-  document.getElementById('lpmCourseSub').textContent = (lpmCourse.instructor ? 'Instructor: ' + lpmCourse.instructor : 'No instructor set') + ' · ' + (lpmCourse.learners.length) + ' learners';
+  document.getElementById('lpmCourseSub').textContent = (lpmInstructorLine(lpmCourse) ? 'Instructor: ' + lpmInstructorLine(lpmCourse) : 'No instructor set') + ' · ' + (lpmCourse.learners.length) + ' learners';
 
   document.getElementById('lpmSteps').innerHTML = LPM_STEPS.map((k,i) => {
     const labels = {details:'Course details', learners:'Learners', overview:'QA overview', sessions:'Scenario sessions', summary:'Summary'};
@@ -4679,13 +4681,23 @@ function lpmShowStep(key) {
 }
 
 // ---- Course details ----
+const LPM_COURSE_NAMES = ['FREC 3 - RPL - 3 Day', 'FREC 3 - 5 Day'];
+const LPM_LOCATIONS = ['Beckton', 'Park Royal', 'Croydon', 'Harrow'];
+const LPM_INSTRUCTOR_NAMES = ['Miles Ward', 'Neil Fossett', 'Tom Hales'];
+const LPM_COURSE_LENGTH_DAYS = { 'FREC 3 - RPL - 3 Day': 3, 'FREC 3 - 5 Day': 5 };
+
+function lpmOpt(list, current) {
+  return '<option value="">Select…</option>' + list.map(v =>
+    `<option value="${lpmEsc(v)}" ${v === current ? 'selected' : ''}>${lpmEsc(v)}</option>`).join('');
+}
+
 function lpmRenderDetails() {
   const c = lpmCourse;
   document.getElementById('lpmPanel-details').innerHTML = `
     <div class="sc-h2" style="margin-top:0;">Course details</div>
     <div class="lpm-field">
       <label>Course name</label>
-      <input type="text" value="${lpmEsc(c.courseName)}" placeholder="e.g. FREC 3 — September cohort" oninput="lpmSetDetail('courseName', this.value)">
+      <select onchange="lpmSetDetail('courseName', this.value); lpmApplyCourseLength();">${lpmOpt(LPM_COURSE_NAMES, c.courseName)}</select>
     </div>
     <div class="lpm-field-row">
       <div class="lpm-field">
@@ -4693,25 +4705,55 @@ function lpmRenderDetails() {
         <input type="text" value="${lpmEsc(c.courseRef)}" placeholder="Internal reference" oninput="lpmSetDetail('courseRef', this.value)">
       </div>
       <div class="lpm-field">
-        <label>Location</label>
-        <input type="text" value="${lpmEsc(c.location)}" placeholder="Training centre / location" oninput="lpmSetDetail('location', this.value)">
-      </div>
-    </div>
-    <div class="lpm-field-row">
-      <div class="lpm-field">
-        <label>Start date</label>
-        <input type="date" value="${c.startDate||''}" oninput="lpmSetDetail('startDate', this.value)">
-      </div>
-      <div class="lpm-field">
-        <label>End date</label>
-        <input type="date" value="${c.endDate||''}" oninput="lpmSetDetail('endDate', this.value)">
+        <label>Training location</label>
+        <select onchange="lpmSetDetail('location', this.value)">${lpmOpt(LPM_LOCATIONS, c.location)}</select>
       </div>
     </div>
     <div class="lpm-field">
-      <label>Lead instructor</label>
-      <input type="text" value="${lpmEsc(c.instructor)}" placeholder="Name" oninput="lpmSetDetail('instructor', this.value)">
+      <label>Course date</label>
+      <input type="date" id="lpmStartDateInput" value="${c.startDate||''}" oninput="lpmSetDetail('startDate', this.value); lpmApplyCourseLength();">
+    </div>
+    <p id="lpmDateNote" style="font-size:0.8rem;color:#6B7A94;margin:-8px 0 16px;">${lpmCourseLengthNote(c)}</p>
+    <div class="lpm-field-row">
+      <div class="lpm-field">
+        <label>Instructor 1</label>
+        <select onchange="lpmSetDetail('instructor1', this.value)">${lpmOpt(LPM_INSTRUCTOR_NAMES, c.instructor1)}</select>
+      </div>
+      <div class="lpm-field">
+        <label>Instructor 2</label>
+        <select onchange="lpmSetDetail('instructor2', this.value)">${lpmOpt(LPM_INSTRUCTOR_NAMES, c.instructor2)}</select>
+      </div>
     </div>
   `;
+}
+
+function lpmCourseLengthNote(c) {
+  const days = LPM_COURSE_LENGTH_DAYS[c.courseName];
+  if (!days) return '';
+  if (!c.startDate) return 'This course runs over ' + days + ' consecutive days. Pick a course date to see the full range.';
+  const start = new Date(c.startDate + 'T00:00:00');
+  const end = new Date(start);
+  end.setDate(start.getDate() + (days - 1));
+  const fmt = d => d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short'});
+  return 'Runs ' + days + ' consecutive days: ' + fmt(start) + ' to ' + fmt(end) + '.';
+}
+
+function lpmApplyCourseLength() {
+  const c = lpmCourse;
+  const days = LPM_COURSE_LENGTH_DAYS[c.courseName];
+  if (!days || !c.startDate) return;
+  const start = new Date(c.startDate + 'T00:00:00');
+  const end = new Date(start);
+  end.setDate(start.getDate() + (days - 1)); // inclusive of start day
+  c.endDate = end.toISOString().slice(0,10);
+  lpmPersist();
+  const note = document.getElementById('lpmDateNote');
+  if (note) note.textContent = lpmCourseLengthNote(c);
+}
+
+function lpmInstructorLine(c) {
+  const names = [c.instructor1, c.instructor2].filter(Boolean);
+  return names.length ? names.join(' & ') : '';
 }
 
 function lpmSetDetail(key, val) {
@@ -4825,7 +4867,7 @@ function lpmAddLearner() {
 function lpmSetLearnerName(i, val) {
   lpmCourse.learners[i].name = val;
   lpmPersist();
-  document.getElementById('lpmCourseSub').textContent = (lpmCourse.instructor ? 'Instructor: ' + lpmCourse.instructor : 'No instructor set') + ' · ' + (lpmCourse.learners.length) + ' learners';
+  document.getElementById('lpmCourseSub').textContent = (lpmInstructorLine(lpmCourse) ? 'Instructor: ' + lpmInstructorLine(lpmCourse) : 'No instructor set') + ' · ' + (lpmCourse.learners.length) + ' learners';
 }
 
 function lpmRemoveLearner(i) {
@@ -5004,7 +5046,7 @@ function lpmRenderSummary() {
   const c = lpmCourse;
   if (!c.qa) c.qa = {};
   let html = `<div class="sc-h2" style="margin-top:0;">${lpmEsc(c.courseName || 'Untitled course')}</div>
-    <div class="sc-note">${c.startDate||'—'} to ${c.endDate||'—'} · ${c.location||'Location not set'} · Instructor: ${c.instructor||'—'}</div>`;
+    <div class="sc-note">${c.startDate||'—'} to ${c.endDate||'—'} · ${c.location||'Location not set'} · Instructor: ${lpmInstructorLine(c)||'—'}</div>`;
 
   if (!c.learners.length) {
     html += `<div class="rn-empty">Add learners to see a summary.</div>`;
@@ -5041,7 +5083,7 @@ function lpmRenderSummary() {
 function lpmEmailSummary() {
   const c = lpmCourse;
   if (!c.qa) c.qa = {};
-  let body = `Course: ${c.courseName||'Untitled'}%0D%0ADates: ${c.startDate||'—'} to ${c.endDate||'—'}%0D%0ALocation: ${c.location||'—'}%0D%0AInstructor: ${c.instructor||'—'}%0D%0A%0D%0A`;
+  let body = `Course: ${c.courseName||'Untitled'}%0D%0ADates: ${c.startDate||'—'} to ${c.endDate||'—'}%0D%0ALocation: ${c.location||'—'}%0D%0AInstructor: ${lpmInstructorLine(c)||'—'}%0D%0A%0D%0A`;
   c.learners.forEach((l, li) => {
     let p = 0, r = 0, notYet = 0;
     LPM_QA_ITEMS.forEach(q => {
