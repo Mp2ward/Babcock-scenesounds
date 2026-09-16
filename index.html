@@ -638,6 +638,7 @@
   .rn-pick-sub { font-size:0.84rem; color:#6B7A94; margin-top:3px; }
 
   .rn-head { border-bottom:1px solid #D8DEE8; padding-bottom:16px; margin-bottom:18px; }
+  .rn-name-select { width:100%; box-sizing:border-box; padding:10px 12px; border:1px solid #D8DEE8; border-radius:8px; background:#fff; color:#0D1B4C; font-family:'Public Sans',sans-serif; font-size:0.95rem; -webkit-appearance:none; appearance:none; background-image:linear-gradient(45deg,transparent 50%,#6B7A94 50%),linear-gradient(135deg,#6B7A94 50%,transparent 50%); background-position:calc(100% - 18px) 55%, calc(100% - 12px) 55%; background-size:6px 6px; background-repeat:no-repeat; padding-right:32px; }
   .rn-head-meta { font-family:'Public Sans',sans-serif; font-size:0.84rem; color:#2B5BD7; margin-bottom:4px; }
   .rn-head-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.6rem; color:#0D1B4C; line-height:1.15; }
   .rn-head-sub { font-size:0.88rem; color:#6B7A94; margin-top:4px; }
@@ -684,7 +685,7 @@
 
   .rn-learners { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:22px; }
   .rn-learner-field label { display:block; font-family:'Public Sans',sans-serif; font-size:0.8rem; color:#6B7A94; margin-bottom:5px; }
-  .rn-learner-field input { width:100%; box-sizing:border-box; }
+  .rn-learner-field input { width:100%; box-sizing:border-box; padding:10px 12px; border:1px solid #D8DEE8; border-radius:8px; background:#fff; color:#0D1B4C; font-family:'Public Sans',sans-serif; font-size:0.95rem; }
 
   .rn-session-meta { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
 
@@ -5182,8 +5183,15 @@ function rnStart(id) {
     learners: [ {name:'', results:{}}, {name:'', results:{}} ],
     checks: {},
     observations: {},
-    notes: ''
+    notes: '',
+    courseId: ''
   };
+  const recent = rnCourses()[0];
+  if (recent) {
+    rnSession.courseId = recent.id;
+    const instr = [recent.instructor1, recent.instructor2].filter(Boolean);
+    if (instr.length === 1) rnSession.instructor = instr[0];
+  }
 
   document.getElementById('rnHeadMeta').style.display = 'none';
   document.getElementById('rnHeadTitle').textContent = String(id).padStart(2,'0') + ' - ' + d.title;
@@ -5465,17 +5473,96 @@ function rnRolesHTML() {
   return html;
 }
 
+// ---- Course link: pull instructors and learners from the Learner Practical Matrix ----
+function rnCourses() {
+  let list = [];
+  try { list = (typeof lpmLoadCourses === 'function') ? lpmLoadCourses() : []; } catch (e) {}
+  return list.slice().sort((a, b) => (b.startDate || b.createdAt || '').localeCompare(a.startDate || a.createdAt || ''));
+}
+function rnCourseLabel(c) {
+  return rnEscAttr((c.courseName || 'Untitled course') + (c.courseRef ? ' (' + c.courseRef + ')' : '') + (c.startDate ? ' — ' + c.startDate : ''));
+}
+function rnEscAttr(v) {
+  return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+// A dropdown of names with a "Type a name" fallback; the hidden/visible text input keeps the real value
+function rnNameSelect(id, names, current, onPick, placeholder) {
+  const opts = names.map(n => `<option value="${rnEscAttr(n)}" ${n === current ? 'selected' : ''}>${rnEscAttr(n)}</option>`).join('');
+  const typed = current && !names.includes(current);
+  return `<select id="${id}Sel" class="rn-name-select" onchange="rnPickName('${id}', this.value, ${onPick})">
+      <option value="" ${!current ? 'selected' : ''}>— Select —</option>
+      ${opts}
+      <option value="__other" ${typed ? 'selected' : ''}>Type a name…</option>
+    </select>
+    <input type="text" id="${id}" placeholder="${placeholder}" value="${rnEscAttr(current || '')}"
+      style="${typed ? '' : 'display:none;'}margin-top:6px;" oninput="(${onPick})(this.value)">`;
+}
+function rnPickName(id, val, handler) {
+  const input = document.getElementById(id);
+  if (val === '__other') {
+    input.style.display = '';
+    input.value = '';
+    handler('');
+    input.focus();
+    return;
+  }
+  input.style.display = 'none';
+  input.value = val;
+  handler(val);
+}
+function rnSetCourse(courseId) {
+  rnSession.courseId = courseId || '';
+  const c = rnCourses().find(x => x.id === courseId);
+  // Changing course clears names that no longer belong to it
+  if (c) {
+    const learnerNames = (c.learners || []).map(l => l.name).filter(Boolean);
+    const instr = [c.instructor1, c.instructor2].filter(Boolean);
+    if (rnSession.instructor && !instr.includes(rnSession.instructor)) rnSession.instructor = '';
+    if (!rnSession.instructor && instr.length === 1) rnSession.instructor = instr[0];
+    rnSession.learners.forEach(l => { if (l.name && !learnerNames.includes(l.name)) l.name = ''; });
+  }
+  const panel = document.getElementById('rnPanel-assess');
+  if (panel) panel.innerHTML = rnAssessHTML();
+  rnSession.learners.forEach((l, i) => rnSetLearner(i, l.name || ''));
+}
+
 function rnAssessHTML() {
   const d = rnDetail;
-  let html = `<div class="sc-h2" style="margin-top:0;">Session details</div>
+  const courses = rnCourses();
+  const course = courses.find(c => c.id === rnSession.courseId);
+  const instructors = course ? [course.instructor1, course.instructor2].filter(Boolean) : [];
+  const learnerNames = course ? (course.learners || []).map(l => l.name).filter(Boolean) : [];
+  const takenBy = i => rnSession.learners.filter((l, j) => j !== i).map(l => l.name);
+
+  const instructorField = course && instructors.length
+    ? rnNameSelect('rnInstructor', instructors, rnSession.instructor, "v=>{rnSession.instructor=v}", 'Name')
+    : `<input type="text" id="rnInstructor" placeholder="Name" value="${rnEscAttr(rnSession.instructor)}" oninput="rnSession.instructor=this.value">`;
+  const learnerField = i => course && learnerNames.length
+    ? rnNameSelect('rnL' + (i + 1), learnerNames.filter(n => !takenBy(i).includes(n)), rnSession.learners[i].name, `v=>rnSetLearner(${i},v)`, i ? 'Full name (optional)' : 'Full name')
+    : `<input type="text" id="rnL${i + 1}" placeholder="${i ? 'Full name (optional)' : 'Full name'}" value="${rnEscAttr(rnSession.learners[i].name)}" oninput="rnSetLearner(${i},this.value)">`;
+
+  let html = `<div class="sc-h2" style="margin-top:0;">Session details</div>`;
+  if (courses.length) {
+    html += `<div class="rn-learner-field" style="margin-bottom:12px;">
+        <label>Course (from Learner Practical Matrix)</label>
+        <select id="rnCourse" class="rn-name-select" onchange="rnSetCourse(this.value)">
+          <option value="">— No course / type names —</option>
+          ${courses.map(c => `<option value="${c.id}" ${c.id === rnSession.courseId ? 'selected' : ''}>${rnCourseLabel(c)}</option>`).join('')}
+        </select>
+      </div>`;
+    if (course && !instructors.length && !learnerNames.length) {
+      html += `<div class="sc-note">This course has no instructors or learners added yet. Add them in the Learner Practical Matrix, or type names below.</div>`;
+    }
+  }
+  html += `
     <div class="rn-session-meta">
       <div class="rn-learner-field">
         <label>Instructor / assessor</label>
-        <input type="text" id="rnInstructor" placeholder="Name" oninput="rnSession.instructor=this.value">
+        ${instructorField}
       </div>
       <div class="rn-learner-field">
         <label>Stages run</label>
-        <input type="text" id="rnStagesRun" placeholder="e.g. 1–3" oninput="rnSession.stagesRun=this.value">
+        <input type="text" id="rnStagesRun" placeholder="e.g. 1–3" value="${rnEscAttr(rnSession.stagesRun)}" oninput="rnSession.stagesRun=this.value">
       </div>
     </div>
 
@@ -5483,11 +5570,11 @@ function rnAssessHTML() {
     <div class="rn-learners">
       <div class="rn-learner-field">
         <label>Learner 1</label>
-        <input type="text" id="rnL1" placeholder="Full name" oninput="rnSetLearner(0,this.value)">
+        ${learnerField(0)}
       </div>
       <div class="rn-learner-field">
         <label>Learner 2</label>
-        <input type="text" id="rnL2" placeholder="Full name (optional)" oninput="rnSetLearner(1,this.value)">
+        ${learnerField(1)}
       </div>
     </div>
     <p id="rnLearnerErr" style="color:#C74444;font-size:0.82rem;min-height:18px;margin-bottom:8px;"></p>`;
@@ -5520,7 +5607,7 @@ function rnAssessHTML() {
   }
 
   html += `<div class="sc-h2">Session notes</div>
-    <textarea id="rnNotes" rows="4" style="width:100%;box-sizing:border-box;" placeholder="Anything worth recording for the course file" oninput="rnSession.notes=this.value"></textarea>`;
+    <textarea id="rnNotes" rows="4" style="width:100%;box-sizing:border-box;" placeholder="Anything worth recording for the course file" oninput="rnSession.notes=this.value">${rnEscAttr(rnSession.notes)}</textarea>`;
 
   return html;
 }
@@ -5541,6 +5628,9 @@ function rnSetPra(key, li, val) {
 
 function rnSetLearner(i, name) {
   rnSession.learners[i].name = name.trim();
+  // keep the other learner's list from offering the same person
+  const other = document.getElementById('rnL' + (2 - i) + 'Sel');
+  if (other) [...other.options].forEach(o => { if (o.value && o.value !== '__other') o.hidden = (o.value === name.trim()); });
   const lbl = name.trim() || ('Learner ' + (i+1));
   document.querySelectorAll(`[id^="rnLbl${i+1}-"]`).forEach(el => el.textContent = lbl);
   document.getElementById('rnLearnerErr').textContent = '';
@@ -5612,9 +5702,23 @@ function rnSaveSession() {
   copy.learners = named;
   copy.savedAt = new Date().toISOString();
   list.push(copy);
+  let linkedTo = '';
+  if (copy.courseId && typeof lpmLoadCourses === 'function') {
+    try {
+      const courses = lpmLoadCourses();
+      const c = courses.find(x => x.id === copy.courseId);
+      if (c) {
+        c.linkedSessionIds = c.linkedSessionIds || [];
+        if (!c.linkedSessionIds.includes(copy.id)) c.linkedSessionIds.push(copy.id);
+        lpmSaveCourses(courses);
+        if (typeof lpmCourse !== 'undefined' && lpmCourse && lpmCourse.id === c.id) lpmCourse.linkedSessionIds = c.linkedSessionIds;
+        linkedTo = c.courseName || 'the course';
+      }
+    } catch (e) {}
+  }
   if (rnSaveSessions(list)) {
     msg.style.color = '#0F6E56';
-    msg.textContent = 'Saved. ' + named.length + ' learner' + (named.length===1?'':'s') + ' added to the course matrix.';
+    msg.textContent = (linkedTo ? 'Saved and linked to ' + linkedTo + '. ' : 'Saved. ') + named.length + ' learner' + (named.length===1?'':'s') + ' added to the course matrix.';
   } else {
     msg.style.color = '#C74444';
     msg.textContent = 'Could not save — device storage may be full or blocked.';
