@@ -2431,8 +2431,8 @@ const SC_SCENARIOS = [
   },
   {id:2, title:'Violent Assault', sub:'Catastrophic haemorrhage', ready:true, icon:'🩸'},
   {id:3, title:'Confused Patient', sub:'Stroke or hypoglycaemia — pub garden', ready:true, icon:'🧠'},
-  {id:4, title:'Opiate Overdose', sub:'Not yet added', ready:false, icon:'💊'},
-  {id:5, title:'Chlorine Inhalation', sub:'With co-existing asthma — not yet added', ready:false, icon:'🫁'},
+  {id:4, title:'Opiate Overdose', sub:'Respiratory depression → respiratory arrest', ready:true, icon:'💊'},
+  {id:5, title:'Prolonged Submersion / Drowning', sub:'Cardiac arrest → ROSC with respiratory depression', ready:true, icon:'🌊'},
   {id:6, title:'Fall From Height', sub:'Head injury, possible spinal/pelvic — not yet added', ready:false, icon:'🪜'},
   {id:7, title:'Scenario 07', sub:'Not yet added', ready:false, icon:'🧠'},
   {id:8, title:'Scenario 08', sub:'Not yet added', ready:false, icon:'🩸'},
@@ -3391,6 +3391,1161 @@ const SC_DETAIL_03 = {
   ]
 };
 
+// Scenario 04 and 05 — from the STRICT scenario packs (September 2026)
+const SC_DETAIL_04 = {
+ "eyebrow": "Scenario 04 · Flexible indoor/outdoor overdose scene",
+ "title": "Opiate Overdose",
+ "sub": "Respiratory depression → respiratory arrest → optional cardiac arrest",
+ "variants": [
+  {
+   "id": "A",
+   "label": "Variant A — Respiratory depression",
+   "sub": "Slow, shallow breathing; markedly reduced consciousness"
+  },
+  {
+   "id": "B",
+   "label": "Variant B — Respiratory arrest",
+   "sub": "Apnoeic with a palpable pulse"
+  },
+  {
+   "id": "C",
+   "label": "Variant C — Resp. arrest → cardiac arrest",
+   "sub": "Pulse lost at instructor-selected trigger"
+  },
+  {
+   "id": "D",
+   "label": "Variant D — Vomit-heavy airway",
+   "sub": "Any of A–C with repeated vomit/secretions"
+  }
+ ],
+ "brief": {
+  "purpose": "This scenario family tests poisoning recognition, dynamic airway management and the distinction between respiratory arrest and cardiac arrest. Assisted ventilations are a core objective of the respiratory-arrest variant. Learners should not jump from \"not breathing\" directly to CPR if a pulse remains present.",
+  "deployment": "\"You are responding to a person reported as unconscious / difficult to wake. No further reliable clinical information is available at this stage.\"",
+  "delivery": "Live casualty before assisted ventilation only; manikin for adjuncts, suction, BVM and any arrest",
+  "endpoints": "Stage 1, 2, 3 or 4 + ATMIST at any endpoint",
+  "designPrinciple": "Core teaching point: in respiratory arrest with a pulse, effective assisted ventilation is the immediate lifesaving intervention. Oxygen alone does not ventilate the patient.",
+  "variantsNote": "QUALSAFE STATUS: development/application scenario. This presentation is not one of the four permitted diagnoses for the mandatory prehospital emergency medical care practical scenario. It provides valid supporting evidence opportunities but must not be presented as a substitute for that formal assessment. The location can be changed to suit the training environment; do not disclose \"overdose\" before the crew has assessed the scene/patient unless the chosen witness would realistically say so.",
+  "tablesTop": [
+   {
+    "title": "Selectable variants",
+    "head": [
+     "Variant",
+     "Course",
+     "Primary learning emphasis"
+    ],
+    "rows": [
+     [
+      "A — Respiratory depression",
+      "Slow, shallow spontaneous breathing and marked reduction in consciousness.",
+      "Recognition of poisoning, airway protection, oxygenation, monitoring and early escalation."
+     ],
+     [
+      "B — Respiratory arrest",
+      "Progresses to, or is found, apnoeic with a palpable pulse.",
+      "Assisted ventilations with BVM + oxygen, airway adjuncts, suction, effectiveness checks and repeated pulse/breathing assessment."
+     ],
+     [
+      "C — Respiratory arrest → cardiac arrest",
+      "As Variant B, then pulse is lost at an instructor-selected trigger.",
+      "Correct transition from ventilation-only management to CPR/AED without delay."
+     ],
+     [
+      "D — Vomit-heavy airway",
+      "Any of A–C with repeated simulated vomit/secretions.",
+      "Suction, positioning, contamination control, airway reassessment and teamwork."
+     ]
+    ]
+   }
+  ],
+  "equipment": [
+   "Suction-capable adult manikin (preferred)",
+   "Bag-valve-mask with oxygen reservoir and training oxygen setup",
+   "OPA/NPA trainers/adjuncts as locally taught",
+   "Suction equipment and copious safe simulated vomit — plain porridge oats and water is the preferred simple mix",
+   "Pulse oximeter/monitor simulation",
+   "AED trainer for the optional arrest branch",
+   "Simulation-only paraphernalia: simulated track marks, improvised tourniquet, and a needleless syringe with inert liquid fixed to a prosthetic/simulation site",
+   "Optional Scene Sounds device/speaker"
+  ],
+  "resources": [
+   {
+    "name": "Baseline",
+    "use": "Low-level indoor room tone, distant voices or street ambience depending on location."
+   },
+   {
+    "name": "Optional witness",
+    "use": "Friend/housemate/bystander may be anxious, vague or reluctant to disclose drug use initially."
+   },
+   {
+    "name": "Optional hazard",
+    "use": "Unkempt patient with visible simulated needle-track marks, improvised tourniquet in situ and a needleless syringe with inert \"unknown\" liquid secured to a prosthetic/simulation site. No real needle or skin penetration is ever used."
+   },
+   {
+    "name": "Vomit cue",
+    "use": "Scene Sounds not required; use visual/suction simulation for airway contamination."
+   }
+  ],
+  "sceneSoundsNote": "Keep audio subordinate to the airway/ventilation task. This is a clinical-management scenario, not a noise-stress scenario.",
+  "tables": [
+   {
+    "title": "Information-release matrix",
+    "run": true,
+    "head": [
+     "Information",
+     "Source",
+     "Release rule"
+    ],
+    "rows": [
+     [
+      "Patient usually uses heroin / illicit opioids",
+      "Witness",
+      "Only if asked directly or after rapport is established."
+     ],
+     [
+      "Possible tablets/powder/foil/syringe nearby",
+      "Scene",
+      "Only as safe simulation props; learners must not handle unsafely."
+     ],
+     [
+      "Time last seen well",
+      "Witness",
+      "If asked: approximately 20–40 minutes before crew arrival."
+     ],
+     [
+      "Co-ingestants",
+      "Witness",
+      "If asked: unknown, or optional alcohol/benzodiazepine co-ingestant for the advanced variant."
+     ],
+     [
+      "Medical history/allergies",
+      "Witness",
+      "May be unknown. Do not invent certainty. The bystander can give the full C3 1.3 history (allergies, presenting history, PMH, family history, social/substance-use history) if asked."
+     ],
+     [
+      "Optional advanced inject",
+      "Instructor",
+      "Normally no. Specify exact time/dose only if deliberately selected."
+     ],
+     [
+      "Unkempt appearance, track marks, tourniquet and syringe-in-arm cue",
+      "Scene / patient",
+      "Visible on approach. These are clues, not a substitute for primary survey."
+     ]
+    ]
+   },
+   {
+    "title": "Instructor progression triggers",
+    "run": true,
+    "head": [
+     "Trigger",
+     "Instructor action"
+    ],
+    "rows": [
+     [
+      "Effective airway + assisted ventilations established",
+      "Allow physiology to improve; scenario may end with handover at Stage 2. May be represented as gradual return of spontaneous respiratory effort; ventilation support continues until adequate breathing returns."
+     ],
+     [
+      "Ventilation attempted but ineffective",
+      "Maintain poor chest rise / low SpO2 until technique is corrected; use as a technical feedback opportunity."
+     ],
+     [
+      "Learner gives oxygen but does not ventilate an apnoeic patient",
+      "No improvement. This is a critical learning point."
+     ],
+     [
+      "Pulse is not reassessed",
+      "Do not silently progress; give a deterioration cue and assess whether the learner recognises the need to check circulation."
+     ],
+     [
+      "Optional arrest branch selected",
+      "After worsening physiology or a deliberate cue, pulse becomes absent → Stage 3."
+     ]
+    ]
+   }
+  ],
+  "stages": [
+   {
+    "n": 1,
+    "name": "Severe opioid-type respiratory depression",
+    "intro": "A live actor may be used for this stage only. Use Rest to transition to a manikin before assisted ventilation or any invasive airway practice. After immediate airway/breathing threats are controlled, require the full C3 1.2 set: consciousness; breathing rate/volume/symmetry/effort; pulse rate/rhythm/strength; capillary refill; skin; pupils; motor/sensory function; and top-to-toe survey.",
+    "findings": [
+     [
+      "Response",
+      "Very drowsy / markedly reduced response; may only react to voice or controlled stimulus."
+     ],
+     [
+      "Airway",
+      "Laboured breathing with airway contamination risk; copious simulated vomit around mouth/airway."
+     ],
+     [
+      "Breathing",
+      "RR 6/min, laboured and clearly inadequate."
+     ],
+     [
+      "SpO2",
+      "Low and falling on room air; ~82–88% if a numerical cue is required."
+     ],
+     [
+      "Pulse",
+      "Slow but present, approximately 50/min."
+     ],
+     [
+      "Skin",
+      "Unkempt appearance; pale/cool, possible peripheral cyanosis."
+     ],
+     [
+      "Pupils",
+      "Very small / pinpoint — learners should not rely on this finding alone."
+     ],
+     [
+      "Vomit",
+      "Copious simulated vomit (porridge oats and water), used only with the designated manikin / simulation surface."
+     ],
+     [
+      "Other",
+      "Simulated needle-track marks; improvised tourniquet; simulated syringe with unknown liquid at the arm (needleless/prosthetic setup)."
+     ]
+    ],
+    "actions": [
+     "Immediate structured assessment, airway opening/positioning, suction where required, oxygen, close monitoring and urgent ambulance/clinical escalation.",
+     "With RR 6/min and clearly inadequate ventilation, recognise the need for assisted ventilations. Once on the manikin, BVM with oxygen at 1 ventilation every 6 seconds (10/min), judging effectiveness by visible chest rise and clinical response.",
+     "History gathering must not delay airway/breathing treatment. Use collateral sources once immediate threats are addressed."
+    ],
+    "endpoint": "End if the learning objective is met, or progress to respiratory arrest."
+   },
+   {
+    "n": 2,
+    "name": "Respiratory arrest with pulse",
+    "intro": "This stage exists specifically to test assisted ventilations. The patient is apnoeic or not breathing effectively, but a pulse remains present. Manikin only.",
+    "findings": [
+     [
+      "Response",
+      "Unresponsive."
+     ],
+     [
+      "Airway",
+      "Contaminated; copious simulated vomit around mouth/airway."
+     ],
+     [
+      "Breathing",
+      "Apnoeic / not breathing effectively."
+     ],
+     [
+      "Pulse",
+      "Slow but present, approximately 50/min."
+     ],
+     [
+      "SpO2",
+      "Low and falling; ~82–88% if a numerical cue is required."
+     ],
+     [
+      "If ventilations effective",
+      "Visible chest rise, improving colour; SpO2 trends up toward mid-90s; pulse improves toward 60–70/min."
+     ],
+     [
+      "If ventilations ineffective",
+      "No/poor chest rise, persistent hypoxia, bradycardia worsens; prompt correction required."
+     ]
+    ],
+    "actions": [
+     "Open and maintain the airway.",
+     "Clear vomit/secretions with suction as indicated.",
+     "Select/size/insert an appropriate airway adjunct on the manikin where indicated.",
+     "Attach oxygen and provide effective BVM ventilations at 1 every 6 seconds (10/min).",
+     "Check visible chest rise with each ventilation; continuously reassess mask seal, airway position and effectiveness. Avoid excessive rate or volume.",
+     "Use a two-person BVM technique when staffing allows; allocate roles clearly.",
+     "Reassess pulse and breathing repeatedly. Do not commence CPR while a pulse remains present.",
+     "Update ambulance/clinical support with respiratory arrest and response to ventilation."
+    ],
+    "endpoint": "If effective, allow improvement and hand over; or select the arrest branch."
+   },
+   {
+    "n": 3,
+    "name": "Optional cardiac arrest",
+    "intro": "If activated for C1 6.4 evidence, require BVM with oxygen including two-person technique.",
+    "findings": [
+     [
+      "Response",
+      "Unresponsive."
+     ],
+     [
+      "Breathing",
+      "Not breathing normally."
+     ],
+     [
+      "Circulation",
+      "No pulse / no signs of circulation in scenario state."
+     ]
+    ],
+    "actions": [
+     "Recognise the change from respiratory arrest to cardiac arrest.",
+     "Commence adult BLS on the manikin without avoidable delay.",
+     "Continue effective airway management and ventilations with oxygen.",
+     "Apply the AED and follow a safe shock/no-shock sequence.",
+     "Continue reassessment and role allocation; update ambulance/clinical support."
+    ],
+    "endpoint": "End with handover or progress to ROSC."
+   },
+   {
+    "n": 4,
+    "name": "Optional ROSC",
+    "intro": "Use only if the instructor deliberately wants a post-resuscitation branch. For C1 6.7 evidence require ABCDE reassessment, management of findings, SpO2 monitoring, temperature control, reassurance where appropriate and evaluation of response.",
+    "actions": [
+     "Repeat full ABCDE/DRCABC assessment after ROSC.",
+     "Continue airway and ventilation support if spontaneous breathing remains inadequate.",
+     "Use maximum available oxygen until SpO2 can be measured reliably, then titrate to 94–98% in line with current RCUK post-ROSC guidance.",
+     "Reassess suspected poisoning history/source and all earlier interventions.",
+     "Prepare urgent handover/transfer."
+    ],
+    "endpoint": "ATMIST / End Ex."
+   }
+  ],
+  "goodPractice": [
+   "Recognises a poisoning/overdose pattern but still performs a structured primary survey.",
+   "Treats airway and breathing problems before attempting a detailed history.",
+   "Recognises respiratory arrest with a pulse and immediately provides assisted ventilations rather than starting chest compressions.",
+   "Uses suction and airway adjuncts appropriately on the manikin.",
+   "Checks chest rise and corrects poor ventilation technique rather than assuming the BVM is working.",
+   "Uses oxygen as part of ventilation support but understands oxygen alone cannot correct apnoea.",
+   "Reassesses pulse and breathing repeatedly and recognises any transition to cardiac arrest.",
+   "Obtains collateral overdose information when it can be done without delaying care.",
+   "Escalates early and provides a clear ATMIST handover."
+  ],
+  "notPenalise": [
+   "Not naming the exact opioid where the patient is managed correctly as a sudden poisoning/overdose.",
+   "Different safe airway sequences where the airway is promptly cleared and ventilations become effective.",
+   "Using one-person BVM initially while a second responder prepares equipment, provided the crew moves to a more effective two-person technique when available/appropriate.",
+   "Prioritising ventilation over detailed history taking in a respiratory arrest."
+  ],
+  "critical": [
+   [
+    "Apnoeic patient with pulse receives oxygen only and no assisted ventilations",
+    "Critical clinical failure: oxygen does not ventilate the patient."
+   ],
+   [
+    "CPR started solely because the patient is apnoeic despite a clearly present pulse",
+    "Correct promptly; learner has failed to distinguish respiratory arrest from cardiac arrest."
+   ],
+   [
+    "No airway clearance despite visible/pooling vomit",
+    "Key airway-management failure."
+   ],
+   [
+    "BVM used with no chest rise and no attempt to correct technique",
+    "Key ventilation failure; keep physiology poor until corrected."
+   ],
+   [
+    "Unsafe handling of the simulated syringe / scene paraphernalia",
+    "Rest or STILL as appropriate. Treat the cue as potentially hazardous while recognising it is a safe training prop."
+   ],
+   [
+    "Positive-pressure ventilation attempted on a live actor",
+    "STILL immediately; transition to manikin."
+   ],
+   [
+    "Assisted ventilation rate markedly too fast / too slow",
+    "Correct: target 1 ventilation every 6 seconds (10/min) with visible chest rise and ongoing reassessment."
+   ]
+  ],
+  "debriefPrompts": [
+   "What told you this was primarily a breathing/ventilation problem rather than immediately a cardiac-arrest problem?",
+   "At what point did you decide the patient needed assisted ventilations?",
+   "How did you know the BVM ventilations were effective?",
+   "What did the vomit/secretions change in your airway plan?",
+   "Did oxygen administration ever distract from the need to ventilate?",
+   "When and how often did you reassess the pulse?",
+   "What scene information supported poisoning/overdose, and what information did you deliberately avoid handling?",
+   "If the patient progressed to arrest, what changed in your management at that moment?"
+  ],
+  "listSections": [
+   {
+    "title": "Strict-evidence oxygen checks",
+    "points": [
+     "Where oxygen is used and C1 8.2 is claimed, the learner must check the cylinder is clean, undamaged and in date; keep it away from oil/grease, alcohol gel, naked flames and other ignition/combustible sources; and complete correct-patient, correct-drug and correct-dose checks before administration.",
+     "Where C1 8.4 is claimed, the learner must monitor SpO2 using pulse oximetry and repeat relevant vital signs after oxygen/ventilatory support.",
+     "C1 8.3 is deliberately NOT mapped because the full criterion requires a variety of oxygen adjuncts (BVM, non-rebreather mask and nasal cannulae).",
+     "C1 8.5 is deliberately NOT mapped unless a separate assessment creates an adverse-reaction reporting opportunity.",
+     "C1 8.6 is mapped only when the learner actually records oxygen administration on the appropriate PRF/PCR/electronic record."
+    ]
+   },
+   {
+    "title": "Useful skills practised but deliberately NOT mapped",
+    "points": [
+     "C3 2.4 — respiratory depression/arrest is managed, but the full criterion includes reliever inhaler/spacer use.",
+     "C2 9.1 / 9.2 — opioid poisoning is one route/type; the full criteria require wider poisoning routes/types and effects.",
+     "C1 5.3 / 5.4 / 5.5 — airway and adjunct skills are practised, but not every required technique/condition.",
+     "C1 8.1 / 8.3 / 8.5 — oxygen/BVM use is practised without overclaiming full medical-gas breadth."
+    ]
+   }
+  ],
+  "governance": "Strict evidence rule: a Qualsafe criterion is recorded only where the scenario provides a clear opportunity to demonstrate the whole criterion and its required indicative content, and it was actually run and demonstrated unprompted. Related or partial practice is learning activity only. This does not replace the official Qualsafe practical assessment record sheet/pass-criteria checklists or current organisational clinical procedures. Qualsafe's December 2025 lesson plan places a respiratory-arrest scenario under C2 9.1–9.3 (poisoning); this pack also deliberately creates airway, ventilation, unconscious-patient and optional BLS/AED evidence opportunities. Handover: Immediate concern first: suspected overdose with severe respiratory depression or respiratory arrest. Include airway contamination, assisted ventilation effectiveness, oxygen, pulse/breathing trend and any arrest/ROSC events."
+ },
+ "roles": [
+  {
+   "label": "Card A — Live patient (Stage 1 only, optional)",
+   "colour": "#0E7C86",
+   "you": "A very drowsy, unkempt adult with simulated track marks, an improvised tourniquet and a simulated syringe at the arm.",
+   "startingBehaviour": "Very drowsy; respond only to repeated voice or controlled stimulus as directed. Speech, if any, slurred and minimal.",
+   "doNotVolunteer": "Allow non-invasive observations and simple airway positioning only.",
+   "points": [
+    "Use only before assisted ventilation, suction insertion or airway adjunct insertion is required.",
+    "A needleless syringe with inert \"unknown liquid\" may be secured to a prosthetic/simulation site at the arm. No real needle or skin penetration is permitted.",
+    "Copious simulated vomit is around the patient/airway area (porridge oats and water) — never placed in your mouth.",
+    "Do not allow positive-pressure ventilation, an effective BVM seal, suction catheter insertion or OPA/NPA insertion.",
+    "When the instructor calls Rest for transition, stop acting and move away from the treatment area as directed."
+   ]
+  },
+  {
+   "label": "Card B — Witness / friend",
+   "colour": "#5C6B8A",
+   "points": [
+    "Appear anxious and uncertain whether to disclose drug use.",
+    "Initially say only that the patient \"won't wake up properly\".",
+    "If asked directly and respectfully: the patient sometimes uses heroin/opioids.",
+    "If asked about timing: last seen well around 20–40 minutes ago.",
+    "If asked about co-ingestants: \"don't know\", or the instructor-selected alcohol/benzodiazepine advanced variant.",
+    "If asked, provide allergies, presenting history, past medical history, family history and social history as briefed — do not invent certainty.",
+    "Do not touch the patient, airway equipment or simulated sharps.",
+    "Do not tell learners how to treat the patient."
+   ]
+  },
+  {
+   "label": "Card C — Scenario controller",
+   "colour": "#2B5BD7",
+   "points": [
+    "Airway opened / suction effective → improve airway noise and permit clearer ventilation.",
+    "BVM with poor seal / no airway correction → no chest rise; SpO2 remains poor.",
+    "Effective assisted ventilations → visible chest rise; colour improves; pulse and SpO2 trend upward.",
+    "Oxygen without ventilation during apnoea → no meaningful improvement.",
+    "Pulse reassessment → \"pulse present\" until the optional arrest branch is deliberately triggered.",
+    "Optional arrest trigger → no pulse / no signs of circulation; announce only when assessed.",
+    "BVM at 1 every 6 seconds (10/min) with good seal/chest rise → gradual improvement in oxygenation/colour while pulse remains present."
+   ]
+  }
+ ],
+ "safety": {
+  "intro": "Assisted ventilation, suction catheter insertion and airway adjunct insertion are manikin-only interventions in this scenario. This scenario demonstrates recognition and management — it must never reproduce hazardous drug exposure. Scene clues remain safe and symbolic.",
+  "siteSuitability": [
+   "Suction-capable adult manikin in place; BVM with reservoir, training oxygen, OPA/NPA and suction ready.",
+   "Pulse oximeter/monitor simulation and AED trainer (optional arrest branch) available.",
+   "Simulation paraphernalia checked: track marks, improvised tourniquet and a needleless syringe with inert liquid fixed to a prosthetic/simulation site.",
+   "Simulated vomit is non-toxic (porridge oats and water) and used only with equipment/manikins designed for suction practice."
+  ],
+  "ppe": [
+   "PPE appropriate to simulated body-fluid exposure."
+  ],
+  "interventionLimits": [
+   "No real sharps, skin penetration, unknown substances or hazardous drug substances are ever used as props.",
+   "No vomit substitute placed into a live participant's mouth.",
+   "No positive-pressure ventilation or effective mask seal on a live casualty.",
+   "No OPA/NPA or suction catheter insertion on a live casualty.",
+   "Use Rest for the live-to-manikin transition before assisted ventilation or invasive airway practice.",
+   "No learner puts fingers into a manikin airway unless the obstruction is clearly visible and the skill is within the taught pathway.",
+   "Use STILL immediately for unsafe airway procedures, real sharps exposure or any physical safety concern."
+  ],
+  "instructorRole": [
+   "The instructor remains physically present throughout as assessor/facilitator and safety officer.",
+   "Clinical values are simulation cues; adjust only if the learning objective is preserved: severe respiratory depression → respiratory arrest with pulse → optional cardiac arrest."
+  ],
+  "reset": [
+   "Clean/reset the suction-capable manikin and simulated vomit system.",
+   "Reset simulated paraphernalia without introducing real sharps or substances.",
+   "Rebrief witness/role-player and the selected progression branch.",
+   "Reset observations and prepare a fresh learner assessment sheet."
+  ]
+ },
+ "observations": [
+  "Structured primary survey performed despite obvious overdose clues",
+  "Airway/breathing treated before detailed history",
+  "Respiratory arrest with pulse managed with assisted ventilation, not CPR",
+  "Chest rise checked and poor BVM technique corrected",
+  "Oxygen not mistaken for ventilation",
+  "Pulse and breathing reassessed repeatedly",
+  "Simulated syringe/paraphernalia treated as a hazard and not handled unsafely"
+ ],
+ "observationsNote": "Do not tell learners in advance that the pulse will remain present — recognising it is the core objective. Standard ATMIST only.",
+ "assessment": [
+  {
+   "group": "Core criteria",
+   "items": [
+    [
+     "C1 2.2",
+     "Perform a dynamic scene risk assessment",
+     "Performs and verbalises dynamic risk assessment including the simulated syringe/sharps hazard, bodily fluids and scene changes."
+    ],
+    [
+     "C1 4.4",
+     "Demonstrate dynamic airway assessment",
+     "Performs repeated dynamic airway assessment before and after airway clearing, suction and ventilation."
+    ],
+    [
+     "C1 5.8",
+     "Recognise the need for clinical support to provide airway management",
+     "Recognises difficult/soiled airway and respiratory failure as requiring urgent clinical support beyond current scope."
+    ],
+    [
+     "C2 9.3",
+     "Identify the management of a patient affected by sudden poisoning",
+     "Demonstrates safe approach, identifies the poisoning source, assesses and treats ABCDE/MARCH problems and seeks clinical assistance immediately."
+    ],
+    [
+     "C3 1.1",
+     "Establish the presenting complaint and its potential cause",
+     "Establishes suspected injected opioid/substance overdose as the presenting problem and potential cause."
+    ],
+    [
+     "C3 1.2",
+     "Perform a structured patient assessment",
+     "Completes the full structured assessment set once immediate airway/breathing threats are managed."
+    ],
+    [
+     "C3 1.3",
+     "Obtain a patient history",
+     "Obtains allergies, presenting history, past medical history, family history and social/substance-use history from available sources."
+    ],
+    [
+     "C3 1.4",
+     "Determine the severity of a patient's condition",
+     "Determines severity from vital signs, assessment and history and prioritises airway/breathing problems."
+    ],
+    [
+     "C3 1.7",
+     "Make an immediate referral to the next echelon of care",
+     "Makes an immediate structured referral/update for severe respiratory depression/respiratory arrest."
+    ],
+    [
+     "C3 4.4",
+     "Demonstrate the assessment and management of an unconscious patient",
+     "Demonstrates assessment and management of the unconscious patient."
+    ]
+   ]
+  },
+  {
+   "group": "Stage 3 — Optional cardiac arrest",
+   "items": [
+    [
+     "C1 6.2",
+     "Demonstrate how to open patient's airway and check for breathing",
+     "Opens airway and checks for normal breathing promptly if the optional cardiac-arrest stage is activated."
+    ],
+    [
+     "C1 6.4",
+     "Demonstrate basic life support for an adult on a manikin",
+     "If arrest occurs, demonstrates full adult BLS including high-quality CPR, AED and BVM/oxygen with two-person technique."
+    ],
+    [
+     "C1 7.2",
+     "Demonstrate effective use of an automated external defibrillator",
+     "If arrest occurs, prepares and uses the AED safely and effectively."
+    ]
+   ]
+  },
+  {
+   "group": "Stage 4 — Optional ROSC",
+   "items": [
+    [
+     "C1 6.7",
+     "Demonstrate return of spontaneous circulation procedures",
+     "If ROSC occurs, completes full ABCDE reassessment, treats problems, monitors SpO2, manages temperature, reassures and evaluates response."
+    ]
+   ]
+  },
+  {
+   "group": "Conditional criteria",
+   "items": [
+    [
+     "C1 8.2",
+     "Identify safety considerations when storing and using medical gas cylinders",
+     "Conditional — oxygen used: completes full oxygen-cylinder and equipment safety checks before administration."
+    ],
+    [
+     "C1 8.4",
+     "Monitor the effects of medical gases",
+     "Conditional — oxygen used: uses pulse oximetry and vital signs to monitor the effects of oxygen/ventilatory support."
+    ],
+    [
+     "C1 8.6",
+     "Record the administration of medical gases",
+     "Conditional — oxygen documented: records medical gas administration on the appropriate PRF/PCR/electronic record."
+    ],
+    [
+     "C3 1.6",
+     "Record assessment findings and interventions",
+     "Conditional — documentation used: completes an appropriate patient record accurately and confidentially."
+    ]
+   ]
+  },
+  {
+   "group": "Endpoint — Handover",
+   "items": [
+    [
+     "C1 6.8",
+     "Perform a patient handover to the next echelon of care",
+     "At any endpoint: states immediate concerns first and gives a complete standard ATMIST handover."
+    ]
+   ]
+  }
+ ]
+};
+
+const SC_DETAIL_05 = {
+ "eyebrow": "Scenario 05 · Pond / water-edge incident",
+ "title": "Prolonged Submersion / Drowning",
+ "sub": "~25-minute submersion: cardiac arrest → airway complications → ROSC with respiratory depression",
+ "brief": {
+  "purpose": "A patient has been removed from a pond after an estimated 25-minute submersion and is in cardiac arrest. The scenario tests safe water-edge working, drowning-specific resuscitation, prioritisation of ventilation, airway contamination, hypothermia/environmental management, AED use and post-ROSC care where spontaneous breathing remains inadequate.",
+  "deployment": "\"You are responding to a person who has been removed from a pond following a prolonged submersion. Bystanders report they may have been under the water for around 25 minutes. The casualty is now on the bank. Ambulance resources are responding.\"",
+  "delivery": "Manikin-based throughout",
+  "endpoints": "Stage 1 → Stage 2 → Stage 3 (ROSC) + ATMIST",
+  "designPrinciple": "Core teaching point: drowning cardiac arrest is a hypoxic special circumstance. Ventilation is central. ROSC does not end the airway/breathing problem — the post-ROSC patient remains respiratory depressed and needs assisted ventilation.",
+  "variantsNote": "QUALSAFE STATUS: development/application scenario. Drowning/submersion is not one of the four permitted diagnoses for the mandatory prehospital emergency medical care practical scenario. It provides strong BLS, airway, oxygen, environmental and drowning evidence opportunities but does not replace the formal medical practical assessment.",
+  "listSectionsTop": [
+   {
+    "title": "Scene safety / water-edge control",
+    "points": [
+     "The casualty is already out of the water before learners approach.",
+     "Local training safety rule: learners and treatment equipment remain at least 3 metres from the real water's edge unless the site has a formally controlled alternative. This is a Sector 3 local control, not a universal clinical guideline.",
+     "No learner enters the water. Any rescue/recovery has already occurred.",
+     "Consider wet/slippery ground, cold/wind, crowd encroachment, oxygen/AED equipment on wet ground and access for incoming ambulance crews.",
+     "Use a marked dry treatment area where possible."
+    ]
+   }
+  ],
+  "equipment": [
+   "Adult resuscitation manikin in a dry treatment area at least 3 m from any real water edge",
+   "BVM, oxygen training setup, suction, airway adjuncts and AED trainer — ready but not necessarily at the patient's side",
+   "Safe simulated foam/free-fluid materials compatible with the manikin",
+   "Blankets, foil/insulation and ground insulation for hypothermia management",
+   "Temperature monitor or instructor-provided temperature cue",
+   "Scene Sounds device/speaker"
+  ],
+  "resources": [
+   {
+    "name": "Water movement / splashing",
+    "use": "Continuous low-level pond/water ambience."
+   },
+   {
+    "name": "Concerned crowd",
+    "use": "Bystanders reacting to the prolonged submersion and resuscitation."
+   },
+   {
+    "name": "Approaching sirens",
+    "use": "Distant initially, gradually closer if desired."
+   },
+   {
+    "name": "Light wind",
+    "use": "Optional; reinforces cold exposure and heat loss."
+   }
+  ],
+  "sceneSoundsNote": "Audio should create urgency and realism but must not mask exercise commands or materially interfere with team communication.",
+  "tables": [
+   {
+    "title": "Information-release matrix",
+    "run": true,
+    "note": "A friend/bystander can provide, if asked, allergies, presenting history, past medical history, family history and social history so C3 1.3 can be evidenced without inventing information.",
+    "head": [
+     "Information",
+     "Source",
+     "Release rule"
+    ],
+    "rows": [
+     [
+      "Submersion approximately 25 minutes",
+      "Bystander / rescuer",
+      "Given if asked or volunteered in the initial handover."
+     ],
+     [
+      "Casualty seen entering / disappearing into pond",
+      "Bystander",
+      "If asked."
+     ],
+     [
+      "No known trauma",
+      "Bystander",
+      "If asked; this pack is non-traumatic."
+     ],
+     [
+      "Water conditions",
+      "Bystander / instructor",
+      "Cold pond water; exact temperature not required unless the instructor wants it."
+     ],
+     [
+      "Rescue details",
+      "Bystander / rescuer",
+      "Patient removed before crew arrival; no learner water rescue."
+     ],
+     [
+      "Medical history / identity",
+      "Optional",
+      "May be unknown; history gathering must not delay resuscitation."
+     ]
+    ]
+   },
+   {
+    "title": "Instructor progression triggers",
+    "run": true,
+    "head": [
+     "Trigger",
+     "Instructor action"
+    ],
+    "rows": [
+     [
+      "5 initial ventilations delivered effectively",
+      "Allow progression to 30:2 CPR / AED sequence."
+     ],
+     [
+      "Learners wait for BVM without ventilating or compressing",
+      "No improvement; critical delay. Prompt only through physiology unless safety requires intervention."
+     ],
+     [
+      "Foam repeatedly suctioned despite ventilation being possible",
+      "Foam reappears; reinforces that ventilation should continue."
+     ],
+     [
+      "True fluid/vomit obstruction not cleared",
+      "Ventilations remain ineffective / no chest rise until the airway is cleared."
+     ],
+     [
+      "Effective CPR + ventilation + AED sequence achieved",
+      "After an appropriate period, instructor may trigger ROSC."
+     ],
+     [
+      "ROSC recognised",
+      "Move to Stage 3; pulse returns but RR remains 6/min."
+     ],
+     [
+      "Learners stop ventilation because pulse returned",
+      "SpO2/colour remain poor and RR stays 6; no improvement until assisted ventilation resumes."
+     ]
+    ]
+   }
+  ],
+  "stages": [
+   {
+    "n": 1,
+    "name": "Prolonged submersion cardiac arrest",
+    "intro": "For C1 6.4 evidence, BLS must include high-quality compressions, minimal interruption, AED use and BVM with oxygen including two-person technique, alongside the drowning-specific initial ventilations. Observations are instructor defaults; the critical features are prolonged submersion, cardiac arrest and significant cold exposure.",
+    "findings": [
+     [
+      "Response",
+      "Unresponsive."
+     ],
+     [
+      "Airway",
+      "Wet/contaminated; foam/froth may be visible; free fluid or vomit may be introduced as a separate cue."
+     ],
+     [
+      "Breathing",
+      "Not breathing normally / apnoeic."
+     ],
+     [
+      "Circulation",
+      "No pulse / no signs of circulation."
+     ],
+     [
+      "SpO2",
+      "Not reliably obtainable during arrest."
+     ],
+     [
+      "Temperature",
+      "Approx. 32.0°C core if measured; wet and cold to touch."
+     ],
+     [
+      "Skin",
+      "Pale/cyanosed, wet."
+     ],
+     [
+      "Submersion",
+      "Approximately 25 minutes, established from witnesses."
+     ],
+     [
+      "Trauma",
+      "None in this pack (trauma-associated drowning is a separate scenario)."
+     ]
+    ],
+    "actions": [
+     "Confirm unresponsiveness and absence of normal breathing / cardiac arrest.",
+     "Open the airway and give 5 initial ventilations before standard CPR where ventilations can be delivered immediately.",
+     "Use the first safe, effective ventilation method available; BVM with high-concentration oxygen is preferred when immediately ready.",
+     "If BVM/oxygen is not assembled, do not leave the patient without resuscitation. Use an immediately available trained method; if none, begin compressions while the second responder establishes ventilation, then deliver the 5 ventilations at the earliest practical opportunity.",
+     "After the initial ventilations, continue adult CPR at 30:2 with effective breaths and high-concentration oxygen.",
+     "Do not delay CPR to apply the AED. Dry the chest sufficiently for pad adhesion while resuscitation continues, then apply the AED and follow prompts."
+    ],
+    "endpoint": "Progress once effective resuscitation is established."
+   },
+   {
+    "n": 2,
+    "name": "Airway complication — foam versus obstructing fluid",
+    "intro": "Teaching distinction: obstructing free fluid/vomit is cleared when it prevents ventilation; drowning foam/froth should not trigger repeated suction that delays ventilation.",
+    "findings": [
+     [
+      "Persistent white/pink foam or froth",
+      "Do not repeatedly suction to remove all foam. Continue effective positive-pressure ventilation and reassess chest rise."
+     ],
+     [
+      "Free fluid / vomit obstructing ventilation",
+      "Clear promptly using positioning/postural drainage and directed suction, then immediately resume ventilation."
+     ],
+     [
+      "Poor chest rise",
+      "Reposition airway, reassess obstruction, improve BVM seal/technique — correct the cause rather than squeezing harder."
+     ],
+     [
+      "Re-accumulating foam",
+      "Accept froth may recur; keep ventilating effectively rather than entering an endless suction cycle."
+     ]
+    ],
+    "endpoint": "Trigger ROSC after appropriate successful management."
+   },
+   {
+    "n": 3,
+    "name": "ROSC with respiratory depression",
+    "intro": "ROSC is a stage, not the end of the scenario — the patient has a pulse but remains inadequately ventilated. For C1 6.7 require full ABCDE reassessment, treatment of findings, SpO2 monitoring, temperature control, reassurance and evaluation of response. For strict C3 1.2 require consciousness; breathing rate/volume/symmetry/effort; pulse rate/rhythm/strength; CRT; skin; pupils; motor/sensory; and a proportionate top-to-toe survey.",
+    "findings": [
+     [
+      "Response",
+      "Unresponsive or responds only to pain/voice; not reliably protecting airway."
+     ],
+     [
+      "Airway",
+      "Requires continued active management; foam may persist."
+     ],
+     [
+      "Breathing",
+      "Spontaneous RR 6/min, shallow and inadequate."
+     ],
+     [
+      "Pulse",
+      "Approx. 58–64/min and present."
+     ],
+     [
+      "SpO2",
+      "Initially poor/unreliable; ~84–88% if measured before adequate support. Improves with effective assisted ventilation/oxygen."
+     ],
+     [
+      "Temperature",
+      "Approx. 32.0°C and wet/cold unless active heat-loss prevention has begun."
+     ],
+     [
+      "Skin",
+      "Colour gradually improves with effective ventilation and circulation."
+     ]
+    ],
+    "actions": [
+     "Immediately repeat full ABCDE/DRCABC assessment after ROSC.",
+     "RR 6/min is below the course trigger of <10/min and requires assisted ventilations (the same applies to markedly excessive rates >30/min where breathing is ineffective).",
+     "Continue BVM-assisted ventilation with oxygen, coordinating with spontaneous breaths, aiming for an effective total rate around 10/min with visible chest rise. Avoid hyperventilation.",
+     "Continue suction only for true obstruction; persistent foam alone should not repeatedly interrupt ventilation.",
+     "Use maximum available oxygen until SpO2 can be measured reliably, then titrate to 94–98% in line with current RCUK post-resuscitation guidance.",
+     "Continue active hypothermia prevention and temperature monitoring.",
+     "Update ambulance/clinical support immediately: ROSC achieved but spontaneous ventilation remains inadequate."
+    ],
+    "endpoint": "ATMIST / End Ex. Maintain the RR 6 cue until scenario end to require continued support."
+   }
+  ],
+  "listSections": [
+   {
+    "title": "Environmental and temperature management — continuous throughout",
+    "points": [
+     "Move/position the casualty in the designated dry treatment area away from the water edge.",
+     "Remove wet clothing where practical without delaying resuscitation; cut only training clothing provided for that purpose.",
+     "Insulate from the ground as well as from above.",
+     "Use blankets/foil/other locally approved insulation and protect from wind.",
+     "Monitor temperature if available and include the trend in handover.",
+     "Treat hypothermia as part of the drowning problem, not an afterthought after CPR.",
+     "Do not apply direct extreme heat to the patient."
+    ]
+   },
+   {
+    "title": "Strict-evidence oxygen checks",
+    "points": [
+     "Where oxygen is used and C1 8.2 is claimed, the learner must check the cylinder is clean, undamaged and in date; keep it away from oil/grease, alcohol gel, naked flames and other ignition/combustible sources; and complete correct-patient, correct-drug and correct-dose checks before administration.",
+     "Where C1 8.4 is claimed, the learner must monitor SpO2 using pulse oximetry and repeat relevant vital signs after oxygen/ventilatory support.",
+     "C1 8.3 is deliberately NOT mapped because the full criterion requires a variety of oxygen adjuncts (BVM, non-rebreather mask and nasal cannulae).",
+     "C1 8.5 is deliberately NOT mapped unless a separate assessment creates an adverse-reaction reporting opportunity.",
+     "C1 8.6 is mapped only when the learner actually records oxygen administration on the appropriate PRF/PCR/electronic record."
+    ]
+   },
+   {
+    "title": "Useful skills practised but deliberately NOT mapped",
+    "points": [
+     "C3 2.4 — post-ROSC respiratory depression is managed but the inhaler/spacer element is absent.",
+     "C3 5.1 / 5.2 / 5.4 — water safety, hypothermia and drowning knowledge are heavily taught, but the full indicative content is broader than one cold-water scenario.",
+     "C1 5.3 / 5.4 / 5.5 — suction/airway/adjunct responses are practised but not the complete required range.",
+     "C1 7.3 — drying the chest and water-related AED safety are practised, but the criterion requires other safety considerations too.",
+     "C1 8.1 / 8.3 / 8.5 — oxygen use is practised without claiming full criterion breadth."
+    ]
+   },
+   {
+    "title": "Clinical evidence basis",
+    "points": [
+     "ERC 2025 special circumstances: onshore drowning CPR should start with 5 ventilations, then standard CPR if the person remains unresponsive without normal breathing.",
+     "Drowning is primarily a hypoxic event; oxygen and ventilation are central to resuscitation.",
+     "CPR should not be delayed for AED application; dry the chest sufficiently for pad adhesion while resuscitation continues.",
+     "RCUK 2025 post-resuscitation care: maximum available oxygen immediately after ROSC until SpO2 is reliable, then titrate to 94–98%.",
+     "Drowning literature distinguishes recurrent foam/froth (repeated suction delays ventilation) from true obstruction by vomit/free fluid (clear it when it prevents ventilation).",
+     "Qualsafe basis: C3 5.1–5.5 environmental exposure and drowning; December 2025 lesson plan includes a dedicated submersion scenario."
+    ]
+   }
+  ],
+  "goodPractice": [
+   "Safe approach with clear respect for water-edge hazards and the 3 m local training exclusion.",
+   "Recognises prolonged drowning arrest as primarily hypoxic and prioritises ventilation.",
+   "Delivers 5 initial ventilations, then 30:2 CPR without unnecessary delay.",
+   "Does not delay CPR for AED application.",
+   "Distinguishes foam/froth from obstructing free fluid/vomit and manages each appropriately.",
+   "Uses BVM/oxygen effectively and checks chest rise.",
+   "Maintains temperature/environmental management throughout.",
+   "Recognises ROSC promptly but immediately reassesses ABCDE.",
+   "Continues assisted ventilation after ROSC because RR 6/min is inadequate.",
+   "Provides a concise standard ATMIST handover including submersion duration, resuscitation course, ROSC, respiratory support and temperature."
+  ],
+  "notPenalise": [
+   "Using a safe immediate ventilation method other than BVM for the first 5 ventilations if BVM/oxygen is not ready, provided the responder is trained and ventilation is effective.",
+   "Beginning compressions while a second responder rapidly prepares BVM if no safe ventilation is immediately deliverable; ventilation must then be established without avoidable delay.",
+   "Not suctioning every trace of drowning foam/froth when effective ventilation can be delivered.",
+   "Different safe methods of heat-loss prevention that meet the same objective.",
+   "Reasonable variation in the order of secondary tasks once high-quality resuscitation is established."
+  ],
+  "critical": [
+   [
+    "Learner enters water / breaches the real water-edge safety control",
+    "STILL immediately. Water rescue is outside this scenario."
+   ],
+   [
+    "No attempt at drowning-specific initial ventilations",
+    "Major learning failure; hypoxic mechanism has been missed."
+   ],
+   [
+    "Prolonged wait for BVM with neither ventilation nor compressions",
+    "Critical avoidable delay."
+   ],
+   [
+    "Repeated suction of foam delays ventilations",
+    "Correct in debrief / during Rest if needed; foam should not drive an endless suction cycle."
+   ],
+   [
+    "Obstructing free fluid/vomit ignored despite no chest rise",
+    "Airway-management failure."
+   ],
+   [
+    "AED application delays initial resuscitation",
+    "Major sequencing issue; resuscitation first, AED as soon as available without avoidable interruption."
+   ],
+   [
+    "ROSC achieved and assisted ventilation stopped despite RR 6",
+    "Critical post-ROSC failure; circulation has returned but ventilation remains inadequate."
+   ],
+   [
+    "Temperature/environmental management completely omitted",
+    "Significant scenario objective missed."
+   ]
+  ],
+  "debriefPrompts": [
+   "Why are ventilations especially important in drowning cardiac arrest?",
+   "What would you do if the BVM was not immediately ready?",
+   "How did you decide whether airway material needed suctioning or whether you should continue ventilating through foam/froth?",
+   "What told you your ventilations were effective?",
+   "How did you manage the wet/cold environment during active resuscitation?",
+   "Did the AED ever distract from the immediate ventilation/CPR priorities?",
+   "After ROSC, what changed — and what did not change?",
+   "Why did RR 6 still require assisted ventilation despite the return of a pulse?",
+   "What temperature and environmental information should be included in handover?"
+  ],
+  "governance": "Strict evidence rule: a Qualsafe criterion is recorded only where the scenario provides a clear opportunity to demonstrate the whole criterion and its required indicative content, and it was actually run and demonstrated unprompted. Related or partial practice is learning activity only. This does not replace the official Qualsafe practical assessment record sheet/pass-criteria checklists or current organisational clinical procedures. Handover: immediate concern first — estimated 25-minute submersion, cardiac arrest on crew assessment, 5 initial ventilations, CPR/AED course, airway fluid/foam issues, ROSC, post-ROSC RR 6 with ongoing assisted ventilation, oxygen/SpO2 response and temperature."
+ },
+ "roles": [
+  {
+   "label": "Card A — Bystander / rescuer",
+   "colour": "#5C6B8A",
+   "points": [
+    "Tell the crew the casualty has just been removed from the pond and may have been submerged for around 25 minutes.",
+    "Remain concerned but do not obstruct the treatment area.",
+    "If asked: there was no obvious trauma; the casualty was recovered from the water before the crew arrived.",
+    "If asked, provide allergies, presenting history, past medical history, family history and social history as briefed; otherwise you may not know identity/medical history.",
+    "Do not encourage learners to enter the water.",
+    "If crowd control is requested, cooperate and help keep the treatment area clear."
+   ]
+  },
+  {
+   "label": "Card B — Scenario controller",
+   "colour": "#2B5BD7",
+   "points": [
+    "First ventilation attempts → allow chest rise only if airway position/seal is adequate.",
+    "Persistent foam/froth → foam reappears even after suction; effective ventilation remains possible.",
+    "True obstructing fluid/vomit → no/poor chest rise until the airway is cleared, then ventilation improves.",
+    "5 effective initial ventilations completed → permit transition to 30:2 CPR.",
+    "Effective CPR + oxygen + AED sequence → after an instructor-selected interval, trigger ROSC.",
+    "ROSC → pulse 58–64; spontaneous RR 6 shallow; response remains reduced; SpO2 initially poor/unreliable.",
+    "Post-ROSC BVM support effective → colour and SpO2 improve; maintain RR cue 6 until scenario end.",
+    "Ventilation stopped post-ROSC → SpO2/colour worsen; patient remains poorly responsive."
+   ]
+  }
+ ],
+ "safety": {
+  "intro": "No learner enters the water. The patient is already recovered. Maintain the local 3 m minimum exclusion from the real water's edge. Manikin-based throughout.",
+  "siteSuitability": [
+   "Adult resuscitation manikin placed in a dry treatment area at least 3 m from any real water edge; exclusion marked.",
+   "BVM, oxygen training setup, suction, airway adjuncts and AED trainer ready.",
+   "Blankets, foil/insulation, ground insulation and temperature monitor/cue ready.",
+   "Stop immediately if the real site becomes unsafe due to weather, public access or water conditions."
+  ],
+  "interventionLimits": [
+   "Use only training AED/oxygen equipment suitable for the exercise environment; do not deliberately wet electrical training equipment.",
+   "Keep cables, cylinders and equipment clear of slip/trip zones.",
+   "Foam and free-fluid cues are used only with a manikin designed for airway/suction simulation.",
+   "Do not put simulation fluid into a live participant's mouth or airway.",
+   "Do not overfill the manikin in a way that damages equipment or creates uncontrolled spill hazards.",
+   "Clean and disinfect suction/manikin equipment between runs.",
+   "STILL immediately if a learner enters the water or breaches the water-edge control."
+  ],
+  "instructorRole": [
+   "The instructor remains physically present throughout as assessor/facilitator and safety officer.",
+   "The 3 m water-edge rule is a local Sector 3 training control, not a universal RCUK requirement."
+  ],
+  "reset": [
+   "Dry/reset manikin and treatment surface.",
+   "Reset simulated foam/free-fluid airway cues and suction equipment.",
+   "Reset BVM, oxygen training equipment, AED trainer, blankets/insulation and temperature monitor.",
+   "Reset the marked 3 m water-edge exclusion and crowd/scene layout.",
+   "Restart Scene Sounds: water + crowd + sirens; add light wind if selected.",
+   "Rebrief bystander/rescuer role and the ROSC progression trigger."
+  ]
+ },
+ "observations": [
+  "Water-edge hazards and 3 m exclusion respected",
+  "5 drowning-specific initial ventilations delivered without waiting idle for a preferred device",
+  "CPR not delayed for AED application",
+  "Foam ventilated through; true obstruction cleared",
+  "Temperature/environmental management maintained throughout",
+  "Assisted ventilation continued after ROSC despite return of pulse"
+ ],
+ "observationsNote": "ROSC does not mean \"stop bagging\". RR 6 is inadequate and requires continued assisted ventilation. Standard ATMIST only.",
+ "assessment": [
+  {
+   "group": "Core criteria",
+   "items": [
+    [
+     "C1 2.2",
+     "Perform a dynamic scene risk assessment",
+     "Performs and verbalises dynamic scene risk assessment around water, wet/slippery ground, equipment, weather and crowd and reviews it as conditions change."
+    ],
+    [
+     "C1 4.4",
+     "Demonstrate dynamic airway assessment",
+     "Repeatedly assesses airway patency and response to management of foam/froth and true obstruction."
+    ],
+    [
+     "C1 5.8",
+     "Recognise the need for clinical support to provide airway management",
+     "Recognises persistent airway/ventilation problems as requiring urgent clinical support beyond current scope."
+    ],
+    [
+     "C1 6.2",
+     "Demonstrate how to open patient's airway and check for breathing",
+     "Opens the airway and checks for normal breathing promptly."
+    ],
+    [
+     "C1 6.4",
+     "Demonstrate basic life support for an adult on a manikin",
+     "Demonstrates full adult BLS including high-quality CPR, minimal interruption, AED and BVM/oxygen with two-person technique; drowning-specific initial ventilations are incorporated."
+    ],
+    [
+     "C1 7.2",
+     "Demonstrate effective use of an automated external defibrillator",
+     "Makes the AED operationally ready, dries/prepares the chest, positions pads and follows a safe shock sequence."
+    ],
+    [
+     "C3 1.1",
+     "Establish the presenting complaint and its potential cause",
+     "Establishes prolonged submersion/drowning as the presenting problem and potential cause."
+    ],
+    [
+     "C3 1.3",
+     "Obtain a patient history",
+     "Obtains the full required history from an available friend/bystander: allergies, presenting history, PMH, family history and social history."
+    ],
+    [
+     "C3 1.4",
+     "Determine the severity of a patient's condition",
+     "Determines severity from prolonged submersion, arrest/ROSC, vital signs, examination and history and prioritises ABCDE problems."
+    ],
+    [
+     "C3 1.7",
+     "Make an immediate referral to the next echelon of care",
+     "Makes an immediate structured referral/update for drowning cardiac arrest and again after ROSC."
+    ],
+    [
+     "C3 5.3",
+     "Identify how to provide prehospital emergency care to patients who are showing the effects from environment",
+     "Performs dynamic risk assessment and prehospital care for cold exposure, addressing ABCDE problems and severity while preventing further heat loss."
+    ],
+    [
+     "C3 5.5",
+     "Identify how to respond to immersion and submersion incidents and provide prehospital emergency care within scope of practice",
+     "Responds to submersion with dynamic risk assessment, airway care, SpO2/respiratory monitoring, emergency oxygen and handover including drowning mechanism."
+    ]
+   ]
+  },
+  {
+   "group": "Stage 3 — ROSC",
+   "items": [
+    [
+     "C1 6.7",
+     "Demonstrate return of spontaneous circulation procedures",
+     "After ROSC performs ABCDE reassessment, treats ongoing respiratory depression, monitors SpO2, manages temperature, reassures and evaluates response."
+    ],
+    [
+     "C3 1.2",
+     "Perform a structured patient assessment",
+     "After ROSC completes the full structured assessment set including consciousness, breathing, pulse, CRT, skin, pupils, motor/sensory and top-to-toe survey."
+    ],
+    [
+     "C3 4.4",
+     "Demonstrate the assessment and management of an unconscious patient",
+     "Demonstrates assessment and management of the unconscious post-ROSC patient who is breathing inadequately."
+    ]
+   ]
+  },
+  {
+   "group": "Conditional criteria",
+   "items": [
+    [
+     "C1 8.2",
+     "Identify safety considerations when storing and using medical gas cylinders",
+     "Conditional — oxygen used: completes full oxygen-cylinder and equipment safety checks before administration."
+    ],
+    [
+     "C1 8.4",
+     "Monitor the effects of medical gases",
+     "Conditional — oxygen used: uses pulse oximetry and vital signs to monitor oxygen/ventilatory support, particularly after ROSC."
+    ],
+    [
+     "C1 8.6",
+     "Record the administration of medical gases",
+     "Conditional — oxygen documented: records medical gas administration on the appropriate PRF/PCR/electronic record."
+    ],
+    [
+     "C3 1.6",
+     "Record assessment findings and interventions",
+     "Conditional — documentation used: completes an appropriate patient record accurately and confidentially."
+    ]
+   ]
+  },
+  {
+   "group": "Endpoint — Handover",
+   "items": [
+    [
+     "C1 6.8",
+     "Perform a patient handover to the next echelon of care",
+     "States immediate concerns first and gives a complete standard ATMIST handover including submersion duration and post-ROSC respiratory support."
+    ]
+   ]
+  }
+ ]
+};
+
 // Reference material — shared across all scenarios, not duplicated
 const SC_REFERENCE = {
   instructorPresence: [
@@ -3435,70 +4590,43 @@ const SC_REFERENCE = {
     ['N/A','Criterion was not tested because the relevant stage/branch was not activated, the evidence opportunity did not arise, or a stated local protocol dependency was not included.']
   ],
   packIndex: [
-    ['01','Cocaine-associated ACS / MI','Medical assessment; human factors; deterioration; airway/BLS','Complete'],
-    ['02','Violent assault — catastrophic haemorrhage','Haemorrhage; consent/capacity; shock; TCA; ROSC','Complete'],
-    ['03','Confused patient in pub garden — stroke / hypoglycaemia','Systematic assessment; collateral history; capacity; red flags; escalation','Complete'],
-    ['04','Opiate overdose','Poisoning; airway/breathing; respiratory deterioration','Planned'],
-    ['05','Chlorine inhalation + asthma','Hazmat/environment; respiratory distress; scene safety','Planned'],
+    ['01','Cocaine-associated ACS / MI','Medical assessment, human factors, deterioration, airway and adult BLS','Strict baseline complete'],
+    ['02','Violent assault — catastrophic haemorrhage','Life-threatening bleeding, shock, deterioration, TCA/ROSC','Strict baseline complete'],
+    ['03','Confused patient — stroke / hypoglycaemia','Assessment, capacity, neurological/metabolic differential, referral','Strict baseline complete'],
+    ['04','Opiate overdose / respiratory arrest','Poisoning, airway, ventilation, respiratory arrest, optional arrest/ROSC','Strict baseline complete'],
+    ['05','Prolonged submersion / drowning','Drowning special circumstance, hypoxic arrest, airway contamination, hypothermia, ROSC with ongoing ventilation','Strict baseline complete'],
     ['06','Fall from height','Major trauma; head injury; possible spinal/pelvic injury; deterioration','Planned']
   ],
   mappingMatrix: {
-    note: 'Records only criteria deliberately built into completed scenario designs. Scenarios 01–03 are mapped; Scenarios 04–06 remain TBC until their designs are developed.',
+    note: "Strict full-criterion evidence baseline after Scenarios 01–05. Only full criterion evidence is counted; 'Conditional' means the stated stage/branch must actually run; related/partial practice is left blank (—). Unique full criteria evidenced across Scenarios 01–05: 27 of 110 (S01 19, S02 18, S03 10, S04 19, S05 20). Scenario tabs 01–03 still show their earlier checklists until strict versions are supplied.",
     rows: [
-      ['C1 1.3','Conditional S1','Conditional S1','Conditional'],
-      ['C1 1.4','Core S1','Core S1','Core'],
-      ['C1 2.1','Core S1','Core S1','Core'],
-      ['C1 2.2','Core S1','Core S1','Core'],
-      ['C1 2.3','Core S1','Core S1','Core'],
-      ['C1 2.7','Core S1','Core S1','Core'],
-      ['C1 3.1','Conditional S1','Conditional S1','Conditional'],
-      ['C1 3.2','Core S1','Core S1','Core'],
-      ['C1 3.3','Core S1','Core S1','Core'],
-      ['C1 3.4','Core S1','Core S1','Core'],
-      ['C1 3.5','Core S1','Core S1','Core'],
-      ['C1 4.4','Adds S2','Adds S2','—'],
-      ['C1 5.3','Adds S2','Adds S2','—'],
-      ['C1 5.4','Adds S2','Adds S2','—'],
-      ['C1 5.5','Adds S2','Adds S2','—'],
-      ['C1 5.8','Adds S2','Adds S2','—'],
-      ['C1 6.2','Adds S3','Adds S3','—'],
-      ['C1 6.3','Adds S3','Adds S3','—'],
-      ['C1 6.4','Adds S3','Adds S3','—'],
-      ['C1 6.7','—','Adds S4','—'],
-      ['C1 6.8','Any endpoint','Any endpoint','Endpoint'],
-      ['C1 6.9','—','Adds S3','—'],
-      ['C1 7.1','Adds S3','Adds S3','—'],
-      ['C1 7.2','Adds S3','Adds S3','—'],
-      ['C1 8.1','Core S1','Conditional S1','Conditional'],
-      ['C1 8.3','Adds S2','Core S1','—'],
-      ['C1 8.4','Adds S2','Core S1','—'],
-      ['C1 8.6','Conditional S2','Conditional S1','—'],
-      ['C2 1.1','—','Conditional S1','—'],
-      ['C2 1.2','—','Conditional S1','—'],
-      ['C2 1.3','—','Core S1','—'],
-      ['C2 2.1','—','Core S1','—'],
-      ['C2 2.2','—','Core S1','—'],
-      ['C2 2.3','—','Core S1','—'],
-      ['C2 3.1','—','Core S1','—'],
-      ['C2 3.2','—','Core S1','—'],
-      ['C2 3.3','—','Core S1','—'],
-      ['C2 5.2','—','Conditional S1','—'],
-      ['C2 5.3','—','Conditional S1','—'],
-      ['C2 5.4','—','Core S1','—'],
-      ['C2 5.5','—','Conditional S1','—'],
-      ['C2 6.1','—','Conditional S1','—'],
-      ['C2 6.2','—','Core S1','—'],
-      ['C3 1.1','Core S1','—','Core'],
-      ['C3 1.2','Core S1','—','Core'],
-      ['C3 1.3','Core S1','—','Core'],
-      ['C3 1.4','Core S1','—','Core'],
-      ['C3 1.5','Core S1','—','Core'],
-      ['C3 1.6','Conditional S1','Conditional S1','Conditional'],
-      ['C3 1.7','Core S1','—','Core'],
-      ['C3 3.1','Core S1','—','Core'],
-      ['C3 3.2','Core S1','—','Core'],
-      ['C3 3.3','—','—','Conditional'],
-      ['C3 4.4','Adds S2','Adds S2','—']
+      ["C1 2.2", "Core", "Core", "Core", "Core", "Core"],
+      ["C1 3.1", "Conditional — PAT/BBB actually used", "—", "Conditional — PAT/BBB actually used", "—", "—"],
+      ["C1 3.2", "Core", "Core", "Core", "—", "—"],
+      ["C1 4.4", "Stage 2", "Stage 2", "—", "Core", "Core"],
+      ["C1 5.8", "Stage 2", "Stage 2", "—", "Core", "Core"],
+      ["C1 6.2", "Stage 3", "Stage 3", "—", "Stage 3", "Core"],
+      ["C1 6.4", "Stage 3", "Stage 3", "—", "Stage 3", "Core"],
+      ["C1 6.7", "—", "Stage 4", "—", "Stage 4", "Stage 3"],
+      ["C1 6.8", "Any endpoint", "Any endpoint", "Any endpoint", "Any endpoint", "Any endpoint"],
+      ["C1 6.9", "—", "Stage 3", "—", "—", "—"],
+      ["C1 7.2", "Stage 3", "Stage 3", "—", "Stage 3", "Core"],
+      ["C1 8.2", "Conditional — oxygen stage run", "Conditional — oxygen used", "—", "Conditional — oxygen used", "Conditional — oxygen used"],
+      ["C1 8.4", "Conditional — oxygen stage run", "Conditional — oxygen used", "—", "Conditional — oxygen used", "Conditional — oxygen used"],
+      ["C1 8.6", "Conditional — oxygen documented", "Conditional — oxygen documented", "—", "Conditional — oxygen documented", "Conditional — oxygen documented"],
+      ["C2 2.2", "—", "Core", "—", "—", "—"],
+      ["C2 3.1", "—", "Core", "—", "—", "—"],
+      ["C2 6.2", "—", "Core", "—", "—", "—"],
+      ["C2 9.3", "—", "—", "—", "Core", "—"],
+      ["C3 1.1", "Core", "—", "Core", "Core", "Core"],
+      ["C3 1.2", "Core", "—", "Core", "Core", "Stage 3"],
+      ["C3 1.3", "Core", "—", "Core", "Core", "Core"],
+      ["C3 1.4", "Core", "—", "Core", "Core", "Core"],
+      ["C3 1.6", "Conditional — documentation used", "Conditional — documentation used", "Conditional — documentation used", "Conditional — documentation used", "Conditional — documentation used"],
+      ["C3 1.7", "Core", "—", "Core", "Core", "Core"],
+      ["C3 4.4", "Stage 2", "Stage 2", "—", "Core", "Stage 3"],
+      ["C3 5.3", "—", "—", "—", "—", "Core"],
+      ["C3 5.5", "—", "—", "—", "—", "Core"]
     ]
   }
 };
@@ -3510,14 +4638,18 @@ const SC_REFERENCE = {
 
 let scCurrentId = null;
 
+// "01 - Nightclub chest pain"; placeholders that are already called "Scenario 07" keep their name
+function scNumTitle(s) {
+  return /^scenario\s*\d+$/i.test(s.title) ? s.title : String(s.id).padStart(2,'0') + ' - ' + s.title;
+}
+
 function scRenderGrid() {
   const wrap = document.getElementById('scGridTiles');
   if (!wrap) return;
   wrap.innerHTML = SC_SCENARIOS.map(s => `
     <button class="sc-tile ${s.ready ? '' : 'sc-locked'}" ${s.ready ? `onclick="scOpen(${s.id})"` : 'disabled'}>
       <span class="sc-tile-icon">${s.icon}</span>
-      <div class="sc-tile-num">Scenario ${String(s.id).padStart(2,'0')}</div>
-      <div class="sc-tile-title">${s.title}</div>
+      <div class="sc-tile-title">${scNumTitle(s)}</div>
       <div class="sc-tile-sub">${s.sub}</div>
     </button>
   `).join('');
@@ -3534,6 +4666,8 @@ function scGetDetail(id) {
   if (id === 1) return SC_DETAIL_01;
   if (id === 2) return SC_DETAIL_02;
   if (id === 3) return SC_DETAIL_03;
+  if (id === 4) return SC_DETAIL_04;
+  if (id === 5) return SC_DETAIL_05;
   return null;
 }
 
@@ -3542,7 +4676,7 @@ function scOpen(id) {
   if (!d) return;
   scCurrentId = id;
   scCurrentDetail = d;
-  document.getElementById('scDetailTitle').textContent = String(id).padStart(2,'0') + ' — ' + d.title;
+  document.getElementById('scDetailTitle').textContent = String(id).padStart(2,'0') + ' - ' + d.title;
   document.getElementById('scDetailSub').textContent = d.sub;
 
   scRenderBrief(d);
@@ -3573,6 +4707,18 @@ function scShowTab(name) {
   document.getElementById('scPanel-' + name).classList.add('active');
 }
 
+function scTableHTML(t) {
+  let h = `<div class="sc-h2">${t.title}</div>`;
+  if (t.note) h += `<div class="sc-note">${t.note}</div>`;
+  h += `<table class="sc-table"><tr>${t.head.map(x=>`<th>${x}</th>`).join('')}</tr>
+    ${t.rows.map(r=>`<tr>${r.map((c,i)=>i===0?`<td><strong>${c}</strong></td>`:`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
+  return h;
+}
+function scListSectionHTML(l) {
+  let h = `<div class="sc-h2">${l.title}</div>`;
+  if (l.note) h += `<div class="sc-note">${l.note}</div>`;
+  return h + `<ul class="sc-list">${l.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+}
 function scRenderBrief(d) {
   const b = d.brief;
   let html = '';
@@ -3592,6 +4738,9 @@ function scRenderBrief(d) {
   if (b.variantsNote) {
     html += `<div class="sc-note">${b.variantsNote}</div>`;
   }
+
+  if (b.tablesTop) html += b.tablesTop.map(scTableHTML).join('');
+  if (b.listSectionsTop) html += b.listSectionsTop.map(scListSectionHTML).join('');
 
   if (b.presentation) {
     html += `<div class="sc-h2">Patient presentation</div><ul class="sc-list">${b.presentation.map(x=>`<li>${x}</li>`).join('')}</ul>`;
@@ -3664,6 +4813,8 @@ function scRenderBrief(d) {
     html += `<div class="sc-h2">${b.hypoTreatment.title}</div><ul class="sc-list">${b.hypoTreatment.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
+  if (b.tables) html += b.tables.map(scTableHTML).join('');
+
   if (b.goodPractice) {
     html += `<div class="sc-h2">Good practice</div><ul class="sc-list">${b.goodPractice.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
@@ -3689,7 +4840,12 @@ function scRenderBrief(d) {
         <table class="sc-table">${st.trajectory.map(t=>`<tr><td style="width:22%;"><strong>${t[0]}</strong></td><td>${t[1]}</td></tr>`).join('')}</table>`;
     }
 
-    html += `<div class="sc-h2">Good practice</div><ul class="sc-list">${st.goodPractice.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    if (st.actions) {
+      html += `<div class="sc-h2">Expected actions</div><ul class="sc-list">${st.actions.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    }
+    if (st.goodPractice) {
+      html += `<div class="sc-h2">Good practice</div><ul class="sc-list">${st.goodPractice.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    }
 
     if (st.capacityNote) {
       html += `<div class="sc-note"><strong>Capacity and consent —</strong> ${st.capacityNote}</div>`;
@@ -3711,6 +4867,8 @@ function scRenderBrief(d) {
   if (b.oxygenNote) {
     html += `<div class="sc-note">${b.oxygenNote}</div>`;
   }
+
+  if (b.listSections) html += b.listSections.map(scListSectionHTML).join('');
 
   if (b.notPenalise) {
     html += `<div class="sc-h2">What not to penalise</div><ul class="sc-list">${b.notPenalise.map(x=>`<li>${x}</li>`).join('')}</ul>`;
@@ -3909,8 +5067,8 @@ function scRenderReference() {
 
   html += `<div class="sc-h2">Master Qualsafe mapping matrix</div>
     <div class="sc-note">${r.mappingMatrix.note}</div>
-    <table class="sc-table"><tr><th>QA ref</th><th>Scenario 01</th><th>Scenario 02</th><th>Scenario 03</th></tr>
-    ${r.mappingMatrix.rows.map(m=>`<tr><td style="width:13%;"><strong>${m[0]}</strong></td><td>${m[1]}</td><td>${m[2]}</td><td>${m[3]}</td></tr>`).join('')}
+    <table class="sc-table"><tr><th>QA ref</th><th>S01</th><th>S02</th><th>S03</th><th>S04</th><th>S05</th></tr>
+    ${r.mappingMatrix.rows.map(m=>`<tr><td style="width:12%;"><strong>${m[0]}</strong></td>${m.slice(1).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}
     </table>`;
 
   document.getElementById('scPanel-ref').innerHTML = html;
@@ -3938,6 +5096,15 @@ const RN_MIXES = {
       ]},
   3: { label:'Quiet pub garden', sounds:[
         {id:'pub_crowd', vol:0.4},
+        {id:'wind', vol:0.3}
+      ]},
+  4: { label:'Low-level room tone / street', sounds:[
+        {id:'urban_night', vol:0.3}
+      ]},
+  5: { label:'Pond edge — water, crowd, sirens', sounds:[
+        {id:'river', vol:0.45},
+        {id:'crowd_fire', vol:0.4},
+        {id:'siren', vol:0.25},
         {id:'wind', vol:0.3}
       ]}
 };
@@ -3983,8 +5150,7 @@ function rnRenderPick() {
   let html = SC_SCENARIOS.map(s => {
     const ready = s.ready;
     return `<button class="rn-pick-row ${ready ? '' : 'rn-locked'}" ${ready ? `onclick="rnStart(${s.id})"` : 'disabled'}>
-      <div class="rn-pick-num">Scenario ${String(s.id).padStart(2,'0')}</div>
-      <div class="rn-pick-title">${s.title}</div>
+      <div class="rn-pick-title">${scNumTitle(s)}</div>
       <div class="rn-pick-sub">${s.sub}</div>
     </button>`;
   }).join('');
@@ -4019,8 +5185,8 @@ function rnStart(id) {
     notes: ''
   };
 
-  document.getElementById('rnHeadMeta').textContent = d.eyebrow;
-  document.getElementById('rnHeadTitle').textContent = d.title;
+  document.getElementById('rnHeadMeta').style.display = 'none';
+  document.getElementById('rnHeadTitle').textContent = String(id).padStart(2,'0') + ' - ' + d.title;
   document.getElementById('rnHeadSub').textContent = d.sub;
 
   rnBuildSteps();
@@ -4251,6 +5417,8 @@ function rnBriefHTML() {
       <table class="sc-table">${b.findings.map(f=>`<tr><td style="width:35%;"><strong>${f[0]}</strong></td><td>${f[1]}</td></tr>`).join('')}</table>`;
   }
 
+  if (b.listSectionsTop) html += b.listSectionsTop.map(scListSectionHTML).join('');
+
   if (b.stages) {
     b.stages.forEach(st => {
       html += `<div class="sc-stage-card">
@@ -4260,10 +5428,13 @@ function rnBriefHTML() {
       if (st.findings) {
         html += `<table class="sc-table">${st.findings.map(f=>`<tr><td style="width:35%;"><strong>${f[0]}</strong></td><td>${f[1]}</td></tr>`).join('')}</table>`;
       }
+      if (st.actions) html += `<ul class="sc-list">${st.actions.map(x=>`<li>${x}</li>`).join('')}</ul>`;
       if (st.endpoint) html += `<div class="sc-note"><strong>Endpoint —</strong> ${st.endpoint}</div>`;
       html += `</div></div>`;
     });
   }
+
+  if (b.tables) html += b.tables.filter(t => t.run).map(scTableHTML).join('');
 
   if (b.landlordInfo) {
     html += `<div class="sc-h2">${b.landlordInfo.title}</div>
