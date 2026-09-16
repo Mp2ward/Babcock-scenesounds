@@ -4845,7 +4845,10 @@ function lpmOvCycle(cellKey, btn) {
 function lpmRenderLearners() {
   const c = lpmCourse;
   let html = `<div class="sc-h2" style="margin-top:0;">Learners on this course</div>
-    <div class="sc-note">Add every learner once here. They'll appear automatically in the competency record.</div>`;
+    <div class="sc-note">Add every learner once here. They'll appear automatically in the competency record.</div>
+    <input type="file" id="lpmScanInput" accept="image/*" capture="environment" style="display:none;" onchange="lpmHandleScan(this)">
+    <button class="rn-nav-btn rn-no-print" style="margin-bottom:18px;" onclick="document.getElementById('lpmScanInput').click()">📷 Scan printed register</button>
+    <div id="lpmScanStatus"></div>`;
 
   c.learners.forEach((l, i) => {
     html += `<div class="lpm-learner-card">
@@ -4875,6 +4878,105 @@ function lpmRemoveLearner(i) {
   if (!confirm('Remove ' + (l.name || 'this learner') + '? Their recorded observations stay in the record but will show as an unlisted learner.')) return;
   lpmCourse.learners.splice(i,1);
   lpmPersist();
+  lpmRenderLearners();
+}
+
+// ---- Scan printed register (on-device OCR, nothing leaves the iPad) ----
+let lpmTesseractLoaded = false;
+
+function lpmLoadTesseract() {
+  return new Promise((resolve, reject) => {
+    if (lpmTesseractLoaded && window.Tesseract) { resolve(); return; }
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js';
+    script.onload = () => { lpmTesseractLoaded = true; resolve(); };
+    script.onerror = () => reject(new Error('Could not load the scanning library — check the connection and try again.'));
+    document.head.appendChild(script);
+  });
+}
+
+function lpmHandleScan(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const status = document.getElementById('lpmScanStatus');
+  status.innerHTML = `<div class="sc-note">Loading scanner…</div>`;
+
+  lpmLoadTesseract()
+    .then(() => {
+      status.innerHTML = `<div class="sc-note">Reading the register — this can take 10–30 seconds on an iPad.</div>`;
+      return Tesseract.recognize(file, 'eng');
+    })
+    .then(result => {
+      const lines = lpmExtractNameCandidates(result.data.text);
+      lpmShowScanDraft(lines);
+    })
+    .catch(err => {
+      status.innerHTML = `<div class="sc-note" style="color:#C74444;">Scan failed: ${lpmEsc(err.message || 'unknown error')}. Try a clearer, flatter photo with good light.</div>`;
+    })
+    .finally(() => {
+      input.value = ''; // allow scanning again without needing a different file
+    });
+}
+
+function lpmExtractNameCandidates(rawText) {
+  const junkPatterns = [
+    /^\d+$/,                              // bare numbers
+    /\b\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}\b/, // dates
+    /^(course|register|date|name|learner|delegate|signature|instructor|centre|location|attendance|frec|day)\b/i,
+    /^(page|no\.?|ref)\b/i,
+  ];
+
+  return rawText
+    .split('\n')
+    .map(l => l.replace(/[|_]+/g, ' ').trim())
+    .filter(l => {
+      if (l.length < 3 || l.length > 40) return false;
+      if (!/[a-zA-Z]{2,}/.test(l)) return false;              // needs actual letters
+      if (junkPatterns.some(p => p.test(l))) return false;
+      const wordCount = l.split(/\s+/).length;
+      if (wordCount < 1 || wordCount > 4) return false;        // names are short
+      return true;
+    })
+    .map(l => l.replace(/\s{2,}/g, ' '));
+}
+
+function lpmShowScanDraft(lines) {
+  const status = document.getElementById('lpmScanStatus');
+  if (!lines.length) {
+    status.innerHTML = `<div class="sc-note" style="color:#C74444;">Couldn't find anything that looked like a name. Try a clearer photo, or add learners manually below.</div>`;
+    return;
+  }
+
+  const rows = lines.map((name, i) => `
+    <div class="lpm-learner-card" id="lpmDraftRow${i}">
+      <input type="text" value="${lpmEsc(name)}" id="lpmDraftInput${i}">
+      <button class="lpm-learner-remove" onclick="document.getElementById('lpmDraftRow${i}').remove()">Remove</button>
+    </div>`).join('');
+
+  status.innerHTML = `
+    <div class="sc-note">Check this list against the printed register before adding — OCR can misread handwriting or unclear print. Edit or remove any line, then confirm.</div>
+    <div id="lpmDraftList">${rows}</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 24px;">
+      <button class="rn-nav-btn primary" onclick="lpmConfirmScanDraft(${lines.length})">Add these learners</button>
+      <button class="rn-nav-btn" onclick="document.getElementById('lpmScanStatus').innerHTML=''">Discard</button>
+    </div>`;
+}
+
+function lpmConfirmScanDraft(count) {
+  let added = 0;
+  for (let i = 0; i < count; i++) {
+    const row = document.getElementById('lpmDraftRow' + i);
+    if (!row) continue; // removed by the instructor
+    const input = document.getElementById('lpmDraftInput' + i);
+    const name = input.value.trim();
+    if (!name) continue;
+    lpmCourse.learners.push({id:'L'+Date.now()+Math.random().toString(36).slice(2,6), name});
+    added++;
+  }
+  lpmPersist();
+  document.getElementById('lpmScanStatus').innerHTML = added
+    ? `<div class="sc-note" style="color:#0F6E56;">Added ${added} learner${added===1?'':'s'}.</div>`
+    : '';
   lpmRenderLearners();
 }
 
