@@ -638,6 +638,22 @@
   .rn-pick-sub { font-size:0.84rem; color:#6B7A94; margin-top:3px; }
 
   .rn-head { border-bottom:1px solid #D8DEE8; padding-bottom:16px; margin-bottom:18px; }
+  .rn-qa-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:18px 0 6px; }
+  .rn-qa-hint { font-family:'Public Sans',sans-serif; font-size:0.78rem; color:#6B7A94; }
+  .rn-qa-expand { border:1px solid #D8DEE8; background:#fff; color:#2B5BD7; border-radius:6px; padding:6px 10px; font-size:0.78rem; font-weight:600; cursor:pointer; white-space:nowrap; }
+  .rn-qa-row { border-bottom:1px solid #E6EAF0; padding:8px 12px 10px; }
+  .rn-qa-head { display:flex; align-items:center; gap:10px; width:100%; background:none; border:0; padding:4px 0; text-align:left; cursor:pointer; font:inherit; color:inherit; }
+  .rn-qa-ref { font-family:'Public Sans',sans-serif; font-size:0.72rem; font-weight:700; color:#2B5BD7; min-width:48px; }
+  .rn-qa-title { flex:1; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.98rem; color:#0D1B4C; }
+  .rn-qa-arrow { color:#8494AC; font-size:0.9rem; width:14px; text-align:center; }
+  .rn-qa-arrow::before { content:'▸'; }
+  .rn-qa-row.open .rn-qa-arrow::before { content:'▾'; }
+  .rn-qa-detail { display:none; padding:4px 0 8px 58px; }
+  .rn-qa-row.open .rn-qa-detail { display:block; }
+  .rn-qa-learners { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:4px; }
+  .rn-qa-learner .sc-learner-label { margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .rn-qa-learner .sc-pra-btn { padding:9px 0; }
+  @media (max-width:520px) { .rn-qa-learners { grid-template-columns:1fr; gap:6px; } .rn-qa-detail { padding-left:0; } }
   .rn-name-select { width:100%; box-sizing:border-box; padding:10px 12px; border:1px solid #D8DEE8; border-radius:8px; background:#fff; color:#0D1B4C; font-family:'Public Sans',sans-serif; font-size:0.95rem; -webkit-appearance:none; appearance:none; background-image:linear-gradient(45deg,transparent 50%,#6B7A94 50%),linear-gradient(135deg,#6B7A94 50%,transparent 50%); background-position:calc(100% - 18px) 55%, calc(100% - 12px) 55%; background-size:6px 6px; background-repeat:no-repeat; padding-right:32px; }
   .rn-head-meta { font-family:'Public Sans',sans-serif; font-size:0.84rem; color:#2B5BD7; margin-bottom:4px; }
   .rn-head-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.6rem; color:#0D1B4C; line-height:1.15; }
@@ -5526,6 +5542,43 @@ function rnSetCourse(courseId) {
   rnSession.learners.forEach((l, i) => rnSetLearner(i, l.name || ''));
 }
 
+// Short, tick-friendly headings for QA criteria (full wording stays in the expandable detail)
+const RN_QA_SHORT = {
+  'C1 1.3':'Human factors', 'C1 1.4':'Consent', 'C1 2.1':'Scene safety factors', 'C1 2.2':'Dynamic risk assessment',
+  'C1 2.3':'Safe approach & scene', 'C1 2.7':'Call for assistance', 'C1 3.1':'PAT / BBB', 'C1 3.2':'Communication',
+  'C1 3.3':'Patient assessment', 'C1 3.4':'Emergency care', 'C1 3.5':'Adapt to changes',
+  'C1 4.4':'Dynamic airway assessment', 'C1 5.3':'Clear & maintain airway', 'C1 5.4':'Airway adjuncts',
+  'C1 5.5':'Airway — respond to change', 'C1 5.8':'Airway clinical support', 'C1 6.2':'Open airway & check breathing',
+  'C1 6.3':'When to start CPR', 'C1 6.4':'Adult BLS', 'C1 6.7':'ROSC care', 'C1 6.8':'Handover (ATMIST)',
+  'C1 6.9':'Traumatic cardiac arrest', 'C1 7.1':'When to use AED', 'C1 7.2':'AED use',
+  'C1 8.1':'Oxygen — indications', 'C1 8.2':'Oxygen cylinder safety', 'C1 8.3':'Oxygen — administer',
+  'C1 8.4':'Oxygen — monitor effects', 'C1 8.6':'Oxygen — record',
+  'C2 1.1':'Mechanism of injury', 'C2 1.2':'Trauma characteristics', 'C2 1.3':'MOI importance',
+  'C2 2.1':'Time-critical trauma', 'C2 2.2':'Trauma assessment', 'C2 2.3':'Trauma management',
+  'C2 3.1':'Life-threatening bleeding', 'C2 3.2':'Blood loss severity', 'C2 3.3':'Severe blood loss management',
+  'C2 5.2':'Types of bleeding', 'C2 5.3':'Estimate blood loss', 'C2 5.4':'Treat external bleeding',
+  'C2 5.5':'Wound care', 'C2 6.1':'Shock types', 'C2 6.2':'Compromised circulation',
+  'C2 9.3':'Poisoning management',
+  'C3 1.1':'Presenting complaint', 'C3 1.2':'Structured assessment', 'C3 1.3':'History', 'C3 1.4':'Severity',
+  'C3 1.5':'Referral pathways', 'C3 1.6':'Record findings', 'C3 1.7':'Immediate referral',
+  'C3 3.1':'Medical emergency features', 'C3 3.2':'Medical emergency care', 'C3 3.3':'Medication administration',
+  'C3 4.4':'Unconscious patient', 'C3 5.3':'Environmental exposure care', 'C3 5.5':'Immersion / submersion'
+};
+function rnQaShort(ref, crit) {
+  return RN_QA_SHORT[ref] || crit;
+}
+function rnToggleQa(key) {
+  const row = document.getElementById('rnQa-' + key);
+  const open = row.classList.toggle('open');
+  row.querySelector('.rn-qa-head').setAttribute('aria-expanded', open);
+}
+function rnToggleAllQa(btn) {
+  const rows = document.querySelectorAll('#rnPanel-assess .rn-qa-row');
+  const open = btn.textContent === 'Expand all';
+  rows.forEach(r => { r.classList.toggle('open', open); r.querySelector('.rn-qa-head').setAttribute('aria-expanded', open); });
+  btn.textContent = open ? 'Collapse all' : 'Expand all';
+}
+
 function rnAssessHTML() {
   const d = rnDetail;
   const courses = rnCourses();
@@ -5579,18 +5632,31 @@ function rnAssessHTML() {
     </div>
     <p id="rnLearnerErr" style="color:#C74444;font-size:0.82rem;min-height:18px;margin-bottom:8px;"></p>`;
 
+  html += `<div class="rn-qa-toolbar">
+      <div class="rn-qa-hint">Tap a heading for the full criterion and what good looks like.</div>
+      <button class="rn-qa-expand" onclick="rnToggleAllQa(this)">Expand all</button>
+    </div>`;
+
   d.assessment.forEach((group, gi) => {
     html += `<div class="sc-assess-group"><div class="sc-assess-group-title">${group.group}</div>`;
     group.items.forEach((item, ii) => {
       const [ref, crit, good] = item;
       const key = gi + '_' + ii;
-      html += `<div class="sc-assess-row">
-        <div class="sc-assess-ref">${ref}</div>
-        <div class="sc-assess-crit">${crit}</div>
-        <div class="sc-assess-good">${good}</div>
-        <div class="sc-assess-learners">
-          <div><div class="sc-learner-label" id="rnLbl1-${key}">Learner 1</div>${rnPra(key,0)}</div>
-          <div><div class="sc-learner-label" id="rnLbl2-${key}">Learner 2</div>${rnPra(key,1)}</div>
+      const n1 = rnSession.learners[0].name || 'Learner 1';
+      const n2 = rnSession.learners[1].name || 'Learner 2';
+      html += `<div class="rn-qa-row" id="rnQa-${key}">
+        <button class="rn-qa-head" onclick="rnToggleQa('${key}')" aria-expanded="false">
+          <span class="rn-qa-ref">${ref}</span>
+          <span class="rn-qa-title">${rnQaShort(ref, crit)}</span>
+          <span class="rn-qa-arrow"></span>
+        </button>
+        <div class="rn-qa-detail">
+          <div class="sc-assess-crit">${crit}</div>
+          <div class="sc-assess-good">${good}</div>
+        </div>
+        <div class="rn-qa-learners">
+          <div class="rn-qa-learner"><div class="sc-learner-label" id="rnLbl1-${key}">${rnEscAttr(n1)}</div>${rnPra(key,0)}</div>
+          <div class="rn-qa-learner"><div class="sc-learner-label" id="rnLbl2-${key}">${rnEscAttr(n2)}</div>${rnPra(key,1)}</div>
         </div>
       </div>`;
     });
