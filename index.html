@@ -822,12 +822,12 @@ window.addEventListener('load', function () {
     <div class="hub-p">Choose how you want to run this session.</div>
 
     <div class="hub-tiles">
-    <button class="hub-tile" onclick="showView('sounds')">
-      <div class="hub-accent" style="background:#2B5BD7;"></div>
-      <span class="hub-emoji">🎛️</span>
+    <button class="hub-tile" onclick="showView('lpm');lpmShowPick();">
+      <div class="hub-accent" style="background:#4A6B52;"></div>
+      <span class="hub-emoji">📋</span>
       <div style="flex:1;min-width:0;">
-        <div class="hub-title">SOUNDBOARD</div>
-        <div class="hub-sub">97 sounds across 6 categories, live mixer</div>
+        <div class="hub-title">LEARNER PRACTICAL MATRIX</div>
+        <div class="hub-sub">Course details, learner names, live competency record</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
@@ -842,22 +842,22 @@ window.addEventListener('load', function () {
       <span class="hub-chev">&rsaquo;</span>
     </button>
 
+    <button class="hub-tile" onclick="showView('sounds')">
+      <div class="hub-accent" style="background:#2B5BD7;"></div>
+      <span class="hub-emoji">🎛️</span>
+      <div style="flex:1;min-width:0;">
+        <div class="hub-title">SOUNDBOARD</div>
+        <div class="hub-sub">97 sounds across 6 categories, live mixer</div>
+      </div>
+      <span class="hub-chev">&rsaquo;</span>
+    </button>
+
     <button class="hub-tile primary" onclick="showView('run');rnRenderPick();">
       <div class="hub-accent" style="background:#2B5BD7;"></div>
       <span class="hub-emoji">▶️</span>
       <div style="flex:1;min-width:0;">
         <div class="hub-title">RUN A SCENARIO</div>
         <div class="hub-sub">Cards and sound together</div>
-      </div>
-      <span class="hub-chev">&rsaquo;</span>
-    </button>
-
-    <button class="hub-tile" onclick="showView('lpm');lpmShowPick();">
-      <div class="hub-accent" style="background:#4A6B52;"></div>
-      <span class="hub-emoji">📋</span>
-      <div style="flex:1;min-width:0;">
-        <div class="hub-title">LEARNER PRACTICAL MATRIX</div>
-        <div class="hub-sub">Course details, learner names, live competency record</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
