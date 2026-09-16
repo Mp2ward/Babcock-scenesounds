@@ -4899,82 +4899,119 @@ function lpmHandleScan(input) {
   const file = input.files && input.files[0];
   if (!file) return;
   const status = document.getElementById('lpmScanStatus');
-  status.innerHTML = `<div class="sc-note">Loading scanner…</div>`;
+  const say = t => { status.innerHTML = `<div class="sc-note">${t}</div>`; };
+  say('Loading scanner…');
+  let worker;
 
   lpmLoadTesseract()
-    .then(() => {
-      status.innerHTML = `<div class="sc-note">Reading the register — this can take 10–30 seconds on an iPad.</div>`;
-      return lpmPrepImage(file).then(img => Tesseract.recognize(img, 'eng'));
+    .then(() => lpmPrepImage(file))
+    .then(async img => {
+      worker = await Tesseract.createWorker('eng');
+      // Pass 1 reads the table row by row; pass 2 hunts for scattered text. Together they catch names either misses.
+      say('Reading the register (pass 1 of 2) — this can take up to a minute on an iPad.');
+      await worker.setParameters({ tessedit_pageseg_mode: '6' });
+      const r1 = await worker.recognize(img);
+      say('Reading the register (pass 2 of 2)…');
+      await worker.setParameters({ tessedit_pageseg_mode: '11' });
+      const r2 = await worker.recognize(img);
+      return lpmMergeNames([lpmExtractNameCandidates(r1.data.text), lpmExtractNameCandidates(r2.data.text)]);
     })
-    .then(result => {
-      const lines = lpmExtractNameCandidates(result.data.text);
-      lpmShowScanDraft(lines);
-    })
+    .then(lines => lpmShowScanDraft(lines))
     .catch(err => {
       status.innerHTML = `<div class="sc-note" style="color:#C74444;">Scan failed: ${lpmEsc(err.message || 'unknown error')}. Try a clearer, flatter photo with good light.</div>`;
     })
     .finally(() => {
-      input.value = ''; // allow scanning again without needing a different file
+      if (worker) worker.terminate();
+      input.value = '';
     });
 }
 
+function lpmEditDistance(a, b) {
+  const d = Array.from({length: a.length + 1}, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++)
+    for (let j = 1; j <= b.length; j++)
+      d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+
+// Combine passes, treating near-identical readings ("Greenforc" / "Greenford") as the same person
+function lpmMergeNames(lists) {
+  const out = [];
+  lists.forEach(list => list.forEach(n => {
+    const k = n.toLowerCase();
+    if (!out.some(o => lpmEditDistance(o.toLowerCase(), k) <= 2)) out.push(n);
+  }));
+  return out;
+}
+
 function lpmExtractNameCandidates(rawText) {
-  // Words that appear on registers/forms but are never part of a learner's name
+  // Words that appear on registers, forms or the device screen but are never a learner's name
   const stop = new Set(('training pre post declaration form course code venue classroom date name names pay number ' +
     'signature signatures trainer trainers instructor instructors injury any event events page issue babcock london fire brigade lfb ' +
     'register learner learners delegate delegates attendance centre center location day start end time by signing this ' +
-    'you are have received full safety brief prior fit able participate exercise completing sustained not the and of to ' +
-    'frec ffdiec beckton total present absent yes no ref copyright').split(' '));
+    'you are have received full safety brief prior fit able participate exercise completing sustained not the and of to in ' +
+    'frec ffdiec beckton total present absent yes no ref copyright ' +
+    'mon tue tues wed thu thur thurs fri sat sun monday tuesday wednesday thursday friday saturday sunday ' +
+    'feb mar apr jun jul aug sep sept oct nov dec ' +
+    'sign apple business google docs doc gmail mail open openwith details inbox compose reply forward download print upgrade sector group ltd overview find update').split(' '));
+  const isStop = w => {
+    const lw = w.toLowerCase();
+    if (stop.has(lw)) return true;
+    // catch OCR-truncated form words like "Trainin" or "Declarat"
+    if (lw.length >= 5) for (const s of stop) if (s.length > lw.length && s.startsWith(lw)) return true;
+    return false;
+  };
 
-  // A name word: capital letter then lowercase letters, allowing O'Connor, McDonald, Smith-Jones
-  const wordRe = /^[A-Z][a-z]*(?:['\u2019\-][A-Z]?[a-z]+)*$|^(?:Mc|Mac|O['\u2019])[A-Z][a-z]+$/;
+  // Name word: Capital + lowercase; allows O'Connor, McDonald, Smith-Jones (hyphen must be followed by a capital)
+  const partRe = /^(?:Mc|Mac|O')?[A-Z][a-z]+$|^[A-Z][a-z]*'[A-Z]?[a-z]+$/;
+  const isNameWord = w => w.length >= 2 && w.split('-').every(p => partRe.test(p) && !isStop(p));
+
   const seen = new Set();
   const names = [];
-
   rawText.split('\n').forEach(line => {
-    // Turn anything that isn't a letter, apostrophe or hyphen into a break, so numbers, dates and table lines vanish
     const tokens = line.replace(/[\u2018\u2019`]/g, "'").replace(/[^A-Za-z'\-]+/g, ' ').trim().split(/\s+/);
     let run = [];
     const flush = () => {
       if (run.length >= 2 && run.length <= 4) {
-        const first = run[0], last = run[run.length - 1];
-        const full = first + ' ' + last;
+        const full = run[0] + ' ' + run[run.length - 1];
         const key = full.toLowerCase();
         if (!seen.has(key)) { seen.add(key); names.push(full); }
       }
       run = [];
     };
     tokens.forEach(t => {
-      const clean = t.replace(/^['\-]+|['\-]+$/g, '');
-      const isName = clean.length >= 2 && wordRe.test(clean) && !stop.has(clean.toLowerCase());
-      if (isName) run.push(clean); else flush();
+      let clean = t.replace(/^['\-]+|['\-]+$/g, '');
+      // OCR often reads a capital I as lowercase l ("lsaac" → "Isaac")
+      if (/^l[^aeiouy'\-][a-z]+$/.test(clean)) clean = 'I' + clean.slice(1);
+      if (isNameWord(clean)) run.push(clean); else flush();
     });
     flush();
   });
 
-  // Skip anyone already on the course
-  const existing = new Set((lpmCourse.learners || []).map(l => (l.name || '').trim().toLowerCase()));
-  return names.filter(n => !existing.has(n.toLowerCase()));
+  const existing = (lpmCourse.learners || []).map(l => (l.name || '').trim().toLowerCase()).filter(Boolean);
+  return names.filter(n => !existing.some(e => lpmEditDistance(e, n.toLowerCase()) <= 2));
 }
 
-// Upscale, greyscale and boost contrast before OCR — much better on screenshots and phone photos
+// Enlarge (within iPad canvas limits) and greyscale before OCR
 function lpmPrepImage(file) {
   return new Promise(resolve => {
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => {
-      const scale = Math.min(3, Math.max(1, 2400 / img.width));
+      const maxArea = 16000000; // iOS Safari canvas limit is ~16.7M pixels
+      const scale = Math.max(0.5, Math.min(2.5, Math.sqrt(maxArea / (img.width * img.height))));
       const cv = document.createElement('canvas');
       cv.width = Math.round(img.width * scale);
       cv.height = Math.round(img.height * scale);
       const ctx = cv.getContext('2d');
+      ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(img, 0, 0, cv.width, cv.height);
       try {
         const d = ctx.getImageData(0, 0, cv.width, cv.height), px = d.data;
         for (let i = 0; i < px.length; i += 4) {
           const g = 0.299 * px[i] + 0.587 * px[i+1] + 0.114 * px[i+2];
-          const v = g > 150 ? 255 : g < 90 ? 0 : (g - 90) * 4.25; // push towards black text on white
-          px[i] = px[i+1] = px[i+2] = v;
+          px[i] = px[i+1] = px[i+2] = g;
         }
         ctx.putImageData(d, 0, 0);
       } catch (e) {}
