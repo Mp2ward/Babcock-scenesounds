@@ -4846,8 +4846,8 @@ function lpmRenderLearners() {
   const c = lpmCourse;
   let html = `<div class="sc-h2" style="margin-top:0;">Learners on this course</div>
     <div class="sc-note">Add every learner once here. They'll appear automatically in the competency record.</div>
-    <input type="file" id="lpmScanInput" accept="image/*" capture="environment" style="display:none;" onchange="lpmHandleScan(this)">
-    <button class="rn-nav-btn rn-no-print" style="margin-bottom:18px;" onclick="document.getElementById('lpmScanInput').click()">📷 Scan printed register</button>
+    <input type="file" id="lpmScanInput" accept="image/*" style="display:none;" onchange="lpmHandleScan(this)">
+    <button class="rn-nav-btn rn-no-print" style="margin-bottom:18px;" onclick="document.getElementById('lpmScanInput').click()">📷 Scan register (photo or screenshot)</button>
     <div id="lpmScanStatus"></div>`;
 
   c.learners.forEach((l, i) => {
@@ -4897,73 +4897,193 @@ function lpmLoadTesseract() {
 
 function lpmHandleScan(input) {
   const file = input.files && input.files[0];
+  input.value = '';
   if (!file) return;
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.onload = () => lpmOpenCropper(img, url);
+  img.onerror = () => {
+    document.getElementById('lpmScanStatus').innerHTML = `<div class="sc-note" style="color:#C74444;">Couldn't open that image. Try taking the photo again.</div>`;
+  };
+  img.src = url;
+}
+
+// ---- Step 1: let the instructor box the names (hugely improves photos of screens) ----
+function lpmOpenCropper(img, url) {
+  const ov = document.createElement('div');
+  ov.id = 'lpmCropOverlay';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(13,27,76,0.94);display:flex;flex-direction:column;align-items:center;padding:14px;gap:12px;touch-action:none;';
+  ov.innerHTML = `
+    <div style="color:#fff;font-weight:600;text-align:center;max-width:620px;line-height:1.4;">Drag a box around the names — include the NAME heading if you can, and leave out other columns.</div>
+    <div id="lpmCropWrap" style="position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;width:100%;">
+      <canvas id="lpmCropCanvas" style="max-width:100%;max-height:100%;touch-action:none;border-radius:4px;"></canvas>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      <button class="rn-nav-btn primary" id="lpmCropGo" disabled style="opacity:0.5;">Scan selected area</button>
+      <button class="rn-nav-btn" id="lpmCropAll">Scan whole photo</button>
+      <button class="rn-nav-btn" id="lpmCropCancel">Cancel</button>
+    </div>`;
+  document.body.appendChild(ov);
+
+  const cv = document.getElementById('lpmCropCanvas');
+  const wrap = document.getElementById('lpmCropWrap');
+  const fit = Math.min(wrap.clientWidth / img.width, wrap.clientHeight / img.height, 1);
+  cv.width = Math.round(img.width * fit);
+  cv.height = Math.round(img.height * fit);
+  const ctx = cv.getContext('2d');
+  let sel = null, start = null;
+
+  const draw = () => {
+    ctx.drawImage(img, 0, 0, cv.width, cv.height);
+    if (!sel) return;
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(0, 0, cv.width, sel.y);
+    ctx.fillRect(0, sel.y + sel.h, cv.width, cv.height - sel.y - sel.h);
+    ctx.fillRect(0, sel.y, sel.x, sel.h);
+    ctx.fillRect(sel.x + sel.w, sel.y, cv.width - sel.x - sel.w, sel.h);
+    ctx.strokeStyle = '#4ADE80'; ctx.lineWidth = 3;
+    ctx.strokeRect(sel.x, sel.y, sel.w, sel.h);
+  };
+  const pos = e => {
+    const r = cv.getBoundingClientRect();
+    return { x: Math.max(0, Math.min(cv.width, (e.clientX - r.left) * cv.width / r.width)),
+             y: Math.max(0, Math.min(cv.height, (e.clientY - r.top) * cv.height / r.height)) };
+  };
+  cv.addEventListener('pointerdown', e => { e.preventDefault(); cv.setPointerCapture(e.pointerId); start = pos(e); sel = null; draw(); });
+  cv.addEventListener('pointermove', e => {
+    if (!start) return;
+    const p = pos(e);
+    sel = { x: Math.min(start.x, p.x), y: Math.min(start.y, p.y), w: Math.abs(p.x - start.x), h: Math.abs(p.y - start.y) };
+    draw();
+  });
+  cv.addEventListener('pointerup', () => {
+    start = null;
+    const ok = sel && sel.w > 20 && sel.h > 20;
+    if (!ok) { sel = null; draw(); }
+    const go = document.getElementById('lpmCropGo');
+    go.disabled = !ok; go.style.opacity = ok ? '1' : '0.5';
+  });
+  draw();
+
+  const close = () => { ov.remove(); URL.revokeObjectURL(url); };
+  document.getElementById('lpmCropCancel').onclick = close;
+  document.getElementById('lpmCropAll').onclick = () => { close(); lpmRunScan(img, null); };
+  document.getElementById('lpmCropGo').onclick = () => {
+    const box = { x: sel.x / fit, y: sel.y / fit, w: sel.w / fit, h: sel.h / fit };
+    close(); lpmRunScan(img, box);
+  };
+}
+
+// ---- Step 2: read it several ways and let the readings vote ----
+async function lpmRunScan(img, box) {
   const status = document.getElementById('lpmScanStatus');
   const say = t => { status.innerHTML = `<div class="sc-note">${t}</div>`; };
-  say('Loading scanner…');
   let worker;
+  try {
+    say('Loading scanner…');
+    await lpmLoadTesseract();
+    const variants = lpmPrepVariants(img, box);
+    worker = await Tesseract.createWorker('eng');
+    const passes = [];
+    const plan = [];
+    variants.forEach(v => ['6', '11'].forEach(psm => plan.push({ v, psm })));
+    for (let i = 0; i < plan.length; i++) {
+      say(`Reading the names (pass ${i + 1} of ${plan.length})…`);
+      await worker.setParameters({ tessedit_pageseg_mode: plan[i].psm });
+      const r = await worker.recognize(plan[i].v);
+      // A boxed selection is already just the names, so read every row in it; otherwise look for the NAME column
+      const col = box ? [] : lpmNamesFromColumn(r.data.words);
+      const everything = lpmNamesFromRows(lpmWordBoxes(r.data.words));
+      passes.push({ names: col.length ? col : everything, all: everything, column: col.length > 0 });
+    }
+    const res = lpmVoteNames(passes);
+    lpmShowScanDraft(res.names, res.column, box !== null);
+  } catch (err) {
+    status.innerHTML = `<div class="sc-note" style="color:#C74444;">Scan failed: ${lpmEsc(err.message || 'unknown error')}. Try again with the screen filling the photo.</div>`;
+  } finally {
+    if (worker) worker.terminate();
+  }
+}
 
-  lpmLoadTesseract()
-    .then(() => lpmPrepImage(file))
-    .then(async img => {
-      worker = await Tesseract.createWorker('eng');
-      // Pass 1 reads the table row by row; pass 2 hunts for scattered text. Together they catch names either misses.
-      say('Reading the register (pass 1 of 2) — this can take up to a minute on an iPad.');
-      await worker.setParameters({ tessedit_pageseg_mode: '6' });
-      const r1 = await worker.recognize(img);
-      say('Reading the register (pass 2 of 2)…');
-      await worker.setParameters({ tessedit_pageseg_mode: '11' });
-      const r2 = await worker.recognize(img);
-      // Prefer names found under a NAME column heading; fall back to the whole page if no heading is found
-      const col = lpmMergeNames([lpmNamesFromColumn(r1.data.words), lpmNamesFromColumn(r2.data.words)]);
-      if (col.length) return { lines: col, column: true };
-      return { lines: lpmMergeNames([lpmExtractNameCandidates(r1.data.text), lpmExtractNameCandidates(r2.data.text)]), column: false };
-    })
-    .then(res => lpmShowScanDraft(res.lines, res.column))
-    .catch(err => {
-      status.innerHTML = `<div class="sc-note" style="color:#C74444;">Scan failed: ${lpmEsc(err.message || 'unknown error')}. Try a clearer, flatter photo with good light.</div>`;
-    })
-    .finally(() => {
-      if (worker) worker.terminate();
-      input.value = '';
-    });
+// Line up the readings from every pass by row position on the page, then vote on the spelling of
+// each first name and surname separately (weighted by OCR confidence).
+function lpmVoteNames(passes) {
+  const colPasses = passes.filter(p => p.column);
+  // Only trust the column readings if at least half the passes found a NAME column
+  const useColumn = colPasses.length >= Math.ceil(passes.length / 2);
+  const used = useColumn ? colPasses : passes.map(p => ({ names: p.all }));
+  const all = [];
+  used.forEach((p, pi) => p.names.forEach(n => all.push(Object.assign({ pass: pi }, n))));
+  if (!all.length) return { names: [], column: useColumn };
+
+  const clusters = [];
+  all.sort((a, b) => a.y - b.y).forEach(n => {
+    const c = clusters.find(c => Math.abs(c.y - n.y) < Math.max(c.h, n.h) * 0.7 && !c.items.some(i => i.pass === n.pass));
+    if (c) { c.items.push(n); c.y = c.items.reduce((t, i) => t + i.y, 0) / c.items.length; }
+    else clusters.push({ y: n.y, h: n.h, items: [n] });
+  });
+
+  const pick = parts => {
+    const score = {};
+    parts.forEach(({ word, conf }) => { score[word] = (score[word] || 0) + Math.pow(Math.max(conf, 1) / 100, 2); });
+    return Object.keys(score).sort((a, b) => score[b] - score[a])[0];
+  };
+
+  const names = clusters.sort((a, b) => a.y - b.y).map(c => ({
+    name: pick(c.items.map(i => ({ word: i.name.split(' ')[0], conf: i.conf }))) + ' ' +
+          pick(c.items.map(i => ({ word: i.name.split(' ').slice(-1)[0], conf: i.conf }))),
+    sure: used.length < 3 || c.items.length >= 2
+  }));
+
+  const out = [];
+  names.forEach(n => {
+    const k = n.name.toLowerCase();
+    const dup = out.find(o => lpmEditDistance(o.name.toLowerCase(), k) <= 2);
+    if (dup) dup.sure = dup.sure || n.sure; else out.push(n);
+  });
+  return { names: out, column: useColumn };
 }
 
 // ---- Column-aware reading: find the NAME heading, keep only text underneath it ----
-function lpmNamesFromColumn(words) {
-  if (!words || !words.length) return [];
-  const W = words.map(w => ({
-    text: (w.text || '').trim(),
+function lpmWordBoxes(words) {
+  return (words || []).map(w => ({
+    text: (w.text || '').trim(), conf: w.confidence || 0,
     x0: w.bbox.x0, x1: w.bbox.x1, y0: w.bbox.y0, y1: w.bbox.y1,
-    cx: (w.bbox.x0 + w.bbox.x1) / 2, cy: (w.bbox.y0 + w.bbox.y1) / 2, h: w.bbox.y1 - w.bbox.y0
+    cx: (w.bbox.x0 + w.bbox.x1) / 2, cy: (w.bbox.y0 + w.bbox.y1) / 2, h: Math.max(1, w.bbox.y1 - w.bbox.y0)
   })).filter(w => w.text);
+}
 
-  // Headings can be a single word ("NAME") or two ("Learner Name"); only "name" itself is required
+// Group words into printed rows, then take at most one name per row (with its position and confidence)
+function lpmNamesFromRows(W) {
+  const rows = [];
+  W.slice().sort((a, b) => a.cy - b.cy).forEach(w => {
+    const row = rows.find(r => Math.abs(r.cy - w.cy) < Math.max(r.h, w.h) * 0.6);
+    if (row) { row.words.push(w); row.cy = (row.cy * (row.words.length - 1) + w.cy) / row.words.length; }
+    else rows.push({ cy: w.cy, h: w.h, words: [w] });
+  });
+  const out = [];
+  rows.forEach(r => {
+    r.words.sort((a, b) => a.x0 - b.x0);
+    const found = lpmExtractNameCandidates(r.words.map(w => w.text).join(' '), true);
+    if (!found.length) return;
+    out.push({ name: found[0], y: r.cy, h: r.h, conf: r.words.reduce((t, w) => t + w.conf, 0) / r.words.length });
+  });
+  return out;
+}
+
+function lpmNamesFromColumn(words) {
+  const W = lpmWordBoxes(words);
   const headings = W.filter(w => /^names?:?$/i.test(w.text.replace(/[^A-Za-z:]/g, '')));
   let best = [];
-
   headings.forEach(hd => {
-    // Words sitting on the same row as the heading are the other column titles
     const rowWords = W.filter(w => w !== hd && Math.abs(w.cy - hd.cy) < hd.h * 0.8);
     const right = rowWords.filter(w => w.x0 > hd.x1).sort((a, b) => a.x0 - b.x0)[0];
     const left = rowWords.filter(w => w.x1 < hd.x0).sort((a, b) => b.x1 - a.x1)[0];
-    // Column spans from just after the previous title to just before the next one
     const colStart = left ? (left.x1 + hd.x0) / 2 : 0;
     const colEnd = right ? right.x0 - hd.h * 0.3 : Infinity;
-
-    const below = W.filter(w => w.y0 > hd.y1 - hd.h * 0.2 && w.cx >= colStart && w.cx <= colEnd && w !== hd)
-      .sort((a, b) => a.cy - b.cy || a.x0 - b.x0);
-
-    // Group into rows by vertical position
-    const rows = [];
-    below.forEach(w => {
-      const row = rows.find(r => Math.abs(r.cy - w.cy) < Math.max(r.h, w.h) * 0.6);
-      if (row) { row.words.push(w); row.cy = (row.cy + w.cy) / 2; }
-      else rows.push({ cy: w.cy, h: w.h, words: [w] });
-    });
-    const text = rows.map(r => r.words.sort((a, b) => a.x0 - b.x0).map(w => w.text).join(' ')).join('\n');
-    const names = lpmExtractNameCandidates(text);
-    if (names.length > best.length) best = names; // if "Name" appears more than once, keep the heading with the most names under it
+    const below = W.filter(w => w !== hd && w.y0 > hd.y1 - hd.h * 0.2 && w.cx >= colStart && w.cx <= colEnd);
+    const names = lpmNamesFromRows(below);
+    if (names.length > best.length) best = names;
   });
   return best;
 }
@@ -4977,24 +5097,7 @@ function lpmEditDistance(a, b) {
   return d[a.length][b.length];
 }
 
-// Combine passes, treating near-identical readings ("Greenforc" / "Greenford") as the same person
-function lpmMergeNames(lists) {
-  const out = [];
-  lists.forEach(list => list.forEach(n => {
-    const k = n.toLowerCase();
-    const [f, l = ''] = k.split(' ');
-    const same = o => {
-      const ok = o.toLowerCase(), [of, ol = ''] = ok.split(' ');
-      if (lpmEditDistance(ok, k) <= 2) return true;
-      // same first name and a surname that starts the same way is almost certainly a misread ("Whyatt" / "Whvye")
-      return of === f && ol.slice(0, 2) === l.slice(0, 2) && lpmEditDistance(ol, l) <= Math.max(ol.length, l.length) / 2 + 1;
-    };
-    if (!out.some(same)) out.push(n);
-  }));
-  return out;
-}
-
-function lpmExtractNameCandidates(rawText) {
+function lpmExtractNameCandidates(rawText, keepExisting) {
   // Words that appear on registers, forms or the device screen but are never a learner's name
   const stop = new Set(('training pre post declaration form course code venue classroom date name names pay number ' +
     'signature signatures trainer trainers instructor instructors injury any event events page issue babcock london fire brigade lfb ' +
@@ -5009,6 +5112,8 @@ function lpmExtractNameCandidates(rawText) {
     if (stop.has(lw)) return true;
     // catch OCR-truncated form words like "Trainin" or "Declarat"
     if (lw.length >= 5) for (const s of stop) if (s.length > lw.length && s.startsWith(lw)) return true;
+    // catch misread form words like "Becaton" or "Ciassroo"
+    if (lw.length >= 6) for (const s of stop) if (s.length >= 6 && Math.abs(s.length - lw.length) <= 2 && lpmEditDistance(s, lw) <= 2) return true;
     return false;
   };
 
@@ -5038,58 +5143,88 @@ function lpmExtractNameCandidates(rawText) {
     flush();
   });
 
+  if (keepExisting) return names;
   const existing = (lpmCourse.learners || []).map(l => (l.name || '').trim().toLowerCase()).filter(Boolean);
   return names.filter(n => !existing.some(e => lpmEditDistance(e, n.toLowerCase()) <= 2));
 }
 
-// Enlarge (within iPad canvas limits) and greyscale before OCR
-function lpmPrepImage(file) {
-  return new Promise(resolve => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      const maxArea = 16000000; // iOS Safari canvas limit is ~16.7M pixels
-      const scale = Math.max(0.5, Math.min(2.5, Math.sqrt(maxArea / (img.width * img.height))));
-      const cv = document.createElement('canvas');
-      cv.width = Math.round(img.width * scale);
-      cv.height = Math.round(img.height * scale);
-      const ctx = cv.getContext('2d');
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, 0, 0, cv.width, cv.height);
-      try {
-        const d = ctx.getImageData(0, 0, cv.width, cv.height), px = d.data;
-        for (let i = 0; i < px.length; i += 4) {
-          const g = 0.299 * px[i] + 0.587 * px[i+1] + 0.114 * px[i+2];
-          px[i] = px[i+1] = px[i+2] = g;
-        }
-        ctx.putImageData(d, 0, 0);
-      } catch (e) {}
-      URL.revokeObjectURL(url);
-      resolve(cv);
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
-    img.src = url;
-  });
+// Two versions of the image: plain greyscale, and a cleaned black-and-white copy that removes
+// screen patterns (moiré) and uneven glare. Each suits different photos, so both are read.
+function lpmPrepVariants(img, box) {
+  const sx = box ? Math.max(0, box.x) : 0, sy = box ? Math.max(0, box.y) : 0;
+  const sw = box ? Math.min(img.width - sx, box.w) : img.width;
+  const sh = box ? Math.min(img.height - sy, box.h) : img.height;
+  const maxArea = 12000000; // stay well inside the iPad's canvas limit
+  const scale = Math.max(0.5, Math.min(4, Math.sqrt(maxArea / (sw * sh)), 3000 / Math.min(sw, sh) * 1.5));
+  const W = Math.round(sw * scale), H = Math.round(sh * scale);
+
+  const grey = document.createElement('canvas');
+  grey.width = W; grey.height = H;
+  const g = grey.getContext('2d');
+  g.imageSmoothingQuality = 'high';
+  // Soft blur while scaling smooths out the screen's pixel grid
+  try { g.filter = 'blur(' + Math.max(0.6, scale * 0.35).toFixed(2) + 'px) grayscale(1)'; } catch (e) {}
+  g.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+  g.filter = 'none';
+  let data;
+  try { data = g.getImageData(0, 0, W, H); } catch (e) { return [grey]; }
+  const px = data.data, lum = new Float32Array(W * H);
+  for (let i = 0, j = 0; i < px.length; i += 4, j++) {
+    lum[j] = 0.299 * px[i] + 0.587 * px[i+1] + 0.114 * px[i+2];
+    px[i] = px[i+1] = px[i+2] = lum[j];
+  }
+  g.putImageData(data, 0, 0);
+
+  // Adaptive threshold: compare each pixel with its neighbourhood, so glare and shadows don't wipe out text
+  const bw = document.createElement('canvas');
+  bw.width = W; bw.height = H;
+  const b = bw.getContext('2d');
+  const out = b.createImageData(W, H), op = out.data;
+  const integ = new Float64Array((W + 1) * (H + 1));
+  for (let y = 1; y <= H; y++) {
+    let row = 0;
+    for (let x = 1; x <= W; x++) {
+      row += lum[(y - 1) * W + x - 1];
+      integ[y * (W + 1) + x] = integ[(y - 1) * (W + 1) + x] + row;
+    }
+  }
+  const r = Math.max(8, Math.round(Math.min(W, H) / 24));
+  for (let y = 0; y < H; y++) {
+    const y0 = Math.max(0, y - r), y1 = Math.min(H, y + r + 1);
+    for (let x = 0; x < W; x++) {
+      const x0 = Math.max(0, x - r), x1 = Math.min(W, x + r + 1);
+      const sum = integ[y1 * (W + 1) + x1] - integ[y0 * (W + 1) + x1] - integ[y1 * (W + 1) + x0] + integ[y0 * (W + 1) + x0];
+      const mean = sum / ((x1 - x0) * (y1 - y0));
+      const v = lum[y * W + x] < mean * 0.85 ? 0 : 255;
+      const k = (y * W + x) * 4;
+      op[k] = op[k+1] = op[k+2] = v; op[k+3] = 255;
+    }
+  }
+  b.putImageData(out, 0, 0);
+  return [grey, bw];
 }
 
-function lpmShowScanDraft(lines, fromColumn) {
+function lpmShowScanDraft(items, fromColumn, cropped) {
   const status = document.getElementById('lpmScanStatus');
-  if (!lines.length) {
-    status.innerHTML = `<div class="sc-note" style="color:#C74444;">Couldn't find anything that looked like a name. Try a clearer photo, or add learners manually below.</div>`;
+  const existing = (lpmCourse.learners || []).map(l => (l.name || '').trim().toLowerCase()).filter(Boolean);
+  items = items.filter(it => !existing.some(e => lpmEditDistance(e, it.name.toLowerCase()) <= 2));
+  if (!items.length) {
+    status.innerHTML = `<div class="sc-note" style="color:#C74444;">Couldn't find anything that looked like a name. Try again, filling the photo with the screen and boxing just the names.</div>`;
     return;
   }
-
-  const rows = lines.map((name, i) => `
-    <div class="lpm-learner-card" id="lpmDraftRow${i}">
-      <input type="text" value="${lpmEsc(name)}" id="lpmDraftInput${i}">
+  const unsure = items.filter(i => !i.sure).length;
+  const rows = items.map((it, i) => `
+    <div class="lpm-learner-card" id="lpmDraftRow${i}" style="${it.sure ? '' : 'border-left:4px solid #E0A526;'}">
+      <input type="text" value="${lpmEsc(it.name)}" id="lpmDraftInput${i}">
+      ${it.sure ? '' : '<span style="font-size:0.72rem;color:#9A6B00;white-space:nowrap;">⚠ check</span>'}
       <button class="lpm-learner-remove" onclick="document.getElementById('lpmDraftRow${i}').remove()">Remove</button>
     </div>`).join('');
-
+  const where = fromColumn ? ' in the NAME column' : cropped ? ' in the selected area' : ' (no NAME heading found, so the whole photo was searched)';
   status.innerHTML = `
-    <div class="sc-note">Found ${lines.length} name${lines.length===1?'':'s'}${fromColumn ? ' in the NAME column' : ' (no NAME heading found, so the whole page was searched)'}. Check against the register — OCR can misread unclear print. Edit or remove any line, then confirm.</div>
+    <div class="sc-note">Found ${items.length} name${items.length===1?'':'s'}${where}.${unsure ? ` ${unsure} marked ⚠ were only read once, so check those especially.` : ''} Edit or remove any line, then confirm.</div>
     <div id="lpmDraftList">${rows}</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 24px;">
-      <button class="rn-nav-btn primary" onclick="lpmConfirmScanDraft(${lines.length})">Add these learners</button>
+      <button class="rn-nav-btn primary" onclick="lpmConfirmScanDraft(${items.length})">Add these learners</button>
       <button class="rn-nav-btn" onclick="document.getElementById('lpmScanStatus').innerHTML=''">Discard</button>
     </div>`;
 }
