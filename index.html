@@ -2396,26 +2396,6 @@ buildIconPicker();
 buildBuilderSoundList();
 renderCustomScenarios();
 </script>
-<!-- Feedback bubble -->
-<div onclick="openFeedback()" style="
-  position:fixed;
-  bottom:24px;right:16px;
-  border-radius:100px;
-  background:var(--fire);
-  display:flex;align-items:center;justify-content:center;
-  gap:4px;
-  padding:7px 12px;
-  cursor:pointer;
-  z-index:500;
-  box-shadow:0 4px 16px rgba(43,91,215,0.35);
-  transition:all 0.2s;
-" onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 6px 22px rgba(43,91,215,0.55)'"
-   onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 16px rgba(43,91,215,0.35)'"
-   title="Share Feedback">
-  <span style="font-size:0.75rem;">💬</span>
-  <span style="font-family:'Public Sans',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#F7F9FC;">Feedback</span>
-</div>
-
 <!-- Feedback tooltip removed -->
 
 <div class="app-footer">
