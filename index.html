@@ -469,7 +469,7 @@ function fmtD(v) {
   .hub-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.9rem;
            letter-spacing:0.04em; color:#0D1B4C; margin-bottom:4px; }
   .hub-p { font-size:0.9rem; color:#6B7A94; margin-bottom:26px; }
-  .hub-tiles { display:grid; grid-template-rows:repeat(4, 1fr); gap:12px; margin-bottom:12px; }
+  .hub-tiles { display:grid; grid-template-rows:repeat(5, 1fr); gap:12px; margin-bottom:12px; }
   .hub-tile { display:flex; align-items:center; gap:16px; padding:18px 20px;
               border:1px solid #D8DEE8; background:#FFFFFF; cursor:pointer;
               text-align:left; width:100%; box-sizing:border-box; transition:all 0.18s; }
@@ -696,6 +696,28 @@ function fmtD(v) {
   .lpm-extra-row select { flex:1; }
   .sc-type-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.1rem; color:#0D1B4C; margin:22px 0 10px; padding-bottom:6px; border-bottom:2px solid #0D1B4C; grid-column:1/-1; }
   .sc-type-h:first-child { margin-top:0; }
+  .kc-badge { display:inline-block; vertical-align:middle; margin-left:6px; padding:2px 8px; border-radius:100px; background:#EFE7F8; color:#6B3FA0; font-size:0.62rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
+  .kc-badge-lg { margin:0; font-size:0.75rem; padding:4px 12px; }
+  .kc-bar { position:relative; height:6px; margin-top:8px; border-radius:100px; background:#ECE6F3; overflow:hidden; max-width:260px; }
+  .kc-bar-lg { height:12px; max-width:none; margin-top:0; }
+  .kc-bar-fill { position:absolute; inset:0 auto 0 0; width:68%; border-radius:100px; background:linear-gradient(90deg,#6B3FA0,#9B6BD6,#6B3FA0); background-size:200% 100%; animation:kcShimmer 2.2s linear infinite, kcGrow 1.6s ease-out; }
+  .kc-bar-fill::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.55),transparent); transform:translateX(-100%); animation:kcSweep 1.8s ease-in-out infinite; }
+  @keyframes kcShimmer { from { background-position:0% 0; } to { background-position:200% 0; } }
+  @keyframes kcSweep { to { transform:translateX(100%); } }
+  @keyframes kcGrow { from { width:0; } to { width:68%; } }
+  .kc-page { text-align:center; padding:30px 0 40px; }
+  .kc-icon { font-size:3rem; animation:kcPulse 2.4s ease-in-out infinite; }
+  @keyframes kcPulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.08); } }
+  .kc-progress { max-width:460px; margin:0 auto; text-align:left; }
+  .kc-progress-top { display:flex; justify-content:space-between; font-family:'Public Sans',sans-serif; font-size:0.8rem; font-weight:600; color:#3A4760; margin-bottom:6px; }
+  .kc-pct { color:#6B3FA0; }
+  .kc-steps { max-width:460px; margin:22px auto 0; text-align:left; display:flex; flex-direction:column; gap:10px; }
+  .kc-step { display:flex; align-items:center; gap:10px; font-family:'Public Sans',sans-serif; font-size:0.9rem; color:#8494AC; }
+  .kc-step span { width:24px; height:24px; border-radius:50%; border:2px solid #D8DEE8; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; flex-shrink:0; }
+  .kc-step.done { color:#0F6E56; } .kc-step.done span { background:#0F6E56; border-color:#0F6E56; color:#fff; }
+  .kc-step.active { color:#0D1B4C; font-weight:600; }
+  .kc-spin { border-color:#E6DDF2 !important; border-top-color:#6B3FA0 !important; animation:kcRot 0.9s linear infinite; }
+  @keyframes kcRot { to { transform:rotate(360deg); } }
   .rn-safe-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.95rem; color:#0D1B4C; margin:16px 0 4px; }
   .rn-collapse { margin:18px 0; border:1px solid #E6EAF0; border-radius:8px; padding:0 14px; }
   .rn-collapse summary { cursor:pointer; padding:12px 0; font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.05rem; color:#0D1B4C; list-style:none; }
@@ -948,6 +970,17 @@ window.addEventListener('load', function () {
       <div style="flex:1;min-width:0;">
         <div class="hub-title">RUN A SCENARIO</div>
         <div class="hub-sub">Cards and sound together</div>
+      </div>
+      <span class="hub-chev">&rsaquo;</span>
+    </button>
+
+    <button class="hub-tile kc-tile" onclick="showView('knowledge')">
+      <div class="hub-accent" style="background:#6B3FA0;"></div>
+      <span class="hub-emoji">🧠</span>
+      <div style="flex:1;min-width:0;">
+        <div class="hub-title">KNOWLEDGE CENTRE <span class="kc-badge">Coming soon</span></div>
+        <div class="hub-sub">Interactive pop quizzes</div>
+        <div class="kc-bar"><div class="kc-bar-fill"></div></div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
@@ -1250,6 +1283,29 @@ window.addEventListener('load', function () {
 
 
 <!-- ============ LEARNER PRACTICAL MATRIX ============ -->
+<div class="app-view" id="view-knowledge">
+  <div class="rn-wrap">
+    <div class="kc-page">
+      <div class="kc-icon">🧠</div>
+      <div class="hub-eyebrow">Knowledge Centre</div>
+      <div class="hub-h" style="margin-bottom:6px;">Interactive pop quizzes</div>
+      <span class="kc-badge kc-badge-lg">Coming soon</span>
+      <p class="sc-p" style="max-width:520px;margin:16px auto 22px;">Quick quizzes that learners join on their phones by scanning a QR code, with live class results and scores saved to the Learner Practical Matrix.</p>
+      <div class="kc-progress">
+        <div class="kc-progress-top"><span>In development</span><span class="kc-pct">68%</span></div>
+        <div class="kc-bar kc-bar-lg"><div class="kc-bar-fill"></div></div>
+      </div>
+      <div class="kc-steps">
+        <div class="kc-step done"><span>✓</span>Concept and design</div>
+        <div class="kc-step active"><span class="kc-spin"></span>QR join and live results</div>
+        <div class="kc-step"><span>3</span>Question bank review</div>
+        <div class="kc-step"><span>4</span>Mock exams</div>
+      </div>
+      <button class="rn-nav-btn" style="margin-top:26px;" onclick="showView('hub')">← Back to hub</button>
+    </div>
+  </div>
+</div>
+
 <div class="app-view" id="view-lpm">
 
   <div class="lpm-view active" id="lpm-pick">
