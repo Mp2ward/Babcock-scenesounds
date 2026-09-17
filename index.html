@@ -638,6 +638,34 @@
   .rn-pick-sub { font-size:0.84rem; color:#6B7A94; margin-top:3px; }
 
   .rn-head { border-bottom:1px solid #D8DEE8; padding-bottom:16px; margin-bottom:18px; }
+  .lpm-ov-tick.auto { outline:2px dashed rgba(13,27,76,0.25); outline-offset:-5px; }
+  .sk-top { margin:6px 0 14px; max-width:520px; }
+  .sk-tabs { display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:6px; margin-bottom:14px; }
+  .sk-tab { flex-shrink:0; border:1px solid #D8DEE8; background:#fff; color:#0D1B4C; padding:9px 12px; border-radius:8px; font-family:'Public Sans',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:7px; }
+  .sk-tab.on { background:#0D1B4C; color:#fff; border-color:#0D1B4C; }
+  .sk-tab-n { display:inline-flex; width:20px; height:20px; border-radius:50%; background:#E6EAF0; color:#0D1B4C; align-items:center; justify-content:center; font-size:0.72rem; }
+  .sk-tab.on .sk-tab-n { background:#fff; }
+  .sk-sec-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.15rem; color:#0D1B4C; margin-top:6px; }
+  .sk-sec-sub { font-size:0.8rem; color:#6B7A94; margin:2px 0 10px; }
+  .sk-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid #D8DEE8; }
+  .sk-table { border-collapse:collapse; min-width:100%; font-family:'Public Sans',sans-serif; }
+  .sk-table th, .sk-table td { border:1px solid #D8DEE8; }
+  .sk-corner { position:sticky; left:0; z-index:3; background:#0D1B4C; color:#fff; text-align:left; padding:8px 10px; font-size:0.78rem; min-width:250px; }
+  .sk-name { background:#F7F9FC; min-width:78px; max-width:96px; padding:6px 4px; vertical-align:bottom; }
+  .sk-name-txt { font-size:0.74rem; font-weight:700; color:#0D1B4C; line-height:1.2; word-break:break-word; }
+  .sk-name-prog { font-size:0.66rem; color:#6B7A94; margin-top:3px; font-weight:700; }
+  .sk-name-prog.p { color:#0F6E56; } .sk-name-prog.r { color:#B06A00; }
+  .sk-colall { margin-top:4px; border:1px solid #D8DEE8; background:#fff; color:#0F6E56; font-size:0.66rem; font-weight:700; padding:3px 6px; border-radius:4px; cursor:pointer; }
+  .sk-group { background:#EEF1F5; font-size:0.76rem; font-style:italic; color:#3A4760; padding:6px 10px; position:sticky; left:0; }
+  .sk-crit { position:sticky; left:0; z-index:2; background:#fff; font-size:0.8rem; color:#0D1B4C; padding:7px 10px; min-width:250px; max-width:330px; line-height:1.3; }
+  .sk-ref { display:inline-block; min-width:34px; font-weight:700; color:#fff; background:#5A6478; border-radius:3px; padding:1px 4px; margin-right:7px; font-size:0.7rem; text-align:center; }
+  .sk-cell { padding:0; text-align:center; }
+  .sk-tick, .sk-res { width:100%; min-height:40px; border:none; background:#fff; cursor:pointer; font-size:1rem; font-weight:800; color:#0D1B4C; display:flex; align-items:center; justify-content:center; }
+  .sk-tick.c, .sk-res.p { background:#DDF1E8; color:#0F6E56; }
+  .sk-tick.r, .sk-res.r { background:#FCEBD2; color:#B06A00; }
+  .sk-res { font-size:0.85rem; }
+  .sk-res.ov { box-shadow:inset 0 0 0 2px #2B5BD7; }
+  @media print { #view-skills .sk-wrap { overflow:visible; border:none; } #view-skills .sk-corner, #view-skills .sk-crit, #view-skills .sk-group { position:static; } }
   .rn-safe-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.95rem; color:#0D1B4C; margin:16px 0 4px; }
   .rn-collapse { margin:18px 0; border:1px solid #E6EAF0; border-radius:8px; padding:0 14px; }
   .rn-collapse summary { cursor:pointer; padding:12px 0; font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.05rem; color:#0D1B4C; list-style:none; }
@@ -1233,15 +1261,17 @@ window.addEventListener('load', function () {
       <div class="rn-steps rn-no-print" id="lpmSteps">
         <button class="rn-step" onclick="lpmShowStep('details')">Course details</button>
         <button class="rn-step" onclick="lpmShowStep('learners')">Learners</button>
-        <button class="rn-step" onclick="lpmShowStep('overview')">QA overview</button>
+        <button class="rn-step" onclick="lpmShowStep('skills')">Skills stations</button>
         <button class="rn-step" onclick="lpmShowStep('sessions')">Scenario sessions</button>
+        <button class="rn-step" onclick="lpmShowStep('overview')">QA overview</button>
         <button class="rn-step" onclick="lpmShowStep('summary')">Summary</button>
       </div>
 
       <div class="rn-panel" id="lpmPanel-details"></div>
       <div class="rn-panel" id="lpmPanel-learners"></div>
-      <div class="rn-panel" id="lpmPanel-overview"></div>
+      <div class="rn-panel" id="lpmPanel-skills"></div>
       <div class="rn-panel" id="lpmPanel-sessions"></div>
+      <div class="rn-panel" id="lpmPanel-overview"></div>
       <div class="rn-panel" id="lpmPanel-summary"></div>
 
     </div>
@@ -5941,7 +5971,7 @@ const LPM_STORE_KEY = 'lpm_courses';
 let lpmCurrentId = null;
 let lpmCourse = null;
 let lpmStepIdx = 0;
-const LPM_STEPS = ['details','learners','overview','sessions','summary'];
+const LPM_STEPS = ['details','learners','skills','sessions','overview','summary'];
 
 function lpmLoadCourses() {
   try { return JSON.parse(localStorage.getItem(LPM_STORE_KEY) || '[]'); }
@@ -6029,7 +6059,7 @@ function lpmOpenCourse(id) {
   document.getElementById('lpmCourseSub').textContent = (lpmInstructorLine(lpmCourse) ? 'Instructor: ' + lpmInstructorLine(lpmCourse) : 'No instructor set') + ' · ' + (lpmCourse.learners.length) + ' learners';
 
   document.getElementById('lpmSteps').innerHTML = LPM_STEPS.map((k,i) => {
-    const labels = {details:'Course details', learners:'Learners', overview:'QA overview', sessions:'Scenario sessions', summary:'Summary'};
+    const labels = {details:'Course details', learners:'Learners', skills:'Skills stations', sessions:'Scenario sessions', overview:'QA overview', summary:'Summary'};
     return `<button class="rn-step" id="lpmStep${i}" onclick="lpmShowStep('${k}')">${labels[k]}</button>`;
   }).join('');
 
@@ -6050,6 +6080,7 @@ function lpmShowStep(key) {
   });
   document.querySelectorAll('.lpm-view#lpm-course .rn-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('lpmPanel-' + key).classList.add('active');
+  if (key === 'skills') { skCourseId = lpmCourse.id; skRender(); }
   if (key === 'overview') lpmRenderOverview();
   if (key === 'sessions') lpmRenderSessions();
   if (key === 'summary') lpmRenderSummary();
@@ -6162,12 +6193,13 @@ function lpmRenderOverview() {
   const displayLearners = lpmOverviewDisplayLearners();
 
   let html = `<div class="sc-h2" style="margin-top:0;">Mandatory practical assessments — quick overview</div>
-    <div class="sc-note">Learners 1–12 down the left, the six FREC 3 mandatory practical assessments across the top. Tap a cell to cycle blank → Pass → Referral → blank. One page, whole cohort, at a glance.</div>
+    <div class="sc-note">Learners 1–12 down the left, the six FREC 3 mandatory practical assessments across the top. Results fill in automatically from Skills stations (all criteria ✓ = P, any R = R). Tap a cell to set it yourself: blank → Pass → Referral → blank.</div>
 
     <div class="lpm-ov-legend">
       <span><span class="lpm-ov-swatch" style="background:#FFFFFF;"></span> Not yet assessed</span>
       <span><span class="lpm-ov-swatch" style="background:#E3F5EC;color:#0F6E56;"></span> Pass</span>
       <span><span class="lpm-ov-swatch" style="background:#FCEBEB;color:#A32D2D;"></span> Referral</span>
+      <span><span class="lpm-ov-swatch" style="background:#fff;border-style:dashed;"></span> Dashed = from skills stations</span>
     </div>
 
     <div class="lpm-ov-wrap"><table class="lpm-ov-table">
@@ -6183,21 +6215,42 @@ function lpmRenderOverview() {
       </td>
       ${LPM_QA_ITEMS.map(q => {
         const cellKey = 'row' + li + '_' + q.key;
-        const val = lpmCourse.qa[cellKey] || '';
-        const cls = val === 'P' ? 'p' : val === 'R' ? 'r' : '';
-        const label = val === 'P' ? 'P' : val === 'R' ? 'R' : '';
-        return `<td class="lpm-ov-cell"><button class="lpm-ov-tick ${cls}" onclick="lpmOvCycle('${cellKey}', this)">${label}</button></td>`;
+        const manual = lpmCourse.qa[cellKey] || '';
+        const auto = l.__pad ? '' : lpmOvAuto(l.id, q.key);
+        const val = manual || auto;
+        const cls = (val === 'P' ? 'p' : val === 'R' ? 'r' : '') + (!manual && auto ? ' auto' : '');
+        return `<td class="lpm-ov-cell"><button class="lpm-ov-tick ${cls}" title="${!manual && auto ? 'From skills stations' : ''}" onclick="lpmOvCycle('${cellKey}', this)">${val}</button></td>`;
       }).join('')}
     </tr>`;
   });
 
-  html += `</table></div>
+  html += `</table></div>`;
 
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;" class="rn-no-print">
+  // Referred learner record, built from skills-station R marks
+  skCourseId = lpmCourse.id;
+  const d = skData();
+  const referred = lpmCourse.learners.filter(l => (l.name||'').trim()).map(l => {
+    const refs = SK_ASSESSMENTS.flatMap(a => skAllRefs(a).filter(r => ((d.marks[r] || {})[l.id] || {}).v === 'R'));
+    return [l.name, refs];
+  }).filter(r => r[1].length);
+  html += `<div class="sc-h2">Referred learner record</div>` + (referred.length
+    ? `<table class="sc-table"><tr><th style="width:30%;">Learner name</th><th>Criteria marked R in skills stations</th></tr>
+        ${referred.map(r => `<tr><td><strong>${lpmEsc(r[0])}</strong></td><td>${r[1].join(', ')}</td></tr>`).join('')}</table>`
+    : `<p class="sc-p">No criteria currently marked R.</p>`);
+
+  html += `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;" class="rn-no-print">
       <button class="rn-nav-btn primary" onclick="window.print()">Print / save as PDF</button>
     </div>`;
 
   document.getElementById('lpmPanel-overview').innerHTML = html;
+}
+
+const LPM_QA_TO_SK = { abls:1, cbls:2, ibls:3, airway:4, trauma:5, medical:6 };
+function lpmOvAuto(lid, qkey) {
+  if (typeof SK_ASSESSMENTS === 'undefined') return '';
+  skCourseId = lpmCourse.id;
+  const s = skStatus(SK_ASSESSMENTS[LPM_QA_TO_SK[qkey] - 1], lid, skData());
+  return s.auto;
 }
 
 function lpmOvSetLearnerName(i, val) {
@@ -6214,8 +6267,7 @@ function lpmOvCycle(cellKey, btn) {
   const next = cur === '' ? 'P' : cur === 'P' ? 'R' : '';
   if (next === '') { delete lpmCourse.qa[cellKey]; } else { lpmCourse.qa[cellKey] = next; }
   lpmPersist();
-  btn.className = 'lpm-ov-tick' + (next === 'P' ? ' p' : next === 'R' ? ' r' : '');
-  btn.textContent = next;
+  lpmRenderOverview();
 }
 
 function lpmRenderLearners() {
@@ -6940,6 +6992,188 @@ function lpmRenderFullMatrix() {
 
 function lpmEsc(s) {
   return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+const SK_ASSESSMENTS = [{"n": 1, "t": "Adult basic life support", "short": "Adult BLS", "groups": [["Single person rescue", [["1.1", "SCENE assessment and safe approach"], ["1.2", "Minimises risk of infection to self and others"], ["1.3", "Patient Assessment Triangle on approach"]]], ["Unresponsive adult patient", [["1.4", "Requests clinical support"], ["1.5", "Assesses airway and performs an airway manoeuvre"], ["1.6", "Checks for normal breathing (max 10 secs)"]]], ["Unresponsive adult not breathing normally", [["1.7", "Confirms cardiac arrest, and provides update"], ["1.8", "Makes AED operationally ready and deals with faults"], ["1.9", "Considers and acts on any safety concerns"], ["1.10", "Correctly places electrode pads (prepares chest)"], ["1.11", "Does not touch patient while analysing rhythm"], ["1.12", "States 'Stand clear' and looks head to toe"], ["1.13", "Safely delivers shock (if advised)"], ["1.14", "Good quality CPR 30:2 for 2 minutes"], ["1.15", "Repeats analyse/charge/remove oxygen/shock sequence"]]], ["Crew rescue — colleague takes over compressions", [["1.16", "Assesses airway and performs an airway manoeuvre"], ["1.17", "Inserts airway adjunct"], ["1.18", "Connects B-V-M to oxygen"], ["1.19", "Makes efforts to gain 360° access"]]], ["Learner takes over compressions (rotating every 2 min)", [["1.20", "Compression rate 100–120 per minute"], ["1.21", "Compression depth 5–6 cm"], ["1.22", "Allows complete chest recoil"], ["1.23", "Minimises interruptions to compressions"], ["1.24", "Checks pad placement"], ["1.25", "Checks oxygen cylinder level"], ["1.26", "Continues high quality CPR 30:2"]]], ["Crew provide post ROSC care", [["1.27", "Assesses level of consciousness"], ["1.28", "Ensures airway remains patent"], ["1.29", "Ensures breathing is adequate"], ["1.30", "Ensures SpO2 within normal parameters"], ["1.31", "Checks pulse rate; recognises need for clinical support"], ["1.32", "Controls heat loss and environment"], ["1.33", "Measures and controls temperature"], ["1.34", "Considers cause of arrest; manages re-arrest risk"], ["1.35", "Handover to clinician on arrival"]]], ["Traumatic cardiac arrest modifications (before CPR)", [["1.36", "Haemorrhage control"], ["1.37", "Oxygenation"], ["1.38", "Penetrating chest injuries"], ["1.39", "Blunt force chest injuries"]]]]}, {"n": 2, "t": "Child basic life support", "short": "Child BLS", "groups": [["Single person rescue", [["2.1", "SCENE assessment and safe approach"], ["2.2", "Minimises risk of infection to self and others"], ["2.3", "PAT or BBB tool on approach"]]], ["Unresponsive child (1–18 years)", [["2.4", "Requests clinical support"], ["2.5", "Assesses airway and performs an airway manoeuvre"], ["2.6", "Checks for normal breathing (max 10 secs)"]]], ["Unresponsive child not breathing normally", [["2.7", "Confirms cardiac arrest, and provides update"], ["2.8", "Gives 5 initial ventilations"], ["2.9", "Immediately commences compressions and ventilations 15:2"]]], ["Crew rescue — colleague brings AED", [["2.10", "Makes AED operationally ready"], ["2.11", "Considers and acts on any safety concerns"], ["2.12", "Correctly places electrode pads (prepares chest)"], ["2.13", "Does not touch patient while analysing rhythm"], ["2.14", "States 'Stand clear' and looks head to toe"], ["2.15", "Safely delivers shock (if advised)"], ["2.16", "Good quality CPR 15:2 for 2 minutes"], ["2.17", "Repeats analyse/charge/remove oxygen/shock sequence"]]], ["Learner takes over compressions (rotating every 2 min)", [["2.18", "Compression rate 100–120 per minute"], ["2.19", "Depth 1/3 of chest, approx. 5 cm"], ["2.20", "Allows complete chest recoil"], ["2.21", "Minimises interruptions to compressions"], ["2.22", "Checks pad placement"], ["2.23", "Checks oxygen cylinder level"], ["2.24", "Repeats high quality CPR 15:2 for at least 2 min"], ["2.25", "360° access; prepares for EMS arrival"]]], ["Crew provide post ROSC care", [["2.26", "Assesses level of consciousness"], ["2.27", "Ensures airway remains patent"], ["2.28", "Ensures breathing is adequate"], ["2.29", "Ensures SpO2 within normal parameters"], ["2.30", "Checks pulse rate; recognises need for clinical support"], ["2.31", "Controls heat loss and environment"], ["2.32", "Measures and controls temperature"], ["2.33", "Considers cause of arrest; manages re-arrest risk"], ["2.34", "Handover to clinician on arrival"]]]]}, {"n": 3, "t": "Infant basic life support", "short": "Infant BLS", "groups": [["Single person rescue", [["3.1", "SCENE assessment and safe approach"], ["3.2", "Minimises risk of infection to self and others"], ["3.3", "PAT or BBB tool on approach"]]], ["Unresponsive infant (under 1 year)", [["3.4", "Requests clinical support"], ["3.5", "Assesses airway and performs an airway manoeuvre"], ["3.6", "Checks for normal breathing (max 10 secs)"]]], ["Unresponsive infant not breathing normally", [["3.7", "Confirms cardiac arrest, and provides update"], ["3.8", "Gives 5 initial ventilations"], ["3.9", "Immediately commences compressions and ventilations 15:2"]]], ["Crew rescue — colleague brings AED", [["3.10", "Makes AED operationally ready"], ["3.11", "Considers and acts on any safety concerns"], ["3.12", "Correctly places electrode pads (prepares chest)"], ["3.13", "Does not touch patient while analysing rhythm"]]], ["AED states \"no shock advised\"", [["3.14", "Immediately commences good quality CPR 15:2 for 2 min"], ["3.15", "Repeats analyse/charge/remove oxygen/shock sequence"]]], ["Optimises BLS delivery", [["3.16", "Compression rate 100–120 per minute"], ["3.17", "Depth 1/3 of chest, approx. 4 cm"], ["3.18", "Allows complete chest recoil"], ["3.19", "Minimises interruptions to compressions"], ["3.20", "Checks pad placement"], ["3.21", "Checks oxygen cylinder level"], ["3.22", "Repeats high quality CPR 15:2 for at least 2 min"], ["3.23", "360° access; prepares for EMS arrival"]]]]}, {"n": 4, "t": "Airway and ventilation skills", "short": "Airway & ventilation", "groups": [["Open, clear and maintain an airway using", [["4.1", "Structured airway assessment"], ["4.2", "Manual manoeuvres inc. jaw thrust"], ["4.3", "Postural drainage"], ["4.4", "Handheld and mechanical suction"], ["4.5", "OPA and NPA"], ["4.6", "Reassesses after each adjunct insertion"]]], ["Responds to changes to maintain patency", [["4.7", "Soiled airway"], ["4.8", "Intolerance to an airway adjunct"], ["4.9", "Repeated failed ventilation attempts"], ["4.10", "Adjunct failing; recognises need for senior support"]]], ["Safe use of oxygen and manual ventilation", [["4.11", "One-hand grip face mask ventilation"], ["4.12", "Two-hand grip face mask ventilation"]]], ["Choking — adult and child severe sequence", [["4.13", "Differentiates mild and severe choking"], ["4.14", "Encourages the patient to cough"], ["4.15", "5 back blows on a vest or manikin"], ["4.16", "5 abdominal thrusts on a vest or manikin"], ["4.17", "Aftercare of choking victim"], ["4.18", "Infant severe choking sequence"]]]]}, {"n": 5, "t": "Prehospital emergency trauma care", "short": "Trauma care", "groups": [["Assessment", [["5.1", "SCENE assessment and safe approach"], ["5.2", "Minimises risk of infection to self and others"], ["5.3", "Mechanism of injury; considers injuries; requests EMS"], ["5.4", "Patient Assessment Triangle on approach"], ["5.5", "Identifies and addresses life-threatening bleeding"], ["5.6", "Structured assessment (primary survey/ABCDE/MARCH)"], ["5.7", "Identifies time-critical and informs EMS"]]], ["Treatment and management of injuries", [["5.8", "Airway management"], ["5.9", "Emergency oxygen: indications, contraindications, adverse effects"], ["5.10", "Control of internal and external bleeding"], ["5.11", "Limb and full body immobilisation"], ["5.12", "Temperature control and environmental mitigation"], ["5.13", "Manages deviation from normal physiological parameters"], ["5.14", "Safe handling and packaging for evacuation"], ["5.15", "Secondary survey/ABCDE and SAMPLE"], ["5.16", "Records findings and interventions inc. medical gases"], ["5.17", "Structured handover to a clinician"]]], ["Prehospital trauma care skills", [["5.18", "Primary triage and use of a triage tool"], ["5.19", "Interventions based on risk/threat; responds to changes"], ["5.20", "Examines the wound"], ["5.21", "Estimates blood loss"], ["5.22", "Applies direct pressure"], ["5.23", "Packs wound with gauze"], ["5.24", "Uses trauma and blast bandages"], ["5.25", "Packs wound with haemostatic dressing"], ["5.26", "Manufactured and improvised tourniquets"], ["5.27", "Pelvic binder as a bleed control device"], ["5.28", "Applies chest seals/dressings"], ["5.29", "Controls nosebleeds; refers acute bleeds"], ["5.30", "Controls blood loss; dresses abdominal wound"], ["5.31", "Controls blood loss; dresses embedded object"], ["5.32", "First aid treatment for burns"], ["5.33", "Support/elevation sling and/or malleable splint"], ["5.34", "Pelvic binder with a scoop stretcher"], ["5.35", "Care for suspected spinal injuries"], ["5.36", "Dynamic moving and handling risk assessment"], ["5.37", "Safe use of moving and handling equipment"], ["5.38", "Assists clinician making ready handling equipment"], ["5.39", "Follows clinician instructions to move patients"], ["5.40", "Safely removes a safety helmet"]]]]}, {"n": 6, "t": "Prehospital emergency medical care", "short": "Medical care", "groups": [["Assessment", [["6.1", "SCENE assessment and safe approach"], ["6.2", "Minimises risk of infection to self and others"], ["6.3", "Patient Assessment Triangle on approach"], ["6.4", "Establishes presenting complaint and potential cause"], ["6.5", "Identifies and addresses life-threatening ABC"], ["6.6", "Structured assessment with consent (<C>ABCDE/MARCH)"], ["6.7", "Determines severity and informs EMS"]]], ["Treatment and management of an unwell patient", [["6.8", "Airway"], ["6.9", "Breathing"], ["6.10", "Circulation"], ["6.11", "Disability"], ["6.12", "Environment/expose/examine"], ["6.13", "Secondary survey/patient history"], ["6.14", "Reassesses vital signs; evaluates findings"], ["6.15", "Identifies appropriate referral pathways"], ["6.16", "Records findings and interventions inc. gases/medications"], ["6.17", "Structured handover to a clinician"]]], ["Respiratory distress", [["6.18", "Reassurance"], ["6.19", "Optimum positioning"], ["6.20", "Monitors oxygen saturations"], ["6.21", "Ventilatory support"], ["6.22", "Connects spacer device to inhaler"]]], ["Medications for an acute medical emergency", [["6.23", "Assists asthma patient with own reliever inhaler"], ["6.24", "Adrenaline auto-injector for anaphylaxis"], ["6.25", "Glucose gel for diabetic hypoglycaemia"], ["6.26", "Aspirin for acute coronary syndrome"]]], ["Unconscious patient", [["6.27", "Airway management"], ["6.28", "Recovery position"], ["6.29", "SpO2/respirations monitoring; oxygen where required"], ["6.30", "Aftercare and seeking clinical assistance or referral"]]]]}];
+
+// ============ SKILLS STATION MATRIX (Qualsafe FREC 3 practical pass criteria) ============
+const SK_STORE_KEY = 'sk_matrix_v1';
+let skCourseId = '';
+let skTab = 1; // 1–6 = assessment, 0 = summary
+
+function skLoadAll() { try { return JSON.parse(localStorage.getItem(SK_STORE_KEY) || '{}'); } catch (e) { return {}; } }
+function skSaveAll(all) { try { localStorage.setItem(SK_STORE_KEY, JSON.stringify(all)); } catch (e) {} }
+function skData() {
+  const all = skLoadAll();
+  if (!all[skCourseId]) all[skCourseId] = { marks:{}, overrides:{}, signoff:{ centre:'Sector 3 Group Ltd', centreNo:'908571', date:'', trainer:((skCourse()||{}).instructor1||'') } };
+  return all[skCourseId];
+}
+function skUpdate(fn) {
+  const all = skLoadAll();
+  if (!all[skCourseId]) all[skCourseId] = skData();
+  fn(all[skCourseId]);
+  skSaveAll(all);
+}
+function skCourses() {
+  let list = [];
+  try { list = lpmLoadCourses(); } catch (e) {}
+  return list.slice().sort((a, b) => (b.startDate || b.createdAt || '').localeCompare(a.startDate || a.createdAt || ''));
+}
+function skCourse() { return (typeof lpmCourse !== 'undefined' && lpmCourse && lpmCourse.id === skCourseId) ? lpmCourse : skCourses().find(c => c.id === skCourseId); }
+function skLearners() { const c = skCourse(); return c ? (c.learners || []).filter(l => (l.name || '').trim()) : []; }
+function skEsc(v) { return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function skAllRefs(a) { return a.groups.flatMap(g => g[1].map(i => i[0])); }
+
+function skOpen() {
+  const courses = skCourses();
+  if (!skCourseId || !courses.find(c => c.id === skCourseId)) skCourseId = courses[0] ? courses[0].id : '';
+  skRender();
+}
+
+// Status of one learner for one mandatory assessment: override wins, otherwise worked out from the ticks
+function skStatus(a, lid, d) {
+  const o = (d.overrides[lid] || {})[a.n];
+  const refs = skAllRefs(a);
+  const vals = refs.map(r => ((d.marks[r] || {})[lid] || {}).v);
+  const done = vals.filter(v => v === 'C').length;
+  const refer = refs.filter((r, i) => vals[i] === 'R');
+  const auto = done === refs.length ? 'P' : (refer.length ? 'R' : '');
+  return { final: o || auto, auto, override: o || '', done, total: refs.length, refer, missing: refs.filter((r, i) => vals[i] !== 'C') };
+}
+
+function skRender() {
+  const root = document.getElementById('lpmPanel-skills');
+  if (!root) return;
+  skCourseId = lpmCourse.id;
+  if (!skTab) skTab = 1;
+  let html = `<div class="sc-h2" style="margin-top:0;">Skills stations — Qualsafe practical pass criteria</div>
+    <div class="sc-note">Mark learners holistically through the course. Tap a box: ✓ competent → R needs further development → blank. Results feed the QA overview.</div>`;
+  const learners = skLearners();
+  if (!learners.length) {
+    root.innerHTML = html + `<p class="sc-p">Add learner names on the Learners step first.</p>`;
+    return;
+  }
+  const d = skData();
+  html += `<div class="sk-tabs rn-no-print">
+      ${SK_ASSESSMENTS.map(a => `<button class="sk-tab ${skTab===a.n?'on':''}" onclick="skTab=${a.n};skRender()"><span class="sk-tab-n">${a.n}</span>${a.short}</button>`).join('')}
+    </div>`;
+  root.innerHTML = html + skGridHTML(SK_ASSESSMENTS[skTab - 1], learners, d);
+}
+
+function skGridHTML(a, learners, d) {
+  let h = `<div class="sk-sec-title">${a.n}. ${a.t}</div>
+    <div class="sk-sec-sub">The learner must demonstrate <b>all</b> actions to pass.</div>
+    <div class="sk-wrap"><table class="sk-table">
+      <tr><th class="sk-corner">Criteria</th>
+      ${learners.map(l => {
+        const s = skStatus(a, l.id, d);
+        return `<th class="sk-name"><div class="sk-name-txt">${skEsc(l.name)}</div>
+          <div class="sk-name-prog ${s.final==='P'?'p':s.final==='R'?'r':''}">${s.final==='P'?'PASS':s.final==='R'?'REFER':s.done+'/'+s.total}</div>
+          <button class="sk-colall rn-no-print" onclick="skMarkColumn(${a.n},'${l.id}')">✓ all</button></th>`;
+      }).join('')}</tr>`;
+  a.groups.forEach(g => {
+    h += `<tr><td class="sk-group" colspan="${learners.length + 1}">${g[0]}</td></tr>`;
+    g[1].forEach(([ref, txt]) => {
+      h += `<tr><td class="sk-crit"><span class="sk-ref">${ref}</span>${txt}</td>
+        ${learners.map(l => {
+          const m = (d.marks[ref] || {})[l.id];
+          const v = m ? m.v : '';
+          return `<td class="sk-cell"><button class="sk-tick ${v==='C'?'c':v==='R'?'r':''}" title="${m && m.at ? 'Marked ' + new Date(m.at).toLocaleDateString('en-GB') : ''}" onclick="skCycle('${ref}','${l.id}')">${v==='C'?'✓':v==='R'?'R':''}</button></td>`;
+        }).join('')}</tr>`;
+    });
+  });
+  return h + `</table></div>`;
+}
+
+function skCycle(ref, lid) {
+  skUpdate(d => {
+    d.marks[ref] = d.marks[ref] || {};
+    const cur = (d.marks[ref][lid] || {}).v || '';
+    const next = cur === '' ? 'C' : cur === 'C' ? 'R' : '';
+    if (next) d.marks[ref][lid] = { v: next, at: new Date().toISOString() };
+    else delete d.marks[ref][lid];
+  });
+  const y = window.scrollY, wrap = document.querySelector('.sk-wrap'), x = wrap ? wrap.scrollLeft : 0;
+  skRender();
+  window.scrollTo(0, y);
+  const w2 = document.querySelector('.sk-wrap'); if (w2) w2.scrollLeft = x;
+}
+function skMarkColumn(n, lid) {
+  const a = SK_ASSESSMENTS[n - 1];
+  const name = (skLearners().find(l => l.id === lid) || {}).name || 'this learner';
+  if (!confirm(`Mark every blank criterion in "${a.t}" as competent for ${name}? Existing R marks are kept.`)) return;
+  skUpdate(d => {
+    skAllRefs(a).forEach(ref => {
+      d.marks[ref] = d.marks[ref] || {};
+      if (!d.marks[ref][lid]) d.marks[ref][lid] = { v:'C', at:new Date().toISOString() };
+    });
+  });
+  const x = (document.querySelector('.sk-wrap') || {}).scrollLeft || 0;
+  skRender();
+  const w2 = document.querySelector('.sk-wrap'); if (w2) w2.scrollLeft = x;
+}
+
+function skSummaryHTML(learners, d) {
+  const so = d.signoff || {};
+  let h = `<div class="sk-sec-title">Practical assessment record sheet</div>
+    <div class="sk-sec-sub">Pass/Refer is worked out from the ticks. Tap a result to override it (auto → P → R → auto).</div>
+    <div class="sk-wrap"><table class="sk-table sk-sum">
+      <tr><th class="sk-corner">Mandatory practical assessments</th>${learners.map(l => `<th class="sk-name"><div class="sk-name-txt">${skEsc(l.name)}</div></th>`).join('')}</tr>`;
+  SK_ASSESSMENTS.forEach(a => {
+    h += `<tr><td class="sk-crit"><span class="sk-ref">${a.n}.</span>${a.t}</td>
+      ${learners.map(l => {
+        const s = skStatus(a, l.id, d);
+        const cls = s.final === 'P' ? 'p' : s.final === 'R' ? 'r' : '';
+        return `<td class="sk-cell"><button class="sk-res ${cls} ${s.override?'ov':''}" onclick="skOverride(${a.n},'${l.id}')">${s.final || (s.done + '/' + s.total)}</button></td>`;
+      }).join('')}</tr>`;
+  });
+  h += `<tr><td class="sk-crit"><b>Overall</b></td>${learners.map(l => {
+      const all = SK_ASSESSMENTS.map(a => skStatus(a, l.id, d).final);
+      const o = all.every(v => v === 'P') ? 'P' : all.some(v => v === 'R') ? 'R' : '';
+      return `<td class="sk-cell"><div class="sk-res ${o==='P'?'p':o==='R'?'r':''}" style="cursor:default;">${o || '—'}</div></td>`;
+    }).join('')}</tr></table></div>`;
+
+  // Referred learner record
+  const referred = [];
+  learners.forEach(l => {
+    const refs = SK_ASSESSMENTS.flatMap(a => { const s = skStatus(a, l.id, d); return s.final === 'R' ? (s.refer.length ? s.refer : s.missing) : []; });
+    if (refs.length) referred.push([l.name, refs]);
+  });
+  h += `<div class="sk-sec-title" style="margin-top:26px;">Referred learner record</div>`;
+  h += referred.length
+    ? `<table class="sc-table"><tr><th style="width:30%;">Learner name</th><th>Missed criteria causing referral</th></tr>
+        ${referred.map(r => `<tr><td><strong>${skEsc(r[0])}</strong></td><td>${r[1].join(', ')}</td></tr>`).join('')}</table>`
+    : `<p class="sc-p">No learners currently referred.</p>`;
+
+  h += `<div class="sk-sec-title" style="margin-top:26px;">Trainer / assessor use</div>
+    <div class="lpm-field-row">
+      <div class="lpm-field rn-learner-field"><label>Centre name</label><input value="${skEsc(so.centre)}" oninput="skSign('centre',this.value)"></div>
+      <div class="lpm-field rn-learner-field"><label>Centre number</label><input value="${skEsc(so.centreNo)}" oninput="skSign('centreNo',this.value)"></div>
+    </div>
+    <div class="lpm-field-row">
+      <div class="lpm-field rn-learner-field"><label>Trainer name</label><input value="${skEsc(so.trainer)}" oninput="skSign('trainer',this.value)"></div>
+      <div class="lpm-field rn-learner-field"><label>Date</label><input type="date" value="${skEsc(so.date)}" oninput="skSign('date',this.value)"></div>
+    </div>
+    <p class="sc-p" style="font-size:0.82rem;">I confirm I have assessed these Learners against the associated practical assessment Pass criteria checklists in accordance with the QA Guide to Assessing Qualsafe Level 3 Award in First Response Emergency Care (RQF). Trainer signature: ______________________</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 30px;" class="rn-no-print">
+      <button class="rn-nav-btn primary" onclick="window.print()">Print / save as PDF</button>
+      <button class="rn-nav-btn rn-danger" onclick="skClear()">Clear this course's marks</button>
+    </div>
+    <p class="sc-p" style="font-size:0.75rem;color:#6B7A94;">This digital matrix supports holistic marking during the course. It does not replace the official Qualsafe practical assessment record sheet where your centre requires the paper original.</p>`;
+  return h;
+}
+function skOverride(n, lid) {
+  skUpdate(d => {
+    d.overrides[lid] = d.overrides[lid] || {};
+    const cur = d.overrides[lid][n] || '';
+    const next = cur === '' ? 'P' : cur === 'P' ? 'R' : '';
+    if (next) d.overrides[lid][n] = next; else delete d.overrides[lid][n];
+  });
+  skRender();
+}
+function skSign(k, v) { skUpdate(d => { d.signoff = d.signoff || {}; d.signoff[k] = v; }); }
+function skClear() {
+  if (!confirm('Clear every tick, override and sign-off detail for this course? This cannot be undone.')) return;
+  const all = skLoadAll(); delete all[skCourseId]; skSaveAll(all); skRender();
 }
 </script>
 </body>
