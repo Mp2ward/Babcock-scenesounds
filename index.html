@@ -638,6 +638,21 @@
   .rn-pick-sub { font-size:0.84rem; color:#6B7A94; margin-top:3px; }
 
   .rn-head { border-bottom:1px solid #D8DEE8; padding-bottom:16px; margin-bottom:18px; }
+  .rn-safe-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.95rem; color:#0D1B4C; margin:16px 0 4px; }
+  .rn-collapse { margin:18px 0; border:1px solid #E6EAF0; border-radius:8px; padding:0 14px; }
+  .rn-collapse summary { cursor:pointer; padding:12px 0; font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.05rem; color:#0D1B4C; list-style:none; }
+  .rn-collapse summary::-webkit-details-marker { display:none; }
+  .rn-collapse summary::after { content:'▸'; float:right; color:#8494AC; }
+  .rn-collapse[open] summary::after { content:'▾'; }
+  .rn-collapse[open] { padding-bottom:12px; }
+  .rn-hs-tick { display:flex; align-items:center; gap:14px; width:100%; margin:22px 0 8px; padding:16px 18px; border:2px solid #B8C2D0; border-radius:10px; background:#fff; cursor:pointer; text-align:left; font:inherit; }
+  .rn-hs-box { width:30px; height:30px; border:2px solid #B8C2D0; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:700; color:#fff; flex-shrink:0; }
+  .rn-hs-text { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.05rem; color:#0D1B4C; }
+  .rn-hs-tick.on { border-color:#0F6E56; background:#E8F5F0; }
+  .rn-hs-tick.on .rn-hs-box { background:#0F6E56; border-color:#0F6E56; }
+  .rn-debrief-step { margin:14px 0; }
+  .rn-debrief-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; margin-bottom:2px; }
+  .rn-danger { color:#C74444 !important; border-color:#E8B4B4 !important; }
   .rn-qa-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:18px 0 6px; }
   .rn-qa-hint { font-family:'Public Sans',sans-serif; font-size:0.78rem; color:#6B7A94; }
   .rn-qa-expand { border:1px solid #D8DEE8; background:#fff; color:#2B5BD7; border-radius:6px; padding:6px 10px; font-size:0.78rem; font-weight:600; cursor:pointer; white-space:nowrap; }
@@ -5389,25 +5404,20 @@ function rnToggleCheck(k, el) {
 
 function rnSafetyHTML() {
   const d = rnDetail;
-  let html = `<div class="sc-h2" style="margin-top:0;">Pre-scenario safety check</div>
-    <div class="sc-note">Work through before the crew enters. Tap each line to confirm.</div>`;
+  const sf = d.safety || {};
+  const list = arr => `<ul class="sc-list">${arr.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  let html = `<div class="sc-h2" style="margin-top:0;">H&amp;S brief</div>`;
 
-  if (d.safety && d.safety.siteSuitability) {
-    html += `<div class="sc-h2">Site and setup</div>` + rnCheckList(d.safety.siteSuitability, 'site');
-  }
-  if (d.safety && d.safety.bloodSystem) {
-    html += `<div class="sc-h2">Simulated blood system</div>` + rnCheckList(d.safety.bloodSystem, 'blood');
-  }
-  if (d.safety && d.safety.ppe) {
-    html += `<div class="sc-h2">PPE</div>` + rnCheckList(d.safety.ppe, 'ppe');
-  }
+  if (sf.siteSuitability) html += `<div class="rn-safe-h">Site and setup</div>` + list(sf.siteSuitability);
+  if (sf.bloodSystem) html += `<div class="rn-safe-h">Simulated blood system</div>` + list(sf.bloodSystem);
+  if (sf.ppe) html += `<div class="rn-safe-h">PPE</div>` + list(sf.ppe);
+  html += `<div class="rn-safe-h">Live casualty limits</div>` + list(sf.interventionLimits || SC_REFERENCE.safety);
 
-  const limits = (d.safety && d.safety.interventionLimits) ? d.safety.interventionLimits : SC_REFERENCE.safety;
-  html += `<div class="sc-h2">Live casualty limits</div>` + rnCheckList(limits, 'limits');
-
-  html += `<div class="sc-h2">Exercise commands</div>
-    <table class="sc-table sc-cmd-table"><tr><th>Command</th><th>Meaning</th></tr>
-    ${SC_REFERENCE.commands.map(c=>`<tr><td>${c[0]}</td><td>${c[1]}</td></tr>`).join('')}</table>`;
+  html += `<details class="rn-collapse">
+      <summary>Exercise commands</summary>
+      <table class="sc-table sc-cmd-table"><tr><th>Command</th><th>Meaning</th></tr>
+      ${SC_REFERENCE.commands.map(c=>`<tr><td>${c[0]}</td><td>${c[1]}</td></tr>`).join('')}</table>
+    </details>`;
 
   if (d.variants) {
     html += `<div class="sc-h2">Variant running today</div>
@@ -5417,31 +5427,29 @@ function rnSafetyHTML() {
       </div>`;
   }
 
+  const done = !!rnSession.hsBrief;
+  html += `<button class="rn-hs-tick ${done ? 'on' : ''}" id="rnHsTick" onclick="rnToggleHs()">
+      <span class="rn-hs-box">${done ? '✓' : ''}</span>
+      <span class="rn-hs-text">H&amp;S brief completed</span>
+    </button>`;
   return html;
 }
-
-function rnSetVariant(vid, el) {
-  rnSession.variant = vid;
-  el.parentNode.querySelectorAll('.sc-variant-btn').forEach(b => b.classList.remove('sel'));
-  el.classList.add('sel');
+function rnToggleHs() {
+  rnSession.hsBrief = !rnSession.hsBrief;
+  rnSession.hsBriefAt = rnSession.hsBrief ? new Date().toISOString() : null;
+  const b = document.getElementById('rnHsTick');
+  b.classList.toggle('on', rnSession.hsBrief);
+  b.querySelector('.rn-hs-box').textContent = rnSession.hsBrief ? '✓' : '';
 }
-
 function rnBriefHTML() {
   const b = rnDetail.brief;
   let html = `<div class="sc-h2" style="margin-top:0;">Crew deployment brief</div>
     <div class="sc-quote">${b.deployment}</div>`;
 
-  html += `<div class="sc-badge-row">
-    <span class="sc-badge">${b.delivery}</span>
-    <span class="sc-badge">Endpoints: ${b.endpoints}</span>
-  </div>`;
-
   if (b.findings) {
     html += `<div class="sc-h2">Starting findings</div>
       <table class="sc-table">${b.findings.map(f=>`<tr><td style="width:35%;"><strong>${f[0]}</strong></td><td>${f[1]}</td></tr>`).join('')}</table>`;
   }
-
-  if (b.listSectionsTop) html += b.listSectionsTop.map(scListSectionHTML).join('');
 
   if (b.stages) {
     b.stages.forEach(st => {
@@ -5453,42 +5461,11 @@ function rnBriefHTML() {
         html += `<table class="sc-table">${st.findings.map(f=>`<tr><td style="width:35%;"><strong>${f[0]}</strong></td><td>${f[1]}</td></tr>`).join('')}</table>`;
       }
       if (st.actions) html += `<ul class="sc-list">${st.actions.map(x=>`<li>${x}</li>`).join('')}</ul>`;
-      if (st.endpoint) html += `<div class="sc-note"><strong>Endpoint —</strong> ${st.endpoint}</div>`;
       html += `</div></div>`;
     });
   }
-
-  if (b.tables) html += b.tables.filter(t => t.run).map(scTableHTML).join('');
-
-  if (b.landlordInfo) {
-    html += `<div class="sc-h2">${b.landlordInfo.title}</div>
-      <table class="sc-table sc-reveal-table"><tr><th>Information</th><th>Volunteered?</th><th>Release rule</th></tr>
-      ${b.landlordInfo.rows.map(r => `<tr><td><strong>${r[0]}</strong></td><td class="${r[1]==='Yes'?'sc-reveal-yes':'sc-reveal-no'}">${r[1]}</td><td>${r[2]}</td></tr>`).join('')}
-      </table>`;
-  }
-
-  html += `<div class="sc-h2">Critical / must-act points</div>`;
-  b.critical.forEach(c => {
-    html += `<div class="sc-critical"><div class="sc-critical-issue">${c[0]}</div><div class="sc-critical-resp">${c[1]}</div></div>`;
-  });
-
   return html;
 }
-
-function rnRolesHTML() {
-  let html = `<div class="sc-h2" style="margin-top:0;">Role-player cards</div>
-    <div class="sc-note">Brief each role player before the crew enters.</div>`;
-  rnDetail.roles.forEach(r => {
-    html += `<div class="sc-role-card">
-      <div class="sc-role-head" style="background:${r.colour};">${r.label}</div>
-      <div class="sc-role-body">`;
-    if (r.you) html += `<div class="sc-role-meta"><div class="sc-role-meta-item"><div class="sc-role-meta-label">You are</div><div class="sc-role-meta-val">${r.you}</div></div></div>`;
-    html += `<ul class="sc-list">${r.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
-    html += `</div></div>`;
-  });
-  return html;
-}
-
 // ---- Course link: pull instructors and learners from the Learner Practical Matrix ----
 function rnCourses() {
   let list = [];
@@ -5707,11 +5684,30 @@ function rnToggleObs(i, el) {
   el.querySelector('.rn-check-box').classList.toggle('on', !!rnSession.observations[i]);
 }
 
+function rnSetVariant(vid, el) {
+  rnSession.variant = vid;
+  el.parentNode.querySelectorAll('.sc-variant-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function rnRolesHTML() {
+  let html = `<div class="sc-h2" style="margin-top:0;">Role-player cards</div>
+    <div class="sc-note">Brief each role player before the crew enters.</div>`;
+  rnDetail.roles.forEach(r => {
+    html += `<div class="sc-role-card">
+      <div class="sc-role-head" style="background:${r.colour};">${r.label}</div>
+      <div class="sc-role-body">`;
+    if (r.you) html += `<div class="sc-role-meta"><div class="sc-role-meta-item"><div class="sc-role-meta-label">You are</div><div class="sc-role-meta-val">${r.you}</div></div></div>`;
+    html += `<ul class="sc-list">${r.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `</div></div>`;
+  });
+  return html;
+}
 function rnDebriefHTML() {
   let html = `<div class="sc-h2" style="margin-top:0;">Debrief sequence</div>
-    <div class="sc-note">The sequence is fixed. The feedback within it stays fluid and learner-centred.</div>`;
-  SC_REFERENCE.debrief.forEach(s => {
-    html += `<div class="sc-note" style="margin-bottom:8px;"><strong>${s[0]}</strong><br>${s[1]}</div>`;
+    <p class="sc-p">The sequence is fixed. The feedback within it stays fluid and learner-centred.</p>`;
+  SC_REFERENCE.debrief.forEach((s, i) => {
+    const title = String(s[0]).replace(/^\s*\d+[.)]?\s*/, '');
+    html += `<div class="rn-debrief-step"><div class="rn-debrief-h">${i + 1}. ${title}</div><p class="sc-p">${s[1]}</p></div>`;
   });
   if (rnDetail.brief.debriefPrompts) {
     html += `<div class="sc-h2">Scenario-specific prompts</div>
@@ -5722,13 +5718,18 @@ function rnDebriefHTML() {
 
 function rnRecordHTML() {
   return `<div class="sc-h2" style="margin-top:0;">Save this session</div>
-    <div class="sc-note">Saves to this device. To file it under a specific course, open that course in the Learner Practical Matrix and add it from the Scenario sessions tab.</div>
+    <p class="sc-p">Saves to this device. If a course is selected on the Assessment step, the session is linked to that course automatically.</p>
     <div id="rnRecordSummary"></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;" class="rn-no-print">
       <button class="rn-nav-btn primary" onclick="rnSaveSession()">Save to course record</button>
       <button class="rn-nav-btn" onclick="window.print()">Print / save as PDF</button>
-      <button class="rn-nav-btn" onclick="rnEmailSummary()">Email summary</button>
     </div>
+    <div class="sc-h2">Clear or delete</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;" class="rn-no-print">
+      <button class="rn-nav-btn" onclick="rnClearSession()">Clear this session</button>
+      <button class="rn-nav-btn rn-danger" onclick="rnDeleteSaved()">Delete saved record</button>
+    </div>
+    <p class="sc-p" style="font-size:0.8rem;color:#6B7A94;margin-top:8px;">Clear empties everything entered on this run (names, ticks, notes) so you can start again. Delete removes this session from the device and the course matrix if it was saved.</p>
     <p id="rnSaveMsg" style="font-size:0.85rem;margin-top:12px;min-height:20px;"></p>`;
 }
 
@@ -5755,6 +5756,39 @@ function rnBuildSummary() {
   el.innerHTML = html;
 }
 
+function rnClearSession() {
+  if (!confirm('Clear everything entered for this run? Names, results, ticks and notes will be emptied.')) return;
+  const keepCourse = rnSession.courseId;
+  const variant = rnSession.variant;
+  rnStart(rnScenarioId);
+  rnSession.courseId = keepCourse;
+  rnSession.instructor = '';
+  rnSession.variant = variant;
+  rnRenderPanels();
+  rnShowStep(0);
+}
+function rnDeleteSaved() {
+  const list = rnLoadSessions();
+  const idx = list.findIndex(x => x.id === rnSession.id);
+  const msg = document.getElementById('rnSaveMsg');
+  if (idx < 0) {
+    msg.style.color = '#6B7A94';
+    msg.textContent = 'This session has not been saved, so there is nothing to delete. Use Clear to empty the form.';
+    return;
+  }
+  if (!confirm('Delete this saved session? It will be removed from this device and from the course matrix.')) return;
+  list.splice(idx, 1);
+  rnSaveSessions(list);
+  try {
+    const courses = lpmLoadCourses();
+    courses.forEach(c => { c.linkedSessionIds = (c.linkedSessionIds || []).filter(id => id !== rnSession.id); });
+    lpmSaveCourses(courses);
+    if (typeof lpmCourse !== 'undefined' && lpmCourse) lpmCourse.linkedSessionIds = (lpmCourse.linkedSessionIds || []).filter(id => id !== rnSession.id);
+  } catch (e) {}
+  msg.style.color = '#0F6E56';
+  msg.textContent = 'Saved record deleted.';
+}
+
 function rnSaveSession() {
   const named = rnSession.learners.filter(l => l.name);
   const msg = document.getElementById('rnSaveMsg');
@@ -5767,7 +5801,8 @@ function rnSaveSession() {
   const copy = JSON.parse(JSON.stringify(rnSession));
   copy.learners = named;
   copy.savedAt = new Date().toISOString();
-  list.push(copy);
+  const existingIdx = list.findIndex(x => x.id === copy.id);
+  if (existingIdx >= 0) list[existingIdx] = copy; else list.push(copy);
   let linkedTo = '';
   if (copy.courseId && typeof lpmLoadCourses === 'function') {
     try {
@@ -6319,17 +6354,18 @@ function lpmOpenCropper(img, url) {
 async function lpmRunScan(img, box) {
   const status = document.getElementById('lpmScanStatus');
   const say = t => { status.innerHTML = `<div class="sc-note">${t}</div>`; };
-  let worker;
   try {
     say('Loading scanner…');
     await lpmLoadTesseract();
-    const variants = lpmPrepVariants(img, box);
-    worker = await Tesseract.createWorker('eng');
+    const image = lpmPrepVariants(img, box)[0];
+    // Keep one scanner loaded between scans so the second scan starts straight away
+    if (!window.lpmWorker) window.lpmWorker = await Tesseract.createWorker('eng');
+    const worker = window.lpmWorker;
     const passes = [];
-    const plan = [];
-    variants.forEach(v => ['6', '11'].forEach(psm => plan.push({ v, psm })));
+    // Boxed names: one quick row-by-row read. Whole photo: a second read catches scattered text.
+    const plan = (box ? ['6'] : ['6', '11']).map(psm => ({ v: image, psm }));
     for (let i = 0; i < plan.length; i++) {
-      say(`Reading the names (pass ${i + 1} of ${plan.length})…`);
+      say(plan.length > 1 ? `Reading the names (pass ${i + 1} of ${plan.length})…` : 'Reading the names…');
       await worker.setParameters({ tessedit_pageseg_mode: plan[i].psm });
       const r = await worker.recognize(plan[i].v);
       // A boxed selection is already just the names, so read every row in it; otherwise look for the NAME column
@@ -6340,9 +6376,8 @@ async function lpmRunScan(img, box) {
     const res = lpmVoteNames(passes);
     lpmShowScanDraft(res.names, res.column, box !== null);
   } catch (err) {
-    status.innerHTML = `<div class="sc-note" style="color:#C74444;">Scan failed: ${lpmEsc(err.message || 'unknown error')}. Try again with the screen filling the photo.</div>`;
-  } finally {
-    if (worker) worker.terminate();
+    if (window.lpmWorker) { try { window.lpmWorker.terminate(); } catch (e) {} window.lpmWorker = null; }
+    status.innerHTML = `<div class="sc-note" style="color:#C74444;">Scan failed: ${lpmEsc(err.message || 'unknown error')}. Try again, boxing just the names.</div>`;
   }
 }
 
@@ -6495,8 +6530,8 @@ function lpmPrepVariants(img, box) {
   const sx = box ? Math.max(0, box.x) : 0, sy = box ? Math.max(0, box.y) : 0;
   const sw = box ? Math.min(img.width - sx, box.w) : img.width;
   const sh = box ? Math.min(img.height - sy, box.h) : img.height;
-  const maxArea = 12000000; // stay well inside the iPad's canvas limit
-  const scale = Math.max(0.5, Math.min(4, Math.sqrt(maxArea / (sw * sh)), 3000 / Math.min(sw, sh) * 1.5));
+  const maxArea = 4000000; // smaller image = much faster reading and far less memory on the iPad
+  const scale = Math.max(0.5, Math.min(2.5, Math.sqrt(maxArea / (sw * sh))));
   const W = Math.round(sw * scale), H = Math.round(sh * scale);
 
   const grey = document.createElement('canvas');
@@ -6515,8 +6550,9 @@ function lpmPrepVariants(img, box) {
     px[i] = px[i+1] = px[i+2] = lum[j];
   }
   g.putImageData(data, 0, 0);
+  return [grey];
 
-  // Adaptive threshold: compare each pixel with its neighbourhood, so glare and shadows don't wipe out text
+  // Adaptive threshold (no longer used — kept for reference): compare each pixel with its neighbourhood, so glare and shadows don't wipe out text
   const bw = document.createElement('canvas');
   bw.width = W; bw.height = H;
   const b = bw.getContext('2d');
