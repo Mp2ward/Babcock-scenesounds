@@ -959,7 +959,7 @@ window.addEventListener('load', function () {
       <span class="hub-emoji">🎛️</span>
       <div style="flex:1;min-width:0;">
         <div class="hub-title">SOUNDBOARD</div>
-        <div class="hub-sub">74 sounds across 4 categories, live mixer</div>
+        <div class="hub-sub">68 sounds across 4 categories, live mixer</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
@@ -1649,6 +1649,8 @@ const sounds = [
   { id: 'chaos', label: 'Battlefield Chaos', sub: 'Full contact scenario', icon: '🌪️', cat: 'military',
     url: 'https://mp2ward.github.io/SceneSounds/battlefield-chaos.mp3' }
 ];
+// Removed from this course: duplicate Baby Crying, male/female snoring and groaning
+for (let i = sounds.length - 1; i >= 0; i--) { if (['baby_cry', 'male_snoring', 'male_groaning', 'female_snoring', 'female_groaning', 'female_screaming'].includes(sounds[i].id)) sounds.splice(i, 1); }
 // Clinical and Military sounds are not used on this course — remove them from the soundboard, search and mixer
 for (let i = sounds.length - 1; i >= 0; i--) { if (sounds[i].cat === "clinical" || sounds[i].cat === "military") sounds.splice(i, 1); }
 
