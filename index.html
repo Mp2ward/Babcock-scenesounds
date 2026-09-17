@@ -2505,15 +2505,15 @@ const SC_SCENARIOS = [
   },
   {id:3, title:'Confused Patient', sub:'Stroke or hypoglycaemia — pub garden', ready:true, icon:'🧠'},
   {id:4, title:'Opiate Overdose', sub:'Respiratory depression → respiratory arrest', ready:true, icon:'💊'},
-  {id:5, title:'Prolonged Submersion / Drowning', sub:'Cardiac arrest → ROSC with respiratory depression', ready:true, icon:'🌊'},
   {id:7, title:'Scenario', sub:'Not yet added', ready:false, icon:'🧠'},
   {id:10, title:'Scenario', sub:'Not yet added', ready:false, icon:'👶'},
+  {id:11, title:'Scenario', sub:'Not yet added', ready:false, icon:'⚡'},
   // Trauma 07–12
   {id:2, type:'trauma', title:'Violent Assault', sub:'Catastrophic haemorrhage', ready:true, icon:'🩸'},
-  {id:6, type:'trauma', title:'Fall From Height', sub:'Head injury, possible spinal/pelvic — not yet added', ready:false, icon:'🪜'},
+  {id:6, type:'trauma', title:'Fall From Height', sub:'Head, spinal and pelvic injury → shock', ready:true, icon:'🪜'},
+  {id:5, type:'trauma', title:'Prolonged Submersion / Drowning', sub:'Cardiac arrest → ROSC with respiratory depression', ready:true, icon:'🌊'},
   {id:8, type:'trauma', title:'Scenario', sub:'Not yet added', ready:false, icon:'🩸'},
   {id:9, type:'trauma', title:'Scenario', sub:'Not yet added', ready:false, icon:'🦴'},
-  {id:11, type:'trauma', title:'Scenario', sub:'Not yet added', ready:false, icon:'⚡'},
   {id:12, type:'trauma', title:'Scenario', sub:'Not yet added', ready:false, icon:'🚗'},
 ];
 
@@ -4074,7 +4074,7 @@ const SC_DETAIL_04 = {
 };
 
 const SC_DETAIL_05 = {
- "eyebrow": "Scenario 04 · Pond / water-edge incident",
+ "eyebrow": "Scenario 09 · Pond / water-edge incident",
  "title": "Prolonged Submersion / Drowning",
  "sub": "~25-minute submersion: cardiac arrest → airway complications → ROSC with respiratory depression",
  "brief": {
@@ -4630,6 +4630,564 @@ const SC_DETAIL_05 = {
  ]
 };
 
+const SC_DETAIL_06 = {
+ "eyebrow": "Scenario 08 · Construction site / scaffold fall",
+ "title": "Fall From Height",
+ "sub": "Head injury, suspected spinal and pelvic injury → deterioration with shock",
+ "variants": [
+  {
+   "id": "A",
+   "label": "Variant A — Standard",
+   "sub": "No helmet; scalp wound, head injury, pelvic injury"
+  },
+  {
+   "id": "B",
+   "label": "Variant B — Helmet on",
+   "sub": "Casualty wearing a safety helmet (tests 5.40)"
+  },
+  {
+   "id": "C",
+   "label": "Variant C — Deterioration to unresponsive",
+   "sub": "Stage 3: responds to pain only, airway at risk"
+  }
+ ],
+ "brief": {
+  "purpose": "A worker has fallen approximately 3–4 metres from scaffolding onto hard ground. The scenario tests safe approach at a construction site, mechanism of injury, catastrophic bleeding check, structured primary survey (<C>ABCDE/MARCH), recognition of a time-critical major trauma patient, head injury, suspected spinal and pelvic injury, minimal-handling care, pelvic binder, scoop stretcher packaging, temperature control and a structured handover.",
+  "deployment": "\"You are responding to a construction site. A worker has fallen from scaffolding and is lying on the ground. Colleagues report he fell from about the second lift. Ambulance resources have been requested.\"",
+  "delivery": "Live casualty for assessment and communication; manikin or instructor-controlled simulation for airway adjuncts and any intervention unsafe on a live casualty",
+  "endpoints": "Stage 2 or Stage 3 + ATMIST handover",
+  "designPrinciple": "Core teaching point: mechanism alone (fall over 2 m / twice the casualty's height) makes this a potentially time-critical patient. Treat the injuries you find, assume spinal and pelvic injury until excluded by a clinician, handle minimally, and escalate early.",
+  "variantsNote": "Qualsafe mapping: this scenario is mapped only to the mandatory practical assessment 5 — Prehospital emergency trauma care (pass criteria 5.1–5.17, with trauma skills 5.20, 5.22, 5.27, 5.34–5.37 and 5.40). Criteria are marked only where the learner actually demonstrates them.",
+  "listSectionsTop": [
+   {
+    "title": "Scene safety — construction site",
+    "points": [
+     "The casualty is already on the ground. No learner climbs scaffolding, ladders or any raised structure.",
+     "Consider falling objects, unstable scaffold, plant/vehicle movement, trip hazards, dust and weather.",
+     "Ask the site supervisor to make the area safe: stop plant, cordon the area, hard hats for anyone near the structure.",
+     "Establish the mechanism: height of fall, landing surface, what hit first, any loss of consciousness, how long ago."
+    ]
+   }
+  ],
+  "equipment": [
+   "Live casualty (moulaged scalp laceration, abrasions to hands/hips) and a trauma manikin for airway adjuncts",
+   "Hi-vis and hard hats for the scene; cordon tape or cones",
+   "Trauma dressings, gauze, gloves and PPE",
+   "Pelvic binder (training), scoop stretcher, head blocks/blanket rolls, straps",
+   "Oxygen training setup, non-rebreather mask, BVM, OPA/NPA, suction",
+   "Pulse oximeter / observation cue cards",
+   "Blankets / foil for heat-loss prevention",
+   "Safety helmet with chin strap (Variant B)",
+   "PRF/PCR or electronic record",
+   "Scene Sounds device/speaker"
+  ],
+  "resources": [
+   {
+    "name": "Construction site",
+    "use": "Plant, hammering and site noise at low level; stop it when the learner asks for plant to be stopped."
+   },
+   {
+    "name": "Wind",
+    "use": "Optional; reinforces exposure and heat loss."
+   },
+   {
+    "name": "Site supervisor",
+    "use": "Role player who can make the scene safe, give the mechanism and call ambulance if asked."
+   }
+  ],
+  "sceneSoundsNote": "When the learner asks the supervisor to stop plant, reduce the construction audio. It rewards a good scene-management decision.",
+  "stages": [
+   {
+    "n": 1,
+    "name": "Initial presentation — conscious, confused, in pain",
+    "intro": "Live casualty. The patient is lying on his side where he landed, trying to move. Learners should control the head/neck manually if spinal injury is suspected, check for catastrophic bleeding, then complete a structured primary survey. For 5.3, the learner must assess the mechanism of injury, consider likely injuries and request EMS.",
+    "findings": [
+     [
+      "Mechanism",
+      "Fall ~3–4 m from scaffold onto concrete; landed on right side and hip; brief loss of consciousness reported."
+     ],
+     [
+      "<C> Catastrophic bleeding",
+      "None. Scalp laceration bleeding steadily but not catastrophic."
+     ],
+     [
+      "Airway",
+      "Patent, talking."
+     ],
+     [
+      "Breathing",
+      "RR 22, equal chest movement, SpO2 95% on air."
+     ],
+     [
+      "Circulation",
+      "HR 108, radial pulse present, CRT 3 s, pale and clammy."
+     ],
+     [
+      "Disability",
+      "Alert but confused and repeating questions (GCS 14: E4 V4 M6); pupils equal and reactive."
+     ],
+     [
+      "Exposure",
+      "Scalp laceration; pain in lower back and right hip/groin; pain on movement; legs same length with no obvious deformity."
+     ],
+     [
+      "History",
+      "Available from colleague: fell from second lift; no known allergies or medication (SAMPLE partly unknown)."
+     ],
+     [
+      "Temperature",
+      "Cold, windy day; lying on concrete."
+     ]
+    ],
+    "actions": [
+     "Safe approach: scene made safe, plant stopped, hazards considered, PPE on.",
+     "Mechanism identified as a fall from height; likely head, spinal and pelvic injuries considered; EMS requested/updated as time-critical.",
+     "Patient Assessment Triangle on approach, then structured <C>ABCDE/MARCH primary survey.",
+     "Manual in-line stabilisation of the head if spinal injury is suspected; tell the patient not to move.",
+     "Control scalp bleeding with direct pressure and a dressing, without pressing on any suspected depressed skull fracture.",
+     "Pelvis: do not 'spring' or rock the pelvis. With mechanism, hip/groin pain and signs of shock, apply a pelvic binder at the level of the greater trochanters.",
+     "Oxygen only if SpO2 is below target; monitor SpO2.",
+     "Insulate from the ground and cover to prevent heat loss with minimal movement."
+    ],
+    "endpoint": "Progress to deterioration, or hand over if the learning objective is met."
+   },
+   {
+    "n": 2,
+    "name": "Deterioration — shock from pelvic bleeding",
+    "intro": "After roughly 5–8 minutes, or when the instructor chooses, the patient becomes more shocked. Learners must reassess, recognise deterioration, manage it within scope and update EMS.",
+    "findings": [
+     [
+      "Airway",
+      "Patent."
+     ],
+     [
+      "Breathing",
+      "RR 28, shallow; SpO2 92% on air."
+     ],
+     [
+      "Circulation",
+      "HR 128, weak radial pulse, CRT 4 s, cold peripheries."
+     ],
+     [
+      "Disability",
+      "More confused; responds to voice (GCS 13)."
+     ],
+     [
+      "Pelvis",
+      "Increasing pain; binder in place if applied (improves presentation slightly), or unmanaged if not."
+     ]
+    ],
+    "actions": [
+     "Repeat primary survey and vital signs; recognise worsening shock.",
+     "Ensure the pelvic binder is correctly positioned and not over-tightened; do not remove it once applied.",
+     "Oxygen titrated to SpO2 94–98%; monitor effect.",
+     "Keep flat, keep warm, minimal handling; no food or drink.",
+     "Update EMS: time-critical trauma, suspected pelvic bleeding and head injury; request enhanced care support where available.",
+     "Prepare for packaging: scoop stretcher, keeping movement to a minimum and in line with suspected spinal injury."
+    ],
+    "endpoint": "Hand over, or progress to Stage 3 (Variant C)."
+   },
+   {
+    "n": 3,
+    "name": "Optional — reduced consciousness, airway at risk",
+    "intro": "Variant C only. The head injury worsens. Use a manikin for any airway adjunct, suction or ventilation.",
+    "findings": [
+     [
+      "Airway",
+      "Snoring respirations; vomit risk."
+     ],
+     [
+      "Breathing",
+      "RR 10, irregular; SpO2 89%."
+     ],
+     [
+      "Circulation",
+      "HR 60, BP high if measured (instructor cue only)."
+     ],
+     [
+      "Disability",
+      "Responds to pain only; right pupil larger and sluggish."
+     ]
+    ],
+    "actions": [
+     "Recognise a falling level of consciousness and a possible rising intracranial pressure picture.",
+     "Open the airway with a jaw thrust (not head tilt) while maintaining in-line stabilisation.",
+     "Suction and an OPA/NPA on the manikin as indicated; avoid NPA if a base-of-skull fracture is suspected.",
+     "Assisted ventilation with BVM + oxygen if breathing becomes inadequate.",
+     "Immediate update to EMS / critical care; continue full reassessment."
+    ],
+    "endpoint": "ATMIST handover / End Ex."
+   }
+  ],
+  "tables": [
+   {
+    "title": "Information-release matrix",
+    "run": true,
+    "head": [
+     "Information",
+     "Source",
+     "Release rule"
+    ],
+    "rows": [
+     [
+      "Height of fall and landing surface",
+      "Site supervisor",
+      "If asked: from the second lift, about 3–4 m, onto concrete."
+     ],
+     [
+      "Loss of consciousness",
+      "Site supervisor",
+      "If asked: 'He didn't move for maybe half a minute.'"
+     ],
+     [
+      "Helmet (Variant B)",
+      "Scene / patient",
+      "Visible; chin strap fastened."
+     ],
+     [
+      "Medical history, medication, allergies",
+      "Patient / supervisor",
+      "Patient is confused; supervisor knows no allergies, unsure of medication."
+     ],
+     [
+      "Last ate / events",
+      "Patient",
+      "Can recall lunch but not the fall."
+     ]
+    ]
+   },
+   {
+    "title": "Instructor progression triggers",
+    "run": true,
+    "head": [
+     "Trigger",
+     "Instructor action"
+    ],
+    "rows": [
+     [
+      "Learner moves the patient before assessing spine/pelvis",
+      "Patient cries out with pain; use as a debrief point."
+     ],
+     [
+      "Pelvic binder applied correctly",
+      "Slow the rate of deterioration at Stage 2."
+     ],
+     [
+      "Pelvis 'sprung' / rocked to test stability",
+      "Sharp pain and worsening shock cue."
+     ],
+     [
+      "No request to stop plant or secure scene",
+      "Keep site noise and a hazard cue running."
+     ],
+     [
+      "Time-critical not recognised by Stage 2",
+      "Deteriorate further; supervisor asks 'Is he going to be alright?'"
+     ]
+    ]
+   }
+  ],
+  "listSections": [
+   {
+    "title": "Oxygen (5.9)",
+    "points": [
+     "Check indications and contraindications before giving oxygen; check the cylinder is safe, in date and away from ignition sources.",
+     "Give oxygen only when SpO2 is below target; titrate to 94–98% and monitor for adverse effects.",
+     "Record oxygen administration and equipment used (5.16)."
+    ]
+   },
+   {
+    "title": "Helmet removal (Variant B)",
+    "points": [
+     "Two-person technique: one person maintains in-line stabilisation from below while the other releases the chin strap, spreads the helmet and removes it along the long axis.",
+     "Remove only where needed to assess/manage the airway or head injury, or as taught locally; otherwise keep the head supported with the helmet on.",
+     "Practise on a manikin or a consenting actor with gentle, instructor-controlled movement only."
+    ]
+   },
+   {
+    "title": "Clinical basis",
+    "points": [
+     "Falls from greater than 2 m (or twice the casualty's height) are a major-trauma mechanism and should trigger a time-critical decision and early escalation.",
+     "Suspected pelvic fracture with signs of shock: apply a pelvic binder early at the greater trochanters; avoid springing the pelvis and avoid log-rolling where possible — use a scoop stretcher.",
+     "Head injury: protect the airway, avoid hypoxia, monitor for falling consciousness and pupil changes; oxygen to a target of 94–98%.",
+     "Spinal injury: minimal handling and manual in-line stabilisation; a scoop stretcher with head blocks is preferred to a long board for packaging.",
+     "Hypothermia worsens bleeding and outcome — prevent heat loss from the start."
+    ]
+   }
+  ],
+  "goodPractice": [
+   "Makes the scene safe before approaching, including stopping plant and considering falling objects.",
+   "Uses mechanism of injury to anticipate head, spinal and pelvic injuries and requests EMS early.",
+   "Checks for catastrophic bleeding before airway, then completes a structured <C>ABCDE/MARCH survey.",
+   "Controls the head/neck manually and tells the patient to keep still.",
+   "Applies a pelvic binder correctly without springing the pelvis.",
+   "Recognises the patient as time-critical and updates EMS with changes.",
+   "Reassesses after every intervention and recognises deterioration.",
+   "Prevents heat loss and handles the patient minimally, packaging with a scoop stretcher.",
+   "Records findings and gives a structured ATMIST handover."
+  ],
+  "notPenalise": [
+   "Choosing not to apply a binder before any signs of shock if the learner clearly states pelvic injury is suspected and plans to apply it — provided it is applied once shock develops.",
+   "Using blanket rolls instead of head blocks if in-line stabilisation is maintained.",
+   "Different safe orders of secondary tasks once catastrophic bleeding, airway, breathing and circulation have been addressed."
+  ],
+  "critical": [
+   [
+    "Learner climbs the scaffold or enters an unsafe area",
+    "STILL immediately."
+   ],
+   [
+    "Pelvis sprung or rocked to test stability",
+    "Critical error — risks further bleeding."
+   ],
+   [
+    "Patient sat up, walked or log-rolled with suspected pelvic/spinal injury",
+    "Major handling failure."
+   ],
+   [
+    "Deterioration not recognised or EMS not updated",
+    "Time-critical decision missed."
+   ],
+   [
+    "Head tilt used on an unresponsive head-injured patient",
+    "Correct to jaw thrust with in-line stabilisation."
+   ]
+  ],
+  "debriefPrompts": [
+   "What in the mechanism made you think this patient was time-critical?",
+   "How did you decide whether to apply a pelvic binder, and when?",
+   "How did you protect the spine while still assessing and treating the patient?",
+   "What changed at Stage 2, and how did you pick it up?",
+   "What did you do to prevent heat loss, and when did you start?",
+   "Talk us through your ATMIST handover — what mattered most?"
+  ],
+  "governance": "Evidence rule: a Qualsafe pass criterion is recorded only where the scenario provides a clear opportunity to demonstrate the whole criterion and it was actually run and demonstrated unprompted. Related or partial practice is learning activity only. This scenario card supports — and does not replace — the official Qualsafe practical assessment record sheet, pass criteria checklists or current organisational clinical procedures. Handover: immediate concern first — fall of ~3–4 m onto concrete with brief loss of consciousness; head injury with falling GCS, suspected spinal and pelvic injury, signs of shock, interventions (MILS, dressing, pelvic binder, oxygen, heat-loss prevention, scoop), and the trend in observations."
+ },
+ "roles": [
+  {
+   "label": "Card A — Casualty (live)",
+   "colour": "#0E7C86",
+   "you": "A construction worker who has fallen from scaffolding.",
+   "startingBehaviour": "Confused, repeating 'What happened?' Pain in lower back and right hip/groin; want to get up but it hurts too much.",
+   "doNotVolunteer": "Do not volunteer the loss of consciousness; you don't remember it.",
+   "points": [
+    "Cry out if anyone presses, rocks or springs your pelvis, or tries to sit you up.",
+    "At Stage 2, become quieter, pale and more confused when the instructor signals.",
+    "You may accept a pelvic binder over clothing only if it is not tightened; tell the instructor immediately if anything is uncomfortable.",
+    "No airway adjuncts, suction, BVM seal or real immobilisation straps on you — the instructor moves to a manikin for these.",
+    "Variant B: keep the helmet on until the learners explain and perform a two-person removal."
+   ]
+  },
+  {
+   "label": "Card B — Site supervisor",
+   "colour": "#5C6B8A",
+   "points": [
+    "Anxious. Tell the crew a worker fell from the scaffold and you've called for an ambulance.",
+    "If asked: fell from the second lift, about 3–4 m, onto concrete; he didn't move for about half a minute.",
+    "If asked to stop plant or cordon the area, do so and confirm it is done.",
+    "If asked: no known allergies; not sure about medication.",
+    "Do not move the casualty or suggest treatment."
+   ]
+  },
+  {
+   "label": "Card C — Scenario controller",
+   "colour": "#2B5BD7",
+   "points": [
+    "Scene not made safe → keep site noise and a hazard cue running.",
+    "Pelvic binder applied correctly → slower deterioration at Stage 2.",
+    "Pelvis sprung/rocked → sharp pain and faster shock progression.",
+    "Oxygen titrated and SpO2 monitored → SpO2 improves to 95–96%.",
+    "Heat-loss prevention started → note for debrief; no change in observations required.",
+    "Variant C → move to manikin: snoring airway, RR 10, unequal pupils."
+   ]
+  }
+ ],
+ "safety": {
+  "intro": "Nobody works at height. The fall has already happened. Airway adjuncts, suction, assisted ventilation and any tight immobilisation are manikin-only.",
+  "siteSuitability": [
+   "Casualty positioned on a flat, clean ground mat; any scaffold/ladder is a static prop, secured and not climbed.",
+   "Cordon or cones marking the 'site' area; trip hazards removed.",
+   "Trauma manikin, pelvic binder, scoop stretcher, head blocks, oxygen training kit and blankets ready.",
+   "Moulage checked (non-toxic, skin-safe); casualty warm between runs."
+  ],
+  "ppe": [
+   "Gloves for all learners handling moulage/simulated blood; hi-vis and hard hats as part of scene realism."
+  ],
+  "interventionLimits": [
+   "No climbing on scaffolding, ladders or props.",
+   "Pelvic binder on a live actor only over clothing, never tightened, and removed immediately if uncomfortable.",
+   "No springing or compressing a live actor's pelvis.",
+   "No OPA/NPA, suction catheter, BVM seal or real strapping on a live casualty.",
+   "Scoop stretcher lifts follow safe manual handling; a live actor is not lifted above knee height.",
+   "Helmet removal practised slowly and gently under instructor control (Variant B).",
+   "Use STILL immediately for any unsafe handling."
+  ],
+  "instructorRole": [
+   "The instructor remains present throughout as assessor/facilitator and safety officer.",
+   "Clinical values are cues; adjust timing only if the learning objectives are preserved."
+  ],
+  "reset": [
+   "Reset moulage and simulated bleeding; re-warm the casualty.",
+   "Remove and check the pelvic binder, scoop stretcher and head blocks.",
+   "Reset oxygen training kit and manikin airway.",
+   "Restart Scene Sounds: construction site + wind.",
+   "Rebrief supervisor and casualty; choose the variant."
+  ]
+ },
+ "observations": [
+  "Scene made safe and plant stopped before approach",
+  "Mechanism used to anticipate head, spinal and pelvic injury",
+  "Catastrophic bleeding checked first",
+  "Manual in-line stabilisation maintained",
+  "Pelvic binder applied correctly, pelvis not sprung",
+  "Deterioration recognised and EMS updated",
+  "Heat loss prevented; minimal handling; scoop used"
+ ],
+ "observationsNote": "Standard ATMIST handover (5.17). Mark Qualsafe 5.x criteria only where actually demonstrated.",
+ "assessment": [
+  {
+   "group": "Qualsafe practical 5 — Assessment",
+   "items": [
+    [
+     "5.1",
+     "Performs a SCENE (Safety, Cause, Environment, Number of patients, Extra resources needed) assessment and safe approach",
+     "Stops plant, considers falling objects and trip hazards, cordons the area and requests resources before approaching."
+    ],
+    [
+     "5.2",
+     "Minimises risk of infection to self and others",
+     "Gloves and appropriate PPE before contact with the wound and moulage."
+    ],
+    [
+     "5.3",
+     "Assesses mechanism of injury, consider injuries and requests emergency medical services (EMS)",
+     "Establishes the height and landing, anticipates head/spinal/pelvic injury and requests EMS."
+    ],
+    [
+     "5.4",
+     "Conducts Patient Assessment Triangle on approach (any work of breathing, colour/circulation and AVPU/ACVPU)",
+     "Verbalises work of breathing, pale/clammy colour and confusion on approach."
+    ],
+    [
+     "5.5",
+     "Identifies and addresses any life-threatening bleeding (where appropriate)",
+     "Checks for catastrophic bleeding first; manages the scalp wound appropriately."
+    ],
+    [
+     "5.6",
+     "Performs a structured patient assessment (primary survey/ABCDE/MARCH)",
+     "Completes <C>ABCDE/MARCH with manual in-line stabilisation."
+    ],
+    [
+     "5.7",
+     "Identifies if the patient's condition is time-critical and informs EMS",
+     "States 'time-critical' from mechanism and findings and updates EMS."
+    ]
+   ]
+  },
+  {
+   "group": "Qualsafe practical 5 — Treatment and management",
+   "items": [
+    [
+     "5.8",
+     "Airway management",
+     "Maintains airway; jaw thrust with in-line stabilisation if consciousness falls (Stage 3 on manikin)."
+    ],
+    [
+     "5.9",
+     "Administration of emergency oxygen, monitoring any adverse effects and checking indications and contraindications prior to administration",
+     "Gives oxygen only when indicated, titrates to 94–98% and monitors SpO2."
+    ],
+    [
+     "5.10",
+     "Control of internal and external bleeding",
+     "Direct pressure/dressing to scalp; pelvic binder for suspected internal bleeding."
+    ],
+    [
+     "5.11",
+     "Limb immobilisation and full body immobilisation",
+     "Maintains in-line stabilisation and packages with scoop, head blocks and straps."
+    ],
+    [
+     "5.12",
+     "Temperature control and environmental impact mitigation",
+     "Insulates from the ground and covers early with minimal movement."
+    ],
+    [
+     "5.13",
+     "Managing deviation from 'normal' physiological parameters",
+     "Recognises and responds to rising HR/RR and falling SpO2 and GCS."
+    ],
+    [
+     "5.14",
+     "Safe handling and appropriate packaging for evacuation",
+     "Scoop stretcher with minimal movement; no log-roll with suspected pelvic injury."
+    ],
+    [
+     "5.15",
+     "Performs a patient assessment (secondary survey/ABCDE and SAMPLE)",
+     "Completes a secondary survey and SAMPLE history from patient and supervisor."
+    ],
+    [
+     "5.16",
+     "Records assessment findings and interventions inc. administration of medical gases and use of equipment",
+     "Records findings, times, oxygen and equipment used."
+    ],
+    [
+     "5.17",
+     "Gives a structured handover to a clinician",
+     "Gives a clear ATMIST handover with immediate concerns first."
+    ]
+   ]
+  },
+  {
+   "group": "Qualsafe practical 5 — Trauma skills",
+   "items": [
+    [
+     "5.20",
+     "Examines the wound",
+     "Examines the scalp laceration for bleeding, contamination and possible depressed fracture."
+    ],
+    [
+     "5.22",
+     "Applies direct pressure",
+     "Applies appropriate pressure and dressing to the scalp wound."
+    ],
+    [
+     "5.27",
+     "Applies a pelvic binder as a bleed control device",
+     "Positions the binder at the greater trochanters and applies it correctly."
+    ],
+    [
+     "5.34",
+     "Applies a pelvic binder in conjunction with a scoop stretcher",
+     "Scoops the patient with the binder in place and minimal movement."
+    ],
+    [
+     "5.35",
+     "Demonstrates prehospital emergency care for suspected spinal injuries",
+     "Manual in-line stabilisation, minimal handling, appropriate packaging."
+    ],
+    [
+     "5.36",
+     "Conducts a dynamic moving and handling risk assessment",
+     "Assesses the load, team, space and equipment before moving the patient."
+    ],
+    [
+     "5.37",
+     "Demonstrates safe use of prehospital care moving and handling equipment",
+     "Uses the scoop stretcher and straps correctly and safely."
+    ],
+    [
+     "5.40",
+     "Demonstrates safely removing a safety helmet from a patient",
+     "Variant B: two-person removal with in-line stabilisation maintained."
+    ]
+   ]
+  }
+ ]
+};
+
 // Reference material — shared across all scenarios, not duplicated
 const SC_REFERENCE = {
   instructorPresence: [
@@ -4677,12 +5235,12 @@ const SC_REFERENCE = {
     ['01','Cocaine-associated ACS / MI','Medical assessment, human factors, deterioration, airway and adult BLS','Strict baseline complete'],
     ['02','Confused patient — stroke / hypoglycaemia','Assessment, capacity, neurological/metabolic differential, referral','Strict baseline complete'],
     ['03','Opiate overdose / respiratory arrest','Poisoning, airway, ventilation, respiratory arrest, optional arrest/ROSC','Strict baseline complete'],
-    ['04','Prolonged submersion / drowning','Drowning special circumstance, hypoxic arrest, airway contamination, hypothermia, ROSC with ongoing ventilation','Strict baseline complete'],
     ['07','Violent assault — catastrophic haemorrhage','Life-threatening bleeding, shock, deterioration, TCA/ROSC','Strict baseline complete'],
-    ['08','Fall from height','Major trauma; head injury; possible spinal/pelvic injury; deterioration','Planned']
+    ['08','Fall from height','Major trauma: head, spinal and pelvic injury, shock, packaging','Mapped to Qualsafe practical 5 only'],
+    ['09','Prolonged submersion / drowning','Drowning special circumstance, hypoxic arrest, airway contamination, hypothermia, ROSC with ongoing ventilation','Strict baseline complete']
   ],
   mappingMatrix: {
-    note: "Strict full-criterion evidence baseline across scenarios 01–04 (Medical) and 07 (Trauma). Only full criterion evidence is counted; 'Conditional' means the stated stage/branch must actually run; related/partial practice is left blank (—). Unique full criteria evidenced: 27 of 110 (01 Nightclub 19, 02 Confused patient 10, 03 Overdose 19, 04 Drowning 20, 07 Violent assault 18). Scenarios 01, 02 and 07 still show their earlier checklists until strict versions are supplied.",
+    note: "Strict full-criterion evidence baseline for scenarios 01–03 (Medical) and 07 and 09 (Trauma). Only full criterion evidence is counted; 'Conditional' means the stated stage/branch must actually run; related/partial practice is left blank (—). Unique full criteria evidenced: 27 of 110 (01 Nightclub 19, 02 Confused patient 10, 03 Overdose 19, 07 Violent assault 18, 09 Drowning 20). Scenario 08 Fall from height is mapped only to Qualsafe practical assessment 5 pass criteria, so it does not appear in this unit-criteria matrix.",
     rows: [
       ["C1 2.2", "Core", "Core", "Core", "Core", "Core"],
       ["C1 3.1", "Conditional — PAT/BBB actually used", "—", "Conditional — PAT/BBB actually used", "—", "—"],
@@ -4758,6 +5316,7 @@ function scGetDetail(id) {
   if (id === 3) return SC_DETAIL_03;
   if (id === 4) return SC_DETAIL_04;
   if (id === 5) return SC_DETAIL_05;
+  if (id === 6) return SC_DETAIL_06;
   return null;
 }
 
@@ -5077,33 +5636,18 @@ function scSaveState(scenarioId, state) {
 }
 
 function scRenderAssessment(d) {
-  const state = scLoadState(scCurrentId);
-  let html = `<div class="sc-note">Tap Pass / Refer / N/A for each learner. Saved automatically to this device for today's date. Record only evidence actually observed — this does not replace official Qualsafe assessment paperwork.</div>`;
-
-  d.assessment.forEach((group, gi) => {
+  let html = `<div class="sc-note">Assessment criteria for this scenario, for reference and preparation. Mark learners during the session in Run a Scenario.</div>`;
+  d.assessment.forEach(group => {
     html += `<div class="sc-assess-group"><div class="sc-assess-group-title">${group.group}</div>`;
-    group.items.forEach((item, ii) => {
-      const [ref, crit, good] = item;
-      const key = `${gi}_${ii}`;
+    group.items.forEach(([ref, crit, good]) => {
       html += `<div class="sc-assess-row">
         <div class="sc-assess-ref">${ref}</div>
         <div class="sc-assess-crit">${crit}</div>
         <div class="sc-assess-good">${good}</div>
-        <div class="sc-assess-learners">
-          <div>
-            <div class="sc-learner-label">Learner 1</div>
-            ${scPraGroup(key, 'l1', state)}
-          </div>
-          <div>
-            <div class="sc-learner-label">Learner 2</div>
-            ${scPraGroup(key, 'l2', state)}
-          </div>
-        </div>
       </div>`;
     });
     html += `</div>`;
   });
-
   document.getElementById('scPanel-assess').innerHTML = html;
 }
 
@@ -5157,8 +5701,8 @@ function scRenderReference() {
 
   html += `<div class="sc-h2">Master Qualsafe mapping matrix</div>
     <div class="sc-note">${r.mappingMatrix.note}</div>
-    <table class="sc-table"><tr><th>QA ref</th><th>01</th><th>02</th><th>03</th><th>04</th><th>07</th></tr>
-    ${r.mappingMatrix.rows.map(m=>`<tr><td style="width:12%;"><strong>${m[0]}</strong></td>${[m[1],m[3],m[4],m[5],m[2]].map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}
+    <table class="sc-table"><tr><th>QA ref</th><th>01</th><th>02</th><th>03</th><th>07</th><th>09</th></tr>
+    ${r.mappingMatrix.rows.map(m=>`<tr><td style="width:12%;"><strong>${m[0]}</strong></td>${[m[1],m[3],m[4],m[2],m[5]].map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}
     </table>`;
 
   document.getElementById('scPanel-ref').innerHTML = html;
@@ -5190,6 +5734,10 @@ const RN_MIXES = {
       ]},
   4: { label:'Low-level room tone / street', sounds:[
         {id:'urban_night', vol:0.3}
+      ]},
+  6: { label:'Construction site — plant and wind', sounds:[
+        {id:'construction', vol:0.4},
+        {id:'wind', vol:0.25}
       ]},
   5: { label:'Pond edge — water, crowd, sirens', sounds:[
         {id:'river', vol:0.45},
@@ -5593,6 +6141,7 @@ const RN_QA_SHORT = {
   'C3 1.1':'Presenting complaint', 'C3 1.2':'Structured assessment', 'C3 1.3':'History', 'C3 1.4':'Severity',
   'C3 1.5':'Referral pathways', 'C3 1.6':'Record findings', 'C3 1.7':'Immediate referral',
   'C3 3.1':'Medical emergency features', 'C3 3.2':'Medical emergency care', 'C3 3.3':'Medication administration',
+  '5.1':'SCENE & safe approach', '5.2':'Infection control', '5.3':'MOI & request EMS', '5.4':'PAT on approach', '5.5':'Life-threatening bleeding', '5.6':'Primary survey (<C>ABCDE/MARCH)', '5.7':'Time-critical & inform EMS', '5.8':'Airway management', '5.9':'Emergency oxygen', '5.10':'Internal & external bleeding', '5.11':'Immobilisation', '5.12':'Temperature control', '5.13':'Abnormal physiology', '5.14':'Handling & packaging', '5.15':'Secondary survey & SAMPLE', '5.16':'Record findings', '5.17':'Structured handover', '5.20':'Examine wound', '5.22':'Direct pressure', '5.27':'Pelvic binder (bleeding)', '5.34':'Pelvic binder + scoop', '5.35':'Suspected spinal injury', '5.36':'Dynamic M&H risk assessment', '5.37':'M&H equipment', '5.40':'Helmet removal',
   'C3 4.4':'Unconscious patient', 'C3 5.3':'Environmental exposure care', 'C3 5.5':'Immersion / submersion'
 };
 function rnQaShort(ref, crit) {
