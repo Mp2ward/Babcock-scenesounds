@@ -15,6 +15,15 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
+// DD/MM/YYYY everywhere in the app (accepts ISO dates 'YYYY-MM-DD', full ISO timestamps or Date objects)
+function fmtD(v) {
+  if (!v) return '—';
+  if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)) { const [y, m, d] = v.split('-'); return d + '/' + m + '/' + y; }
+  const dt = v instanceof Date ? v : new Date(v);
+  if (isNaN(dt)) return String(v);
+  return String(dt.getDate()).padStart(2, '0') + '/' + String(dt.getMonth() + 1).padStart(2, '0') + '/' + dt.getFullYear();
+}
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/service-worker.js')
@@ -505,7 +514,8 @@
   /* ---- Scenario Cards ---- */
   .sc-view { display:none; }
   .sc-view.active { display:block; }
-  .sc-grid-tiles { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-top:8px; }
+  .sc-grid-tiles { display:block; margin-top:8px; }
+  .sc-type-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
   .sc-tile { border:1px solid #D8DEE8; background:#FFFFFF; padding:18px 16px; text-align:left; cursor:pointer; transition:all 0.15s; }
   .sc-tile:hover { border-color:#2B5BD7; background:#F7F9FC; }
   .sc-tile.sc-locked { opacity:0.45; cursor:default; }
@@ -550,7 +560,7 @@
   .sc-stage-head { background:#0D1B4C; color:#FFFFFF; padding:10px 16px; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.92rem; letter-spacing:0.04em; }
   .sc-stage-body { padding:16px; }
 
-  .sc-note { background:#FFF8E8; border-left:3px solid #C8960C; padding:12px 16px; font-size:0.84rem; color:#5C4A0C; margin-bottom:16px; line-height:1.6; }
+  .sc-note { background:#EAF1FD; border-left:3px solid #2B5BD7; padding:12px 16px; font-size:0.84rem; color:#000000; margin-bottom:16px; line-height:1.6; }
   .sc-critical { background:#FCEEEE; border:1px solid #E8BEBE; padding:10px 14px; margin-bottom:8px; }
   .sc-critical-issue { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.86rem; color:#000000; }
   .sc-critical-resp { font-size:0.82rem; color:#000000; margin-top:3px; line-height:1.5; }
@@ -671,6 +681,9 @@
   .qs-sign-pad { display:block; width:100%; height:160px; border:1px solid #B8C2D0; border-radius:8px; background:#fff; touch-action:none; cursor:crosshair; }
   .qs-sign-hint { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#A3AEC0; font-size:0.9rem; pointer-events:none; }
   .qs-sign-wrap::after { content:''; position:absolute; left:18px; right:18px; bottom:34px; border-bottom:1px dashed #D8DEE8; pointer-events:none; }
+  .lpm-course-date { font-family:'Public Sans',sans-serif; font-weight:600; font-size:1rem; color:#2B5BD7; margin:2px 0 2px; }
+  .sc-type-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.1rem; color:#0D1B4C; margin:22px 0 10px; padding-bottom:6px; border-bottom:2px solid #0D1B4C; grid-column:1/-1; }
+  .sc-type-h:first-child { margin-top:0; }
   .rn-safe-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.95rem; color:#0D1B4C; margin:16px 0 4px; }
   .rn-collapse { margin:18px 0; border:1px solid #E6EAF0; border-radius:8px; padding:0 14px; }
   .rn-collapse summary { cursor:pointer; padding:12px 0; font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.05rem; color:#0D1B4C; list-style:none; }
@@ -912,7 +925,7 @@ window.addEventListener('load', function () {
       <span class="hub-emoji">🎛️</span>
       <div style="flex:1;min-width:0;">
         <div class="hub-title">SOUNDBOARD</div>
-        <div class="hub-sub">97 sounds across 6 categories, live mixer</div>
+        <div class="hub-sub">74 sounds across 4 categories, live mixer</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
@@ -950,12 +963,6 @@ window.addEventListener('load', function () {
   </button>
   <button class="tab" onclick="switchTab('police')">
     <span class="tab-dot" style="background:var(--police)"></span>Police / Road
-  </button>
-  <button class="tab" onclick="switchTab('military')">
-    <span class="tab-dot" style="background:var(--military)"></span>Military
-  </button>
-  <button class="tab" onclick="switchTab('clinical')">
-    <span class="tab-dot" style="background:var(--clinical)"></span>Clinical
   </button>
   <button class="tab" onclick="switchTab('scenarios')" style="color:var(--fire);">
     <span class="tab-dot" style="background:var(--fire)"></span>⚡ Scenarios
@@ -1016,11 +1023,8 @@ window.addEventListener('load', function () {
   <div class="section-label">🚔 Police / Road</div>
   <div class="sound-grid" id="grid-police-all"></div>
 
-  <div class="section-label">🩺 Clinical</div>
-  <div class="sound-grid" id="grid-clinical-all"></div>
-
-  <div class="section-label">🪖 Military / Combat Medic</div>
-  <div class="sound-grid" id="grid-military-all"></div>
+  <div class="sound-grid" id="grid-clinical-all" style="display:none;"></div>
+  <div class="sound-grid" id="grid-military-all" style="display:none;"></div>
 </div>
 
 <div class="grid-section" id="tab-medical">
@@ -1054,8 +1058,7 @@ window.addEventListener('load', function () {
   <div class="section-label" style="padding-top:16px;">🚨 Emergency Services</div>
   <div id="scenario-grid-es" style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;"></div>
 
-  <div class="section-label">🪖 Military</div>
-  <div id="scenario-grid-mil" style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;"></div>
+  <div id="scenario-grid-mil" style="display:none;"></div>
 
   <div class="section-label">💾 My Saved Scenarios</div>
   <div id="scenario-grid-custom" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
@@ -1260,6 +1263,7 @@ window.addEventListener('load', function () {
       <div class="rn-head">
         <div class="rn-head-meta">Learner practical matrix</div>
         <div class="rn-head-title" id="lpmCourseTitle">Course record</div>
+        <div class="lpm-course-date" id="lpmCourseDate"></div>
         <div class="rn-head-sub" id="lpmCourseSub"></div>
       </div>
 
@@ -1577,6 +1581,8 @@ const sounds = [
   { id: 'chaos', label: 'Battlefield Chaos', sub: 'Full contact scenario', icon: '🌪️', cat: 'military',
     url: 'https://mp2ward.github.io/SceneSounds/battlefield-chaos.mp3' }
 ];
+// Clinical and Military sounds are not used on this course — remove them from the soundboard, search and mixer
+for (let i = sounds.length - 1; i >= 0; i--) { if (sounds[i].cat === "clinical" || sounds[i].cat === "military") sounds.splice(i, 1); }
 
 const catColor = {
   medical: '#0E7C86', fire: '#2B5BD7', police: '#1E5FA8', general: '#5C6B8A', military: '#4A6B52',
@@ -2266,7 +2272,7 @@ function saveCustomScenario() {
     name,
     icon: selectedIcon,
     layers: layers.map(([id, vol]) => ({ id, vol })),
-    savedAt: new Date().toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
+    savedAt: fmtD(new Date())
   };
 
   const saved = loadSavedScenarios();
@@ -2488,6 +2494,7 @@ window.addEventListener('load', function () {
 // ============================================================
 
 const SC_SCENARIOS = [
+  // Medical 01–06
   {
     id: 1,
     title: 'Nightclub Chest Pain',
@@ -2496,18 +2503,28 @@ const SC_SCENARIOS = [
     ready: true,
     icon: '❤️'
   },
-  {id:2, title:'Violent Assault', sub:'Catastrophic haemorrhage', ready:true, icon:'🩸'},
   {id:3, title:'Confused Patient', sub:'Stroke or hypoglycaemia — pub garden', ready:true, icon:'🧠'},
   {id:4, title:'Opiate Overdose', sub:'Respiratory depression → respiratory arrest', ready:true, icon:'💊'},
   {id:5, title:'Prolonged Submersion / Drowning', sub:'Cardiac arrest → ROSC with respiratory depression', ready:true, icon:'🌊'},
-  {id:6, title:'Fall From Height', sub:'Head injury, possible spinal/pelvic — not yet added', ready:false, icon:'🪜'},
-  {id:7, title:'Scenario 07', sub:'Not yet added', ready:false, icon:'🧠'},
-  {id:8, title:'Scenario 08', sub:'Not yet added', ready:false, icon:'🩸'},
-  {id:9, title:'Scenario 09', sub:'Not yet added', ready:false, icon:'🦴'},
-  {id:10, title:'Scenario 10', sub:'Not yet added', ready:false, icon:'👶'},
-  {id:11, title:'Scenario 11', sub:'Not yet added', ready:false, icon:'⚡'},
-  {id:12, title:'Scenario 12', sub:'Not yet added', ready:false, icon:'🌡️'},
+  {id:7, title:'Scenario', sub:'Not yet added', ready:false, icon:'🧠'},
+  {id:10, title:'Scenario', sub:'Not yet added', ready:false, icon:'👶'},
+  // Trauma 07–12
+  {id:2, type:'trauma', title:'Violent Assault', sub:'Catastrophic haemorrhage', ready:true, icon:'🩸'},
+  {id:6, type:'trauma', title:'Fall From Height', sub:'Head injury, possible spinal/pelvic — not yet added', ready:false, icon:'🪜'},
+  {id:8, type:'trauma', title:'Scenario', sub:'Not yet added', ready:false, icon:'🩸'},
+  {id:9, type:'trauma', title:'Scenario', sub:'Not yet added', ready:false, icon:'🦴'},
+  {id:11, type:'trauma', title:'Scenario', sub:'Not yet added', ready:false, icon:'⚡'},
+  {id:12, type:'trauma', title:'Scenario', sub:'Not yet added', ready:false, icon:'🚗'},
 ];
+
+// Display numbers run in list order: Medical 01–06, then Trauma 07–12.
+// Internal ids stay the same so saved sessions, sound mixes and scenario content keep working.
+function scNum(id) {
+  const ordered = [...SC_SCENARIOS.filter(s => (s.type || 'medical') === 'medical'), ...SC_SCENARIOS.filter(s => s.type === 'trauma')];
+  const i = ordered.findIndex(s => s.id === id);
+  return String(i + 1).padStart(2, '0');
+}
+
 
 // Full detail for Scenario 01 — everything else stubbed until content supplied
 const SC_DETAIL_01 = {
@@ -2771,7 +2788,7 @@ const SC_DETAIL_01 = {
 
 const SC_DETAIL_02 = {
 
-  eyebrow: 'Scenario 02 · Outdoor / public-space assault scene',
+  eyebrow: 'Scenario 07 · Outdoor / public-space assault scene',
   title: 'Violent Assault',
   sub: 'Catastrophic haemorrhage',
 
@@ -3126,7 +3143,7 @@ const SC_DETAIL_02 = {
 
 const SC_DETAIL_03 = {
 
-  eyebrow: 'Scenario 03 · Public-house beer garden, after a small bin fire nearby',
+  eyebrow: 'Scenario 02 · Public-house beer garden, after a small bin fire nearby',
   title: 'Confused Patient in a Pub Garden',
   sub: 'Stroke or hypoglycaemia variant — hidden from learners',
 
@@ -3460,7 +3477,7 @@ const SC_DETAIL_03 = {
 
 // Scenario 04 and 05 — from the STRICT scenario packs (September 2026)
 const SC_DETAIL_04 = {
- "eyebrow": "Scenario 04 · Flexible indoor/outdoor overdose scene",
+ "eyebrow": "Scenario 03 · Flexible indoor/outdoor overdose scene",
  "title": "Opiate Overdose",
  "sub": "Respiratory depression → respiratory arrest → optional cardiac arrest",
  "variants": [
@@ -4057,7 +4074,7 @@ const SC_DETAIL_04 = {
 };
 
 const SC_DETAIL_05 = {
- "eyebrow": "Scenario 05 · Pond / water-edge incident",
+ "eyebrow": "Scenario 04 · Pond / water-edge incident",
  "title": "Prolonged Submersion / Drowning",
  "sub": "~25-minute submersion: cardiac arrest → airway complications → ROSC with respiratory depression",
  "brief": {
@@ -4658,14 +4675,14 @@ const SC_REFERENCE = {
   ],
   packIndex: [
     ['01','Cocaine-associated ACS / MI','Medical assessment, human factors, deterioration, airway and adult BLS','Strict baseline complete'],
-    ['02','Violent assault — catastrophic haemorrhage','Life-threatening bleeding, shock, deterioration, TCA/ROSC','Strict baseline complete'],
-    ['03','Confused patient — stroke / hypoglycaemia','Assessment, capacity, neurological/metabolic differential, referral','Strict baseline complete'],
-    ['04','Opiate overdose / respiratory arrest','Poisoning, airway, ventilation, respiratory arrest, optional arrest/ROSC','Strict baseline complete'],
-    ['05','Prolonged submersion / drowning','Drowning special circumstance, hypoxic arrest, airway contamination, hypothermia, ROSC with ongoing ventilation','Strict baseline complete'],
-    ['06','Fall from height','Major trauma; head injury; possible spinal/pelvic injury; deterioration','Planned']
+    ['02','Confused patient — stroke / hypoglycaemia','Assessment, capacity, neurological/metabolic differential, referral','Strict baseline complete'],
+    ['03','Opiate overdose / respiratory arrest','Poisoning, airway, ventilation, respiratory arrest, optional arrest/ROSC','Strict baseline complete'],
+    ['04','Prolonged submersion / drowning','Drowning special circumstance, hypoxic arrest, airway contamination, hypothermia, ROSC with ongoing ventilation','Strict baseline complete'],
+    ['07','Violent assault — catastrophic haemorrhage','Life-threatening bleeding, shock, deterioration, TCA/ROSC','Strict baseline complete'],
+    ['08','Fall from height','Major trauma; head injury; possible spinal/pelvic injury; deterioration','Planned']
   ],
   mappingMatrix: {
-    note: "Strict full-criterion evidence baseline after Scenarios 01–05. Only full criterion evidence is counted; 'Conditional' means the stated stage/branch must actually run; related/partial practice is left blank (—). Unique full criteria evidenced across Scenarios 01–05: 27 of 110 (S01 19, S02 18, S03 10, S04 19, S05 20). Scenario tabs 01–03 still show their earlier checklists until strict versions are supplied.",
+    note: "Strict full-criterion evidence baseline across scenarios 01–04 (Medical) and 07 (Trauma). Only full criterion evidence is counted; 'Conditional' means the stated stage/branch must actually run; related/partial practice is left blank (—). Unique full criteria evidenced: 27 of 110 (01 Nightclub 19, 02 Confused patient 10, 03 Overdose 19, 04 Drowning 20, 07 Violent assault 18). Scenarios 01, 02 and 07 still show their earlier checklists until strict versions are supplied.",
     rows: [
       ["C1 2.2", "Core", "Core", "Core", "Core", "Core"],
       ["C1 3.1", "Conditional — PAT/BBB actually used", "—", "Conditional — PAT/BBB actually used", "—", "—"],
@@ -4707,19 +4724,25 @@ let scCurrentId = null;
 
 // "01 - Nightclub chest pain"; placeholders that are already called "Scenario 07" keep their name
 function scNumTitle(s) {
-  return /^scenario\s*\d+$/i.test(s.title) ? s.title : String(s.id).padStart(2,'0') + ' - ' + s.title;
+  return s.title === 'Scenario' ? 'Scenario ' + scNum(s.id) : scNum(s.id) + ' - ' + s.title;
 }
 
+function scByType() {
+  return [
+    ['Medical', SC_SCENARIOS.filter(s => (s.type || 'medical') === 'medical')],
+    ['Trauma', SC_SCENARIOS.filter(s => s.type === 'trauma')]
+  ];
+}
 function scRenderGrid() {
   const wrap = document.getElementById('scGridTiles');
   if (!wrap) return;
-  wrap.innerHTML = SC_SCENARIOS.map(s => `
+  wrap.innerHTML = scByType().map(([label, list]) => `<div class="sc-type-h">${label}</div><div class="sc-type-grid">` + list.map(s => `
     <button class="sc-tile ${s.ready ? '' : 'sc-locked'}" ${s.ready ? `onclick="scOpen(${s.id})"` : 'disabled'}>
       <span class="sc-tile-icon">${s.icon}</span>
       <div class="sc-tile-title">${scNumTitle(s)}</div>
       <div class="sc-tile-sub">${s.sub}</div>
     </button>
-  `).join('');
+  `).join('') + `</div>`).join('');
 }
 
 function scShowGrid() {
@@ -4743,7 +4766,7 @@ function scOpen(id) {
   if (!d) return;
   scCurrentId = id;
   scCurrentDetail = d;
-  document.getElementById('scDetailTitle').textContent = String(id).padStart(2,'0') + ' - ' + d.title;
+  document.getElementById('scDetailTitle').textContent = scNum(id) + ' - ' + d.title;
   document.getElementById('scDetailSub').textContent = d.sub;
 
   scRenderBrief(d);
@@ -5134,8 +5157,8 @@ function scRenderReference() {
 
   html += `<div class="sc-h2">Master Qualsafe mapping matrix</div>
     <div class="sc-note">${r.mappingMatrix.note}</div>
-    <table class="sc-table"><tr><th>QA ref</th><th>S01</th><th>S02</th><th>S03</th><th>S04</th><th>S05</th></tr>
-    ${r.mappingMatrix.rows.map(m=>`<tr><td style="width:12%;"><strong>${m[0]}</strong></td>${m.slice(1).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}
+    <table class="sc-table"><tr><th>QA ref</th><th>01</th><th>02</th><th>03</th><th>04</th><th>07</th></tr>
+    ${r.mappingMatrix.rows.map(m=>`<tr><td style="width:12%;"><strong>${m[0]}</strong></td>${[m[1],m[3],m[4],m[5],m[2]].map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}
     </table>`;
 
   document.getElementById('scPanel-ref').innerHTML = html;
@@ -5214,18 +5237,14 @@ function rnExit() {
 function rnRenderPick() {
   const wrap = document.getElementById('rnPickList');
   if (!wrap) return;
-  let html = SC_SCENARIOS.map(s => {
+  let html = scByType().map(([label, list]) => `<div class="sc-type-h">${label}</div>` + list.map(s => {
     const ready = s.ready;
     return `<button class="rn-pick-row ${ready ? '' : 'rn-locked'}" ${ready ? `onclick="rnStart(${s.id})"` : 'disabled'}>
       <div class="rn-pick-title">${scNumTitle(s)}</div>
       <div class="rn-pick-sub">${s.sub}</div>
     </button>`;
-  }).join('');
+  }).join('')).join('');
 
-  const sessions = rnLoadSessions();
-  html += `<div style="margin-top:28px;display:flex;gap:10px;flex-wrap:wrap;">
-    <button class="rn-nav-btn" onclick="rnShowMatrix()">Course matrix (${sessions.length} session${sessions.length===1?'':'s'})</button>
-  </div>`;
 
   wrap.innerHTML = html;
 }
@@ -5241,7 +5260,7 @@ function rnStart(id) {
   rnSession = {
     id: 'S' + Date.now(),
     scenarioId: id,
-    scenarioTitle: d.title,
+    scenarioTitle: scNum(id) + ' - ' + d.title,
     date: new Date().toISOString().slice(0,10),
     instructor: '',
     variant: (d.variants && d.variants[0]) ? d.variants[0].id : null,
@@ -5260,7 +5279,7 @@ function rnStart(id) {
   }
 
   document.getElementById('rnHeadMeta').style.display = 'none';
-  document.getElementById('rnHeadTitle').textContent = String(id).padStart(2,'0') + ' - ' + d.title;
+  document.getElementById('rnHeadTitle').textContent = scNum(id) + ' - ' + d.title;
   document.getElementById('rnHeadSub').textContent = d.sub;
 
   rnBuildSteps();
@@ -5508,7 +5527,7 @@ function rnCourses() {
   return list.slice().sort((a, b) => (b.startDate || b.createdAt || '').localeCompare(a.startDate || a.createdAt || ''));
 }
 function rnCourseLabel(c) {
-  return rnEscAttr((c.courseName || 'Untitled course') + (c.courseRef ? ' (' + c.courseRef + ')' : '') + (c.startDate ? ' — ' + c.startDate : ''));
+  return rnEscAttr((c.courseName || 'Untitled course') + (c.courseRef ? ' (' + c.courseRef + ')' : '') + (c.startDate ? ' — ' + fmtD(c.startDate) : ''));
 }
 function rnEscAttr(v) {
   return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -5869,7 +5888,7 @@ function rnEmailSummary() {
     msg.textContent = 'Add at least one learner name first.';
     return;
   }
-  let body = `Scenario: ${rnSession.scenarioTitle}%0D%0ADate: ${rnSession.date}%0D%0AInstructor: ${rnSession.instructor || '—'}%0D%0AStages run: ${rnSession.stagesRun || '—'}%0D%0A%0D%0A`;
+  let body = `Scenario: ${rnSession.scenarioTitle}%0D%0ADate: ${fmtD(rnSession.date)}%0D%0AInstructor: ${rnSession.instructor || '—'}%0D%0AStages run: ${rnSession.stagesRun || '—'}%0D%0A%0D%0A`;
   named.forEach(l => {
     const vals = Object.values(l.results).filter(Boolean);
     const p = vals.filter(v=>v==='P').length;
@@ -5919,7 +5938,7 @@ function rnRenderMatrix() {
     byLearner[name].forEach((row, i) => {
       html += `<tr>
         <td>${i === 0 ? '<strong>'+name+'</strong>' : ''}</td>
-        <td>${row.date}</td>
+        <td>${fmtD(row.date)}</td>
         <td>${row.scenario}</td>
         <td>${row.stages}</td>
         <td class="rn-m-p">${row.p}</td>
@@ -6016,7 +6035,7 @@ function lpmRenderCourseList() {
     <div class="lpm-course-row-wrap">
       <button class="lpm-course-row" onclick="lpmOpenCourse('${c.id}')">
         <div class="lpm-course-name">${c.courseName || 'Untitled course'}</div>
-        <div class="lpm-course-meta">${c.startDate || '—'} · ${(c.learners||[]).length} learner${(c.learners||[]).length===1?'':'s'} · ${lpmRecordCount(c)} recorded observations</div>
+        <div class="lpm-course-meta">${fmtD(c.startDate)} · ${(c.learners||[]).length} learner${(c.learners||[]).length===1?'':'s'} · ${lpmRecordCount(c)} recorded observations</div>
       </button>
       <button class="lpm-course-delete" onclick="event.stopPropagation();lpmDeleteCourseFromList('${c.id}')" aria-label="Delete course record">🗑</button>
     </div>`).join('');
@@ -6061,7 +6080,7 @@ function lpmOpenCourse(id) {
   lpmCourse = found;
   lpmCurrentId = id;
   document.getElementById('lpmCourseTitle').textContent = lpmCourse.courseName || 'Untitled course';
-  document.getElementById('lpmCourseSub').textContent = (lpmInstructorLine(lpmCourse) ? 'Instructor: ' + lpmInstructorLine(lpmCourse) : 'No instructor set') + ' · ' + (lpmCourse.learners.length) + ' learners';
+  lpmUpdateCourseSub();
 
   document.getElementById('lpmSteps').innerHTML = LPM_STEPS.map((k,i) => {
     const labels = {details:'Course details', learners:'Learners', skills:'Skills stations', sessions:'Scenario sessions', overview:'QA overview', summary:'Summary'};
@@ -6146,11 +6165,12 @@ function lpmCourseLengthNote(c) {
   const start = new Date(c.startDate + 'T00:00:00');
   const end = new Date(start);
   end.setDate(start.getDate() + (days - 1));
-  const fmt = d => d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short'});
+  const fmt = d => d.toLocaleDateString('en-GB', {weekday:'short'}) + ' ' + fmtD(d);
   return 'Runs ' + days + ' consecutive days: ' + fmt(start) + ' to ' + fmt(end) + '.';
 }
 
 function lpmApplyCourseLength() {
+  setTimeout(() => { try { lpmUpdateCourseSub(); } catch (e) {} }, 0);
   const c = lpmCourse;
   const days = LPM_COURSE_LENGTH_DAYS[c.courseName];
   if (!days || !c.startDate) return;
@@ -6168,10 +6188,17 @@ function lpmInstructorLine(c) {
   return names.length ? names.join(' & ') : '';
 }
 
+function lpmUpdateCourseSub() {
+  const c = lpmCourse;
+  const dates = c.startDate ? (c.endDate && c.endDate !== c.startDate ? fmtD(c.startDate) + ' – ' + fmtD(c.endDate) : fmtD(c.startDate)) : 'Date not set';
+  document.getElementById('lpmCourseDate').textContent = dates;
+  document.getElementById('lpmCourseSub').textContent = (lpmInstructorLine(c) ? 'Instructor: ' + lpmInstructorLine(c) : 'No instructor set') + ' · ' + (c.learners.length) + ' learners';
+}
 function lpmSetDetail(key, val) {
   lpmCourse[key] = val;
   lpmPersist();
   document.getElementById('lpmCourseTitle').textContent = lpmCourse.courseName || 'Untitled course';
+  lpmUpdateCourseSub();
 }
 
 // ---- Learners ----
@@ -6318,7 +6345,7 @@ function lpmAddLearner() {
 function lpmSetLearnerName(i, val) {
   lpmCourse.learners[i].name = val;
   lpmPersist();
-  document.getElementById('lpmCourseSub').textContent = (lpmInstructorLine(lpmCourse) ? 'Instructor: ' + lpmInstructorLine(lpmCourse) : 'No instructor set') + ' · ' + (lpmCourse.learners.length) + ' learners';
+  lpmUpdateCourseSub();
 }
 
 function lpmRemoveLearner(i) {
@@ -6752,7 +6779,7 @@ function lpmRenderRecord() {
       const outcomeClass = r.outcome === 'P' ? 'rn-m-p' : r.outcome === 'R' ? 'rn-m-r' : 'rn-m-n';
       const outcomeLabel = r.outcome === 'P' ? 'Pass' : r.outcome === 'R' ? 'Referral' : 'Observed';
       html += `<div class="lpm-record-row">
-        <div>${r.date}</div>
+        <div>${fmtD(r.date)}</div>
         <div>${lpmEsc(name)}</div>
         <div>${lpmEsc(r.competency)}${r.context ? '<br><span style="color:#8494AC;font-size:0.78rem;">'+lpmEsc(r.context)+'</span>' : ''}</div>
         <div class="${outcomeClass}">${outcomeLabel}</div>
@@ -6837,7 +6864,7 @@ function lpmSessionCard(s, isLinked) {
   }).join(', ');
 
   return `<div class="rn-summary-card">
-    <div class="rn-summary-name">${lpmEsc(s.scenarioTitle)} <span style="font-weight:400;color:#8494AC;font-size:0.8rem;">— ${s.date}</span></div>
+    <div class="rn-summary-name">${lpmEsc(s.scenarioTitle)} <span style="font-weight:400;color:#8494AC;font-size:0.8rem;">— ${fmtD(s.date)}</span></div>
     <div style="font-size:0.82rem;color:#6B7A94;margin-top:4px;">${learnerLine || 'No named learners recorded'}</div>
     <div style="margin-top:10px;" class="rn-no-print">
       ${isLinked
@@ -6864,7 +6891,7 @@ function lpmRenderSummary() {
   const c = lpmCourse;
   if (!c.qa) c.qa = {};
   let html = `<div class="sc-h2" style="margin-top:0;">${lpmEsc(c.courseName || 'Untitled course')}</div>
-    <div class="sc-note">${c.startDate||'—'} to ${c.endDate||'—'} · ${c.location||'Location not set'} · Instructor: ${lpmInstructorLine(c)||'—'}</div>`;
+    <div class="sc-note">${fmtD(c.startDate)} to ${fmtD(c.endDate)} · ${c.location||'Location not set'} · Instructor: ${lpmInstructorLine(c)||'—'}</div>`;
 
   if (!c.learners.length) {
     html += `<div class="rn-empty">Add learners to see a summary.</div>`;
@@ -6901,7 +6928,7 @@ function lpmRenderSummary() {
 function lpmEmailSummary() {
   const c = lpmCourse;
   if (!c.qa) c.qa = {};
-  let body = `Course: ${c.courseName||'Untitled'}%0D%0ADates: ${c.startDate||'—'} to ${c.endDate||'—'}%0D%0ALocation: ${c.location||'—'}%0D%0AInstructor: ${lpmInstructorLine(c)||'—'}%0D%0A%0D%0A`;
+  let body = `Course: ${c.courseName||'Untitled'}%0D%0ADates: ${fmtD(c.startDate)} to ${fmtD(c.endDate)}%0D%0ALocation: ${c.location||'—'}%0D%0AInstructor: ${lpmInstructorLine(c)||'—'}%0D%0A%0D%0A`;
   c.learners.forEach((l, li) => {
     let p = 0, r = 0, notYet = 0;
     LPM_QA_ITEMS.forEach(q => {
@@ -6996,7 +7023,7 @@ function lpmRenderFullMatrix() {
     html += `<tr>
       <td>${r.learner === lastLearner ? '' : '<strong>'+lpmEsc(r.learner)+'</strong>'}</td>
       <td>${lpmEsc(r.course)}</td>
-      <td>${r.date}</td>
+      <td>${fmtD(r.date)}</td>
       <td>${lpmEsc(r.competency)}</td>
       <td class="${outcomeClass}">${outcomeLabel}</td>
     </tr>`;
@@ -7097,7 +7124,7 @@ function skGridHTML(a, learners, d) {
         ${learners.map(l => {
           const m = (d.marks[ref] || {})[l.id];
           const v = m ? m.v : '';
-          return `<td class="sk-cell"><button class="sk-tick ${v==='C'?'c':v==='R'?'r':''}" title="${m && m.at ? 'Marked ' + new Date(m.at).toLocaleDateString('en-GB') : ''}" onclick="skCycle('${ref}','${l.id}')">${v==='C'?'✓':v==='R'?'R':''}</button></td>`;
+          return `<td class="sk-cell"><button class="sk-tick ${v==='C'?'c':v==='R'?'r':''}" title="${m && m.at ? 'Marked ' + fmtD(m.at) : ''}" onclick="skCycle('${ref}','${l.id}')">${v==='C'?'✓':v==='R'?'R':''}</button></td>`;
         }).join('')}</tr>`;
     });
   });
@@ -7264,7 +7291,7 @@ async function qsGenerateRecordSheet() {
     }
 
     // Date
-    page.drawText(new Date().toLocaleDateString('en-GB'), { x: 497, y: 128, size: 10, font, color: ink });
+    page.drawText(fmtD(new Date()), { x: 497, y: 128, size: 10, font, color: ink });
 
     rows.forEach((r, i) => {
       const cx = 264.45 + 23.95 * i;
@@ -7336,7 +7363,7 @@ function qsInitSignature() {
     img.onload = () => ctx.drawImage(img, 0, 0, w, h);
     img.src = lpmCourse.signature;
     hint.style.display = 'none';
-    status.textContent = lpmCourse.signatureAt ? 'Signed ' + new Date(lpmCourse.signatureAt).toLocaleString('en-GB') : 'Signed';
+    status.textContent = lpmCourse.signatureAt ? 'Signed ' + fmtD(lpmCourse.signatureAt) + ' ' + new Date(lpmCourse.signatureAt).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}) : 'Signed';
   }
   let drawing = false, last = null, dirty = false;
   const pos = e => { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
