@@ -670,7 +670,10 @@ function fmtD(v) {
   .sk-name-prog { font-size:0.66rem; color:#6B7A94; margin-top:3px; font-weight:700; }
   .sk-name-prog.p { color:#0F6E56; } .sk-name-prog.r { color:#B06A00; }
   .sk-colall { margin-top:4px; border:1px solid #D8DEE8; background:#fff; color:#0F6E56; font-size:0.66rem; font-weight:700; padding:3px 6px; border-radius:4px; cursor:pointer; }
-  .sk-group { background:#EEF1F5; font-size:0.76rem; font-style:italic; color:#3A4760; padding:6px 10px; position:sticky; left:0; }
+  .sk-group { background:#EEF1F5; font-size:0.76rem; font-style:italic; color:#3A4760; padding:6px 10px; position:sticky; left:0; z-index:2; min-width:250px; max-width:330px; }
+  .sk-group-cell { background:#EEF1F5; padding:3px; text-align:center; }
+  .sk-secall { border:1px solid #C9D2DE; background:#fff; color:#0F6E56; font-size:0.64rem; font-weight:700; padding:3px 5px; border-radius:4px; cursor:pointer; white-space:nowrap; }
+  .sk-secall.done { background:#DDF1E8; border-color:#9FD3BC; }
   .sk-crit { position:sticky; left:0; z-index:2; background:#fff; font-size:0.8rem; color:#0D1B4C; padding:7px 10px; min-width:250px; max-width:330px; line-height:1.3; }
   .sk-ref { display:inline-block; min-width:34px; font-weight:700; color:#fff; background:#5A6478; border-radius:3px; padding:1px 4px; margin-right:7px; font-size:0.7rem; text-align:center; }
   .sk-cell { padding:0; text-align:center; }
@@ -8520,8 +8523,11 @@ function skGridHTML(a, learners, d) {
           <div class="sk-name-prog ${s.final==='P'?'p':s.final==='R'?'r':''}">${s.final==='P'?'PASS':s.final==='R'?'REFER':s.done+'/'+s.total}</div>
           <button class="sk-colall rn-no-print" onclick="skMarkColumn(${a.n},'${l.id}')">✓ all</button></th>`;
       }).join('')}</tr>`;
-  a.groups.forEach(g => {
-    h += `<tr><td class="sk-group" colspan="${learners.length + 1}">${g[0]}</td></tr>`;
+  a.groups.forEach((g, gi) => {
+    h += `<tr><td class="sk-group">${g[0]}</td>${learners.map(l => {
+      const done = g[1].every(([ref]) => ((d.marks[ref] || {})[l.id] || {}).v === 'C');
+      return `<td class="sk-group-cell"><button class="sk-secall ${done ? 'done' : ''} rn-no-print" title="Mark this section complete" onclick="skMarkSection(${a.n},${gi},'${l.id}')">${done ? '✓ done' : '✓ section'}</button></td>`;
+    }).join('')}</tr>`;
     g[1].forEach(([ref, txt]) => {
       h += `<tr><td class="sk-crit"><span class="sk-ref">${ref}</span>${txt}</td>
         ${learners.map(l => {
@@ -8543,6 +8549,22 @@ function skCycle(ref, lid) {
     else delete d.marks[ref][lid];
   });
   const y = window.scrollY, wrap = document.querySelector('.sk-wrap'), x = wrap ? wrap.scrollLeft : 0;
+  skRender();
+  window.scrollTo(0, y);
+  const w2 = document.querySelector('.sk-wrap'); if (w2) w2.scrollLeft = x;
+}
+function skMarkSection(n, gi, lid) {
+  const a = SK_ASSESSMENTS[n - 1];
+  const g = a.groups[gi];
+  const name = (skLearners().find(l => l.id === lid) || {}).name || 'this learner';
+  if (!confirm(`Mark every blank criterion in "${g[0]}" as competent for ${name}? Existing R marks are kept.`)) return;
+  skUpdate(d => {
+    g[1].forEach(([ref]) => {
+      d.marks[ref] = d.marks[ref] || {};
+      if (!d.marks[ref][lid]) d.marks[ref][lid] = { v:'C', at:new Date().toISOString() };
+    });
+  });
+  const y = window.scrollY, x = (document.querySelector('.sk-wrap') || {}).scrollLeft || 0;
   skRender();
   window.scrollTo(0, y);
   const w2 = document.querySelector('.sk-wrap'); if (w2) w2.scrollLeft = x;
