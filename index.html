@@ -16,6 +16,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
 // DD/MM/YYYY everywhere in the app (accepts ISO dates 'YYYY-MM-DD', full ISO timestamps or Date objects)
+function isoLocal(d) {
+  d = d || new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
 function fmtD(v) {
   if (!v) return '—';
   if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)) { const [y, m, d] = v.split('-'); return d + '/' + m + '/' + y; }
@@ -681,7 +685,12 @@ function fmtD(v) {
   .qs-sign-pad { display:block; width:100%; height:160px; border:1px solid #B8C2D0; border-radius:8px; background:#fff; touch-action:none; cursor:crosshair; }
   .qs-sign-hint { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#A3AEC0; font-size:0.9rem; pointer-events:none; }
   .qs-sign-wrap::after { content:''; position:absolute; left:18px; right:18px; bottom:34px; border-bottom:1px dashed #D8DEE8; pointer-events:none; }
-  .lpm-course-date { font-family:'Public Sans',sans-serif; font-weight:600; font-size:1rem; color:#2B5BD7; margin:2px 0 2px; }
+  .lpm-main-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.6rem; color:#000; line-height:1.15; margin-bottom:6px; }
+  .lpm-course-name { font-family:'Public Sans',sans-serif; font-weight:600; font-size:1.1rem; color:#0D1B4C; }
+  .lpm-course-date { font-family:'Public Sans',sans-serif; font-weight:600; font-size:0.95rem; color:#000; margin:2px 0 2px; }
+  .lpm-more-btn { border:1px dashed #B8C2D0; background:none; color:#2B5BD7; padding:6px 12px; font-family:'Public Sans',sans-serif; font-size:0.8rem; font-weight:600; cursor:pointer; border-radius:6px; }
+  .lpm-extra-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+  .lpm-extra-row select { flex:1; }
   .sc-type-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.1rem; color:#0D1B4C; margin:22px 0 10px; padding-bottom:6px; border-bottom:2px solid #0D1B4C; grid-column:1/-1; }
   .sc-type-h:first-child { margin-top:0; }
   .rn-safe-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.95rem; color:#0D1B4C; margin:16px 0 4px; }
@@ -1261,8 +1270,8 @@ window.addEventListener('load', function () {
       <button class="sc-back rn-no-print" onclick="lpmShowPick()">&larr; All courses</button>
 
       <div class="rn-head">
-        <div class="rn-head-meta">Learner practical matrix</div>
-        <div class="rn-head-title" id="lpmCourseTitle">Course record</div>
+        <div class="lpm-main-title">Learner practical matrix</div>
+        <div class="lpm-course-name" id="lpmCourseTitle">Course record</div>
         <div class="lpm-course-date" id="lpmCourseDate"></div>
         <div class="rn-head-sub" id="lpmCourseSub"></div>
       </div>
@@ -5809,7 +5818,7 @@ function rnStart(id) {
     id: 'S' + Date.now(),
     scenarioId: id,
     scenarioTitle: scNum(id) + ' - ' + d.title,
-    date: new Date().toISOString().slice(0,10),
+    date: isoLocal(),
     instructor: '',
     variant: (d.variants && d.variants[0]) ? d.variants[0].id : null,
     stagesRun: '',
@@ -5822,7 +5831,7 @@ function rnStart(id) {
   const recent = rnCourses()[0];
   if (recent) {
     rnSession.courseId = recent.id;
-    const instr = [recent.instructor1, recent.instructor2].filter(Boolean);
+    const instr = lpmAllInstructors(recent);
     if (instr.length === 1) rnSession.instructor = instr[0];
   }
 
@@ -6111,7 +6120,7 @@ function rnSetCourse(courseId) {
   // Changing course clears names that no longer belong to it
   if (c) {
     const learnerNames = (c.learners || []).map(l => l.name).filter(Boolean);
-    const instr = [c.instructor1, c.instructor2].filter(Boolean);
+    const instr = lpmAllInstructors(c);
     if (rnSession.instructor && !instr.includes(rnSession.instructor)) rnSession.instructor = '';
     if (!rnSession.instructor && instr.length === 1) rnSession.instructor = instr[0];
     rnSession.learners.forEach(l => { if (l.name && !learnerNames.includes(l.name)) l.name = ''; });
@@ -6163,7 +6172,7 @@ function rnAssessHTML() {
   const d = rnDetail;
   const courses = rnCourses();
   const course = courses.find(c => c.id === rnSession.courseId);
-  const instructors = course ? [course.instructor1, course.instructor2].filter(Boolean) : [];
+  const instructors = course ? lpmAllInstructors(course) : [];
   const learnerNames = course ? (course.learners || []).map(l => l.name).filter(Boolean) : [];
   const takenBy = i => rnSession.learners.filter((l, j) => j !== i).map(l => l.name);
 
@@ -6392,6 +6401,34 @@ function rnDeleteSaved() {
   msg.textContent = 'Saved record deleted.';
 }
 
+// Fall From Height is mapped to Qualsafe practical 5: copy every Pass into the course's Skills stations (never overwrites)
+function rnPushToSkills(sess, course) {
+  const d = scGetDetail(sess.scenarioId);
+  if (!d || !d.assessment) return 0;
+  let all = {};
+  try { all = JSON.parse(localStorage.getItem('sk_matrix_v1') || '{}'); } catch (e) {}
+  const data = all[course.id] || (all[course.id] = { marks:{}, overrides:{}, signoff:{} });
+  let added = 0;
+  (sess.learners || []).forEach(sl => {
+    const cl = (course.learners || []).find(x => (x.name || '').trim().toLowerCase() === (sl.name || '').trim().toLowerCase());
+    if (!cl) return;
+    Object.entries(sl.results || {}).forEach(([key, val]) => {
+      if (val !== 'P') return;
+      const [gi, ii] = key.split('_').map(Number);
+      const item = d.assessment[gi] && d.assessment[gi].items[ii];
+      if (!item || !/^\d+\.\d+$/.test(item[0])) return;
+      const ref = item[0];
+      data.marks[ref] = data.marks[ref] || {};
+      if (!data.marks[ref][cl.id]) {
+        data.marks[ref][cl.id] = { v:'C', at:new Date().toISOString(), src:'scenario' };
+        added++;
+      }
+    });
+  });
+  try { localStorage.setItem('sk_matrix_v1', JSON.stringify(all)); } catch (e) {}
+  return added;
+}
+
 function rnSaveSession() {
   const named = rnSession.learners.filter(l => l.name);
   const msg = document.getElementById('rnSaveMsg');
@@ -6407,6 +6444,7 @@ function rnSaveSession() {
   const existingIdx = list.findIndex(x => x.id === copy.id);
   if (existingIdx >= 0) list[existingIdx] = copy; else list.push(copy);
   let linkedTo = '';
+  let skillsAdded = 0;
   if (copy.courseId && typeof lpmLoadCourses === 'function') {
     try {
       const courses = lpmLoadCourses();
@@ -6417,12 +6455,13 @@ function rnSaveSession() {
         lpmSaveCourses(courses);
         if (typeof lpmCourse !== 'undefined' && lpmCourse && lpmCourse.id === c.id) lpmCourse.linkedSessionIds = c.linkedSessionIds;
         linkedTo = c.courseName || 'the course';
+        if (copy.scenarioId === 6) skillsAdded = rnPushToSkills(copy, c);
       }
     } catch (e) {}
   }
   if (rnSaveSessions(list)) {
     msg.style.color = '#0F6E56';
-    msg.textContent = (linkedTo ? 'Saved and linked to ' + linkedTo + '. ' : 'Saved. ') + named.length + ' learner' + (named.length===1?'':'s') + ' added to the course matrix.';
+    msg.textContent = (linkedTo ? 'Saved and linked to ' + linkedTo + '. ' : 'Saved. ') + (skillsAdded ? skillsAdded + ' competenc' + (skillsAdded === 1 ? 'y' : 'ies') + ' ticked in Skills stations. ' : '') + named.length + ' learner' + (named.length===1?'':'s') + ' added to the course matrix.';
   } else {
     msg.style.color = '#C74444';
     msg.textContent = 'Could not save — device storage may be full or blocked.';
@@ -6523,7 +6562,7 @@ function rnExportCsv() {
   const blob = new Blob([csv], {type:'text/csv'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'course-record-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.download = 'course-record-' + isoLocal() + '.csv';
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -6608,7 +6647,7 @@ function lpmNewCourse() {
     id: 'C' + Date.now(),
     courseName: '',
     courseRef: '',
-    startDate: new Date().toISOString().slice(0,10),
+    startDate: isoLocal(),
     endDate: '',
     location: '',
     instructor1: '',
@@ -6628,6 +6667,13 @@ function lpmOpenCourse(id) {
   if (!found) return;
   lpmCourse = found;
   lpmCurrentId = id;
+  if (LPM_COURSE_LENGTH_DAYS[lpmCourse.courseName] && lpmCourse.startDate) {
+    const st = new Date(lpmCourse.startDate + 'T00:00:00');
+    st.setDate(st.getDate() + LPM_COURSE_LENGTH_DAYS[lpmCourse.courseName] - 1);
+    if (lpmCourse.endDate !== isoLocal(st)) { lpmCourse.endDate = isoLocal(st); lpmPersist(); }
+  } else if (lpmCourse.endDate && lpmCourse.endDate < (lpmCourse.startDate || '')) {
+    lpmCourse.endDate = ''; lpmPersist();
+  }
   document.getElementById('lpmCourseTitle').textContent = lpmCourse.courseName || 'Untitled course';
   lpmUpdateCourseSub();
 
@@ -6704,6 +6750,14 @@ function lpmRenderDetails() {
         <select onchange="lpmSetDetail('instructor2', this.value)">${lpmOpt(LPM_INSTRUCTOR_NAMES, c.instructor2)}</select>
       </div>
     </div>
+    <div class="lpm-field">
+      ${(c.extraInstructors || []).length ? '<label>Additional instructors</label>' : ''}
+      ${(c.extraInstructors || []).map((n, i) => `<div class="lpm-extra-row">
+          <select onchange="lpmSetExtraInstructor(${i}, this.value)">${lpmOpt(LPM_INSTRUCTOR_NAMES, n)}</select>
+          <button class="lpm-learner-remove" onclick="lpmRemoveExtraInstructor(${i})">Remove</button>
+        </div>`).join('')}
+      <button class="lpm-more-btn rn-no-print" onclick="lpmAddExtraInstructor()">+ More instructors</button>
+    </div>
   `;
 }
 
@@ -6722,19 +6776,35 @@ function lpmApplyCourseLength() {
   setTimeout(() => { try { lpmUpdateCourseSub(); } catch (e) {} }, 0);
   const c = lpmCourse;
   const days = LPM_COURSE_LENGTH_DAYS[c.courseName];
-  if (!days || !c.startDate) return;
+  if (!days || !c.startDate) { if (c.endDate && c.endDate < (c.startDate || '')) { c.endDate = ''; lpmPersist(); } return; }
   const start = new Date(c.startDate + 'T00:00:00');
   const end = new Date(start);
   end.setDate(start.getDate() + (days - 1)); // inclusive of start day
-  c.endDate = end.toISOString().slice(0,10);
+  c.endDate = isoLocal(end);
   lpmPersist();
   const note = document.getElementById('lpmDateNote');
   if (note) note.textContent = lpmCourseLengthNote(c);
 }
 
+function lpmAllInstructors(c) {
+  return [c.instructor1, c.instructor2, ...(c.extraInstructors || [])].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i);
+}
+function lpmAddExtraInstructor() {
+  lpmCourse.extraInstructors = lpmCourse.extraInstructors || [];
+  lpmCourse.extraInstructors.push('');
+  lpmPersist(); lpmRenderDetails();
+}
+function lpmSetExtraInstructor(i, v) {
+  lpmCourse.extraInstructors[i] = v;
+  lpmPersist(); lpmUpdateCourseSub();
+}
+function lpmRemoveExtraInstructor(i) {
+  lpmCourse.extraInstructors.splice(i, 1);
+  lpmPersist(); lpmRenderDetails(); lpmUpdateCourseSub();
+}
 function lpmInstructorLine(c) {
-  const names = [c.instructor1, c.instructor2].filter(Boolean);
-  return names.length ? names.join(' & ') : '';
+  const names = lpmAllInstructors(c);
+  return names.length ? names.join(', ') : '';
 }
 
 function lpmUpdateCourseSub() {
@@ -7286,7 +7356,7 @@ function lpmRenderRecord() {
         </div>
         <div class="lpm-field">
           <label>Date</label>
-          <input type="date" id="lpmNewDate" value="${new Date().toISOString().slice(0,10)}">
+          <input type="date" id="lpmNewDate" value="${isoLocal()}">
         </div>
       </div>
       <div class="lpm-field">
@@ -7352,7 +7422,7 @@ function lpmAddRecord() {
   lpmCourse.records.push({
     id: 'R'+Date.now()+Math.random().toString(36).slice(2,6),
     learnerId,
-    date: document.getElementById('lpmNewDate').value || new Date().toISOString().slice(0,10),
+    date: document.getElementById('lpmNewDate').value || isoLocal(),
     competency: comp,
     context: document.getElementById('lpmNewContext').value.trim(),
     outcome: document.getElementById('lpmNewOutcome').value,
@@ -7382,7 +7452,7 @@ function lpmRenderSessions() {
   const unlinked = allSessions.filter(s => !lpmCourse.linkedSessionIds.includes(s.id));
 
   let html = `<div class="sc-h2" style="margin-top:0;">Scenario sessions run for this course</div>
-    <div class="sc-note">Sessions saved from Run a Scenario aren't filed under a course automatically. Add the ones that belong here, then review them any time.</div>`;
+    <div class="sc-note">Sessions saved from Run a Scenario with this course selected are added here automatically. You can also add, remove or delete sessions below.</div>`;
 
   if (!linked.length) {
     html += `<div class="rn-empty">No scenario sessions added to this course yet.</div>`;
@@ -7404,6 +7474,16 @@ function lpmRenderSessions() {
   document.getElementById('lpmPanel-sessions').innerHTML = html;
 }
 
+function lpmDeleteSession(id) {
+  if (!confirm('Delete this saved scenario session permanently? It will be removed from this device and from every course.')) return;
+  rnSaveSessions(rnLoadSessions().filter(x => x.id !== id));
+  const courses = lpmLoadCourses();
+  courses.forEach(c => { c.linkedSessionIds = (c.linkedSessionIds || []).filter(x => x !== id); });
+  lpmSaveCourses(courses);
+  lpmCourse.linkedSessionIds = (lpmCourse.linkedSessionIds || []).filter(x => x !== id);
+  lpmRenderSessions();
+  lpmRenderSummary();
+}
 function lpmSessionCard(s, isLinked) {
   const learnerLine = (s.learners || []).map(l => {
     const vals = Object.values(l.results || {}).filter(Boolean);
@@ -7419,6 +7499,7 @@ function lpmSessionCard(s, isLinked) {
       ${isLinked
         ? `<button class="lpm-learner-remove" onclick="lpmUnlinkSession('${s.id}')">Remove from this course</button>`
         : `<button class="rn-nav-btn primary" onclick="lpmLinkSession('${s.id}')">Add to this course</button>`}
+      <button class="lpm-learner-remove" style="margin-left:8px;" onclick="lpmDeleteSession('${s.id}')">Delete session</button>
     </div>
   </div>`;
 }
