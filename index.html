@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>Scenario Centre | Babcock — Immersive Scenario</title>
+<title>Digital Training Centre | Babcock — Immersive Scenario</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -733,6 +733,7 @@ function fmtD(v) {
   .rn-debrief-step { margin:14px 0; }
   .rn-debrief-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; margin-bottom:2px; }
   .rn-danger { color:#C74444 !important; border-color:#E8B4B4 !important; }
+  .lpm-confirm { border:1px solid #D8DEE8; border-radius:10px; padding:16px; background:#fff; margin-bottom:16px; }
   .lpm-pack-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; margin:12px 0 22px; }
   .lpm-pack-item { border:1px solid #D8DEE8; border-radius:8px; padding:8px; background:#fff; display:flex; flex-direction:column; gap:6px; }
   .lpm-pack-item img { width:100%; height:150px; object-fit:cover; border-radius:5px; background:#F2F4F8; }
@@ -937,7 +938,7 @@ window.addEventListener('load', function () {
          onerror="this.outerHTML='<span class=&quot;brand-title&quot; style=&quot;font-size:1.3rem&quot;>Babcock</span>'">
     <div class="brand-divider"></div>
     <div style="min-width:0;">
-      <div class="brand-title">SCENARIO CENTRE</div>
+      <div class="brand-title">DIGITAL TRAINING CENTRE</div>
       <div class="brand-sub">Emergency Care Training</div>
     </div>
   </a>
@@ -956,7 +957,7 @@ window.addEventListener('load', function () {
 <div class="app-view active" id="view-hub">
   <div class="hub">
     <div class="hub-eyebrow">Babcock International</div>
-    <div class="hub-h">Scenario Centre</div>
+    <div class="hub-h">Digital Training Centre</div>
     <div class="hub-p" style="margin-bottom:6px;">Interactive emergency care practical scenario and training for professional clinical educators and instructors.</div>
     <div class="hub-p">Choose how you want to run this session.</div>
 
@@ -2498,7 +2499,7 @@ renderCustomScenarios();
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:info@scenesounds.app">Contact</a>
     </div>
-    <div class="footer-meta">Scenario Centre is powered by Scene Sounds, a Sector 3 Group Ltd product &nbsp;·&nbsp; Licensed to Babcock International</div>
+    <div class="footer-meta">Digital Training Centre is powered by Scene Sounds, a Sector 3 Group Ltd product &nbsp;·&nbsp; Licensed to Babcock International</div>
   </div>
 </div>
 
@@ -7830,6 +7831,24 @@ function lpmOvCycle(cellKey, btn) {
   lpmRenderOverview();
 }
 
+async function lpmRenderRegisterPhotos() {
+  const el = document.getElementById('lpmRegisterPhotos');
+  if (!el) return;
+  const files = await packList(lpmCourse.id, 'register');
+  if (!files.length) { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="sc-h2">Register photos <span style="font-weight:400;color:#6B7A94;font-size:0.85rem;">· saved to the course pack</span></div>
+    <div class="lpm-pack-grid">${files.map(f => `<div class="lpm-pack-item">
+      <a href="${f.dataUrl}" target="_blank"><img src="${f.dataUrl}" alt="Register photo"></a>
+      <div style="font-size:0.75rem;color:#6B7A94;">${fmtD(f.addedAt)}</div>
+      <button class="lpm-learner-remove" onclick="lpmDeleteRegisterPhoto('${f.id}')">Delete photo</button>
+    </div>`).join('')}</div>`;
+}
+async function lpmDeleteRegisterPhoto(id) {
+  if (!confirm('Delete this register photo? It will be removed from the course pack.')) return;
+  await packDelete(id);
+  lpmRenderRegisterPhotos();
+}
+
 function lpmRenderLearners() {
   const c = lpmCourse;
   let html = `<div class="sc-h2" style="margin-top:0;">Learners on this course</div>
@@ -7837,7 +7856,8 @@ function lpmRenderLearners() {
     <input type="file" id="lpmScanInput" accept="image/*" style="display:none;" onchange="lpmHandleScan(this)">
     <input type="file" id="lpmExamInput" accept="image/*" multiple style="display:none;" onchange="lpmExamCapture(this)">
     <button class="rn-nav-btn rn-no-print" style="margin-bottom:18px;" onclick="document.getElementById('lpmScanInput').click()">📷 Scan register (photo or screenshot)</button>
-    <div id="lpmScanStatus"></div>`;
+    <div id="lpmScanStatus"></div>
+    <div id="lpmRegisterPhotos"></div>`;
 
   c.learners.forEach((l, i) => {
     html += `<div class="lpm-learner-card">
@@ -7848,6 +7868,7 @@ function lpmRenderLearners() {
 
   html += `<button class="lpm-add-learner" onclick="lpmAddLearner()">+ Add learner</button>`;
   document.getElementById('lpmPanel-learners').innerHTML = html;
+  lpmRenderRegisterPhotos();
 }
 
 function lpmAddLearner() {
@@ -7889,7 +7910,7 @@ function lpmHandleScan(input) {
   input.value = '';
   if (!file) return;
   // Keep the register photo for the course pack as well as reading the names from it
-  packAddPhoto(file, 'register', 'Delegate register').catch(() => {});
+  packAddPhoto(file, 'register', 'Delegate register').then(() => lpmRenderRegisterPhotos()).catch(() => {});
   const img = new Image();
   const url = URL.createObjectURL(file);
   img.onload = () => lpmOpenCropper(img, url);
@@ -9010,56 +9031,134 @@ async function packAddPhoto(file, kind, title, learnerName) {
     kind, title, learnerName: learnerName || '', dataUrl: shrunk.dataUrl, w: shrunk.w, h: shrunk.h, addedAt: new Date().toISOString() });
 }
 
-// ---- Theory exams step ----
-let lpmExamKind = 'mc';
-const PACK_KINDS = { mc:'Multiple choice exam', anat:'Applied anatomy and physiology exam', register:'Delegate register', other:'Other paperwork' };
+const PACK_KINDS = { anat:'Applied anatomy and physiology exam', mc:'Multiple choice exam', register:'Delegate register', other:'Other paperwork' };
+// ---- Theory exams: a grid of learners against the two papers ----
+const EXAM_KINDS = { anat:'Applied anatomy and physiology', mc:'Multiple choice' };
+let lpmExamPending = null;
 
-function lpmExamPick(kind) { lpmExamKind = kind; document.getElementById('lpmExamInput').click(); }
+function lpmExamAdd() { document.getElementById('lpmExamInput').click(); }
+
 async function lpmExamCapture(input) {
   const files = Array.from(input.files || []); input.value = '';
   if (!files.length) return;
   const msg = document.getElementById('lpmExamMsg');
-  msg.textContent = 'Saving photo…';
-  try {
-    for (const f of files) await packAddPhoto(f, lpmExamKind, PACK_KINDS[lpmExamKind]);
-    msg.textContent = files.length + ' page' + (files.length === 1 ? '' : 's') + ' added.';
-  } catch (e) { msg.textContent = 'Could not save that photo: ' + (e.message || e); }
+  for (const f of files) {
+    msg.textContent = 'Reading the paper…';
+    let guess = { kind:'', learner:'' };
+    try { guess = await lpmExamRead(f); } catch (e) {}
+    lpmExamPending = { file: f, guess };
+    await lpmExamConfirm();
+    await new Promise(r => { lpmExamResolve = r; });
+  }
+  msg.textContent = '';
   lpmRenderTheory();
 }
-async function lpmDeletePackFile(id) {
-  if (!confirm('Delete this page from the course pack?')) return;
-  await packDelete(id); lpmRenderTheory();
+let lpmExamResolve = null;
+
+// Quick read of the top of the paper: which exam it is, and whose name is on it
+async function lpmExamRead(file) {
+  await lpmLoadTesseract();
+  const img = await new Promise((res, rej) => { const i = new Image(); const u = URL.createObjectURL(file); i.onload = () => { URL.revokeObjectURL(u); res(i); }; i.onerror = rej; i.src = u; });
+  const cv = document.createElement('canvas');
+  const sc = Math.min(1.6, 1500 / img.width);
+  cv.width = Math.round(img.width * sc); cv.height = Math.round(img.height * sc * 0.45); // top of the page only
+  const ctx = cv.getContext('2d');
+  ctx.drawImage(img, 0, 0, img.width, img.height * 0.45, 0, 0, cv.width, cv.height);
+  if (!window.lpmWorker) window.lpmWorker = await Tesseract.createWorker('eng');
+  await window.lpmWorker.setParameters({ tessedit_pageseg_mode: '6' });
+  const r = await window.lpmWorker.recognize(cv);
+  const text = (r.data.text || '').toLowerCase();
+  let kind = '';
+  if (/anatom|physiolog|applied a/.test(text)) kind = 'anat';
+  else if (/multiple\s*choice|mcq/.test(text)) kind = 'mc';
+  // Match any roster name that appears in the text
+  let learner = '';
+  let best = 99;
+  (lpmCourse.learners || []).forEach(l => {
+    const n = (l.name || '').trim(); if (!n) return;
+    const parts = n.toLowerCase().split(/\s+/);
+    const hit = parts.filter(w => w.length > 2 && text.includes(w)).length;
+    if (hit && parts.length - hit < best) { best = parts.length - hit; learner = l.id; }
+  });
+  return { kind, learner };
 }
-async function lpmSetPackLearner(id, name) {
-  const all = await packTx('readonly', st => st.getAll());
-  const rec = (all || []).find(f => f.id === id);
-  if (rec) { rec.learnerName = name; await packAdd(rec); }
+
+async function lpmExamConfirm() {
+  const el = document.getElementById('lpmExamConfirm');
+  const g = lpmExamPending.guess;
+  const names = (lpmCourse.learners || []).filter(l => (l.name || '').trim());
+  el.innerHTML = `<div class="lpm-confirm">
+      <div class="sc-h2" style="margin-top:0;">Which paper is this?</div>
+      ${g.kind || g.learner ? `<div class="sc-note">Read from the paper: ${g.kind ? EXAM_KINDS[g.kind] : 'exam not recognised'}${g.learner ? ' · ' + lpmEsc((names.find(n => n.id === g.learner) || {}).name || '') : ' · name not recognised'}. Check and change if needed.</div>` : `<div class="sc-note">Couldn't read the paper — choose the exam and learner.</div>`}
+      <div class="rn-learner-field"><label>Exam</label>
+        <select id="lpmExamKindSel" class="rn-name-select">
+          <option value="anat" ${g.kind==='anat'?'selected':''}>Applied anatomy and physiology</option>
+          <option value="mc" ${g.kind==='mc'?'selected':''}>Multiple choice</option>
+        </select></div>
+      <div class="rn-learner-field" style="margin-top:10px;"><label>Learner</label>
+        <select id="lpmExamLearnerSel" class="rn-name-select">
+          <option value="">— Select learner —</option>
+          ${names.map(n => `<option value="${n.id}" ${n.id===g.learner?'selected':''}>${lpmEsc(n.name)}</option>`).join('')}
+        </select></div>
+      <div style="display:flex;gap:10px;margin-top:14px;">
+        <button class="rn-nav-btn primary" onclick="lpmExamSave()">Save page</button>
+        <button class="rn-nav-btn" onclick="lpmExamDiscard()">Discard</button>
+      </div>
+    </div>`;
 }
+async function lpmExamSave() {
+  const kind = document.getElementById('lpmExamKindSel').value;
+  const lid = document.getElementById('lpmExamLearnerSel').value;
+  if (!lid) { alert('Choose which learner this paper belongs to.'); return; }
+  const name = ((lpmCourse.learners || []).find(l => l.id === lid) || {}).name || '';
+  await packAddPhoto(lpmExamPending.file, kind, EXAM_KINDS[kind], name);
+  const files = await packList(lpmCourse.id, kind);
+  const rec = files[files.length - 1];
+  if (rec) { rec.learnerId = lid; await packAdd(rec); }
+  lpmExamDone();
+}
+function lpmExamDiscard() { lpmExamDone(); }
+function lpmExamDone() {
+  document.getElementById('lpmExamConfirm').innerHTML = '';
+  lpmExamPending = null;
+  if (lpmExamResolve) { const r = lpmExamResolve; lpmExamResolve = null; r(); }
+}
+
+async function lpmExamCell(lid, kind) {
+  const files = (await packList(lpmCourse.id, kind)).filter(f => f.learnerId === lid);
+  const name = ((lpmCourse.learners || []).find(l => l.id === lid) || {}).name || 'this learner';
+  if (!files.length) { alert('No ' + EXAM_KINDS[kind] + ' pages saved yet for ' + name + '. Use "Add exam paper" to photograph both pages.'); return; }
+  if (confirm(files.length + ' page' + (files.length === 1 ? '' : 's') + ' saved for ' + name + '. Open them? Choose Cancel to delete them instead.')) {
+    files.forEach(f => window.open(f.dataUrl, '_blank'));
+    return;
+  }
+  if (confirm('Delete all ' + EXAM_KINDS[kind] + ' pages for ' + name + '?')) { for (const x of files) await packDelete(x.id); lpmRenderTheory(); }
+}
+
 async function lpmRenderTheory() {
   const el = document.getElementById('lpmPanel-theory');
   if (!el) return;
+  const learners = (lpmCourse.learners || []).filter(l => (l.name || '').trim());
   const files = await packList(lpmCourse.id);
-  const names = (lpmCourse.learners || []).map(l => (l.name || '').trim()).filter(Boolean);
-  const group = (kind, label, hint) => {
-    const list = files.filter(f => f.kind === kind);
-    return `<div class="sc-h2">${label} <span style="font-weight:400;color:#6B7A94;font-size:0.85rem;">· ${list.length} page${list.length===1?'':'s'}</span></div>
-      <p class="sc-p" style="font-size:0.85rem;">${hint}</p>
-      <button class="rn-nav-btn primary rn-no-print" onclick="lpmExamPick('${kind}')">📷 Add photos</button>
-      <div class="lpm-pack-grid">${list.map(f => `<div class="lpm-pack-item">
-          <img src="${f.dataUrl}" alt="">
-          <select class="rn-name-select" onchange="lpmSetPackLearner('${f.id}', this.value)">
-            <option value="">Learner not set</option>
-            ${names.map(n => `<option value="${lpmEsc(n)}" ${n===f.learnerName?'selected':''}>${lpmEsc(n)}</option>`).join('')}
-          </select>
-          <button class="lpm-learner-remove" onclick="lpmDeletePackFile('${f.id}')">Delete</button>
-        </div>`).join('')}</div>`;
-  };
-  el.innerHTML = `<div class="sc-note">Photograph each completed paper exam. Pages are stored on this iPad and collated into the course pack PDF.</div>
-    <p id="lpmExamMsg" class="sc-p" style="min-height:18px;"></p>
-    ${group('mc','Multiple choice exam','One photo per page. Take them in order, and set the learner for each page.')}
-    ${group('anat','Applied anatomy and physiology exam','One photo per page, in order.')}
-    ${group('register','Delegate register and other paperwork','Register photos scanned on the Learners step appear here automatically.')}
-    ${group('other','Other paperwork','Anything else the IQA needs, such as declaration forms.')}`;
+  const EXAM_PAGES = 2; // each paper is two pages
+  const pagesFor = (lid, kind) => files.filter(f => f.kind === kind && f.learnerId === lid).length;
+  const unassigned = files.filter(f => (f.kind === 'anat' || f.kind === 'mc') && !f.learnerId);
+  const done = k => learners.filter(l => pagesFor(l.id, k) >= EXAM_PAGES).length;
+  el.innerHTML = `<div class="sc-note">Photograph both pages of each paper — two pages per exam. The app reads the exam and the learner's name where it can, and ticks them off below. Pages go into the course pack.</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0;" class="rn-no-print">
+      <button class="rn-nav-btn primary" onclick="lpmExamAdd()">📷 Add exam paper</button>
+      <span id="lpmExamMsg" style="font-size:0.85rem;color:#6B7A94;"></span>
+    </div>
+    <div id="lpmExamConfirm"></div>
+    ${learners.length ? `<div class="sk-wrap"><table class="sk-table">
+      <tr><th class="sk-corner">Learner</th>
+        <th class="sk-name" style="min-width:104px;"><div class="sk-name-txt">Applied A&amp;P</div><div class="sk-name-prog ${done('anat')===learners.length?'p':''}">${done('anat')}/${learners.length} complete</div></th>
+        <th class="sk-name" style="min-width:104px;"><div class="sk-name-txt">Multiple choice</div><div class="sk-name-prog ${done('mc')===learners.length?'p':''}">${done('mc')}/${learners.length} complete</div></th></tr>
+      ${learners.map(l => `<tr><td class="sk-crit">${lpmEsc(l.name)}</td>
+        ${['anat','mc'].map(k => { const n = pagesFor(l.id, k); return `<td class="sk-cell"><button class="sk-tick ${n>=EXAM_PAGES?'c':''}" onclick="lpmExamCell('${l.id}','${k}')">${n>=EXAM_PAGES ? '✓ 2/2' : n + '/' + EXAM_PAGES}</button></td>`; }).join('')}
+      </tr>`).join('')}
+    </table></div>` : `<p class="sc-p">Add learner names on the Learners step first.</p>`}
+    ${unassigned.length ? `<div class="sc-note" style="border-left-color:#C8960C;">${unassigned.length} page${unassigned.length===1?'':'s'} saved without a learner. Delete and re-take them, or add them again and choose the learner.</div>` : ''}`;
 }
 
 // ---- Course pack PDF ----
@@ -9095,8 +9194,8 @@ async function lpmBuildPack(action) {
     const files = await packList(lpmCourse.id);
     const counts = k => files.filter(f => f.kind === k).length;
     ['Qualsafe practical assessment record sheet',
-     'Multiple choice exam papers (' + counts('mc') + ')',
      'Applied anatomy and physiology papers (' + counts('anat') + ')',
+     'Multiple choice exam papers (' + counts('mc') + ')',
      'Delegate register (' + counts('register') + ')',
      'Other paperwork (' + counts('other') + ')'].forEach(t => line('• ' + t, font, 11));
 
@@ -9114,7 +9213,7 @@ async function lpmBuildPack(action) {
     } catch (e) {}
 
     // 3. Paperwork photos, in order
-    const order = ['mc','anat','register','other'];
+    const order = ['anat','mc','register','other'];
     for (const kind of order) {
       const list = files.filter(f => f.kind === kind);
       for (let i = 0; i < list.length; i++) {
@@ -9124,7 +9223,7 @@ async function lpmBuildPack(action) {
         const top = 56, margin = 34;
         const maxW = A4[0] - margin * 2, maxH = A4[1] - top - margin;
         const sc = Math.min(maxW / img.width, maxH / img.height);
-        page.drawText(PACK_KINDS[kind] + (f.learnerName ? ' — ' + f.learnerName : '') + '   ·   page ' + (i + 1) + ' of ' + list.length,
+        page.drawText((PACK_KINDS[kind] || kind) + (f.learnerName ? ' — ' + f.learnerName : '') + '   ·   page ' + (i + 1) + ' of ' + list.length,
           { x: margin, y: A4[1] - 34, size: 10, font: bold, color: ink });
         page.drawImage(img, { x: (A4[0] - img.width * sc) / 2, y: margin, width: img.width * sc, height: img.height * sc });
       }
@@ -9171,8 +9270,8 @@ async function lpmRenderPack() {
     <table class="sc-table"><tr><th>Included</th><th>Pages</th></tr>
       <tr><td>Cover sheet — course, instructors and ${named} learner${named===1?'':'s'}</td><td>1</td></tr>
       <tr><td>Qualsafe practical assessment record sheet</td><td>1</td></tr>
-      <tr><td>Multiple choice exam papers</td><td>${c('mc')}</td></tr>
       <tr><td>Applied anatomy and physiology papers</td><td>${c('anat')}</td></tr>
+      <tr><td>Multiple choice exam papers</td><td>${c('mc')}</td></tr>
       <tr><td>Delegate register</td><td>${c('register')}</td></tr>
       <tr><td>Other paperwork</td><td>${c('other')}</td></tr>
     </table>
