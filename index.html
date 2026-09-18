@@ -733,6 +733,23 @@ function fmtD(v) {
   .rn-debrief-step { margin:14px 0; }
   .rn-debrief-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; margin-bottom:2px; }
   .rn-danger { color:#C74444 !important; border-color:#E8B4B4 !important; }
+  .lpm-pack-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; margin:12px 0 22px; }
+  .lpm-pack-item { border:1px solid #D8DEE8; border-radius:8px; padding:8px; background:#fff; display:flex; flex-direction:column; gap:6px; }
+  .lpm-pack-item img { width:100%; height:150px; object-fit:cover; border-radius:5px; background:#F2F4F8; }
+  .lpm-pack-item select { font-size:0.78rem; padding:6px 8px; }
+  .sc-acc-hint { font-size:0.78rem; color:#6B7A94; margin:14px 0 6px; }
+  .sc-acc-tools { display:flex; justify-content:flex-end; margin-bottom:8px; }
+  .sc-acc { border:1px solid #E6EAF0; border-radius:8px; margin-bottom:8px; overflow:hidden; background:#fff; }
+  .sc-acc-head { display:flex; align-items:center; gap:10px; width:100%; background:#F7F9FC; border:0; padding:14px; cursor:pointer; font:inherit; text-align:left; }
+  .sc-acc-title { flex:1; font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; }
+  .sc-acc-meta { font-size:0.75rem; color:#6B7A94; }
+  .sc-acc-arrow { color:#8494AC; width:14px; text-align:center; }
+  .sc-acc-arrow::before { content:'▸'; }
+  .sc-acc.open .sc-acc-arrow::before { content:'▾'; }
+  .sc-acc-body { display:none; padding:4px 14px 14px; }
+  .sc-acc.open .sc-acc-body { display:block; }
+  .sc-acc.open .sc-acc-head { border-bottom:1px solid #E6EAF0; }
+  .sc-acc-body > .sc-h2:first-child, .sc-acc-body > .sc-note:first-child { margin-top:8px; }
   .rn-qa-group { border:1px solid #E6EAF0; border-radius:8px; margin-bottom:10px; overflow:hidden; }
   .rn-qa-group-head { display:flex; align-items:center; gap:10px; width:100%; background:#F7F9FC; border:0; padding:14px 14px; cursor:pointer; font:inherit; text-align:left; }
   .rn-qa-group-title { flex:1; font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; }
@@ -836,7 +853,7 @@ function fmtD(v) {
   }
 
 
-  /* ---- Learner Practical Matrix ---- */
+  /* ---- Learner Matrix ---- */
   .lpm-view { display:none; }
   .lpm-view.active { display:block; }
 
@@ -948,7 +965,7 @@ window.addEventListener('load', function () {
       <div class="hub-accent" style="background:#4A6B52;"></div>
       <span class="hub-emoji">📋</span>
       <div style="flex:1;min-width:0;">
-        <div class="hub-title">LEARNER PRACTICAL MATRIX</div>
+        <div class="hub-title">LEARNER MATRIX</div>
         <div class="hub-sub">Course details, learner names, live competency record</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
@@ -1292,7 +1309,7 @@ window.addEventListener('load', function () {
 </div>
 
 
-<!-- ============ LEARNER PRACTICAL MATRIX ============ -->
+<!-- ============ LEARNER MATRIX ============ -->
 <div class="app-view" id="view-knowledge">
   <div class="rn-wrap">
     <div class="kc-page">
@@ -1300,7 +1317,7 @@ window.addEventListener('load', function () {
       <div class="hub-eyebrow">Knowledge Centre</div>
       <div class="hub-h" style="margin-bottom:6px;">Interactive pop quizzes</div>
       <span class="kc-badge kc-badge-lg">Coming soon</span>
-      <p class="sc-p" style="max-width:520px;margin:16px auto 22px;">Quick quizzes that learners join on their phones by scanning a QR code, with live class results and scores saved to the Learner Practical Matrix.</p>
+      <p class="sc-p" style="max-width:520px;margin:16px auto 22px;">Quick quizzes that learners join on their phones by scanning a QR code, with live class results and scores saved to the Learner Matrix.</p>
       <div class="kc-progress">
         <div class="kc-progress-top"><span>In development</span><span class="kc-pct">68%</span></div>
         <div class="kc-bar kc-bar-lg"><div class="kc-bar-fill"></div></div>
@@ -1321,7 +1338,7 @@ window.addEventListener('load', function () {
   <div class="lpm-view active" id="lpm-pick">
     <div class="rn-wrap">
       <div class="hub-eyebrow">Babcock International</div>
-      <div class="hub-h">Learner practical matrix</div>
+      <div class="hub-h">Learner Matrix</div>
       <div class="hub-p">Course details, learner names and live competency records — separate from, and in addition to, any scenario sessions run through Run a Scenario.</div>
 
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
@@ -1339,7 +1356,7 @@ window.addEventListener('load', function () {
       <button class="sc-back rn-no-print" onclick="lpmShowPick()">&larr; All courses</button>
 
       <div class="rn-head">
-        <div class="lpm-main-title">Learner practical matrix</div>
+        <div class="lpm-main-title">Learner Matrix</div>
         <div class="lpm-course-name" id="lpmCourseTitle">Course record</div>
         <div class="lpm-course-date" id="lpmCourseDate"></div>
         <div class="rn-head-sub" id="lpmCourseSub"></div>
@@ -1350,7 +1367,9 @@ window.addEventListener('load', function () {
         <button class="rn-step" onclick="lpmShowStep('learners')">Learners</button>
         <button class="rn-step" onclick="lpmShowStep('skills')">Skills stations</button>
         <button class="rn-step" onclick="lpmShowStep('sessions')">Scenario sessions</button>
+        <button class="rn-step" onclick="lpmShowStep('theory')">Theory exams</button>
         <button class="rn-step" onclick="lpmShowStep('overview')">QA overview</button>
+        <button class="rn-step" onclick="lpmShowStep('pack')">Course pack</button>
         <button class="rn-step" onclick="lpmShowStep('summary')">Summary</button>
       </div>
 
@@ -1358,7 +1377,9 @@ window.addEventListener('load', function () {
       <div class="rn-panel" id="lpmPanel-learners"></div>
       <div class="rn-panel" id="lpmPanel-skills"></div>
       <div class="rn-panel" id="lpmPanel-sessions"></div>
+      <div class="rn-panel" id="lpmPanel-theory"></div>
       <div class="rn-panel" id="lpmPanel-overview"></div>
+      <div class="rn-panel" id="lpmPanel-pack"></div>
       <div class="rn-panel" id="lpmPanel-summary"></div>
 
     </div>
@@ -6182,6 +6203,34 @@ function scShowTab(name) {
   document.getElementById('scPanel-' + name).classList.add('active');
 }
 
+// Scenario cards: every section is a closed accordion so instructors see headings first
+function scAccId() { scAccN = (typeof scAccN === 'undefined' ? 0 : scAccN) + 1; return 'scAcc' + scAccN; }
+let scAccN = 0;
+function scAccBlock(title, inner, meta) {
+  const id = scAccId();
+  return `<div class="sc-acc" id="${id}">
+    <button class="sc-acc-head" onclick="document.getElementById('${id}').classList.toggle('open')">
+      <span class="sc-acc-title">${title}</span>
+      ${meta ? `<span class="sc-acc-meta">${meta}</span>` : ''}
+      <span class="sc-acc-arrow"></span>
+    </button>
+    <div class="sc-acc-body">${inner}</div>
+  </div>`;
+}
+// Turns <!--SEC:Title--> markers into accordions; anything before the first marker becomes "At a glance"
+function scAccordion(html, firstTitle) {
+  const parts = html.split(/<!--SEC:(.*?)-->/);
+  let out = '';
+  if (parts[0].trim()) out += scAccBlock(firstTitle || 'At a glance', parts[0]);
+  for (let i = 1; i < parts.length; i += 2) out += scAccBlock(parts[i], parts[i + 1] || '');
+  return `<div class="sc-acc-hint rn-no-print">Tap a heading to open it.</div>
+    <div class="sc-acc-tools rn-no-print"><button class="rn-qa-expand" onclick="scAccAll(this)">Expand all</button></div>` + out;
+}
+function scAccAll(btn) {
+  const open = btn.textContent === 'Expand all';
+  btn.closest('.rn-panel, .app-view').querySelectorAll('.sc-acc').forEach(a => a.classList.toggle('open', open));
+  btn.textContent = open ? 'Collapse all' : 'Expand all';
+}
 function scTableHTML(t) {
   let h = `<div class="sc-h2">${t.title}</div>`;
   if (t.note) h += `<div class="sc-note">${t.note}</div>`;
@@ -6198,14 +6247,10 @@ function scRenderBrief(d) {
   const b = d.brief;
   let html = '';
 
-  html += `<div class="sc-h2">Scenario purpose</div><p class="sc-p">${b.purpose}</p>`;
+  html += `<!--SEC:Purpose--><p class="sc-p">${b.purpose}</p>`;
 
-  html += `<div class="sc-h2">Crew deployment brief</div><div class="sc-quote">${b.deployment}</div>`;
-
-  html += `<div class="sc-badge-row">
-    <span class="sc-badge">${b.delivery}</span>
-    <span class="sc-badge">Endpoints: ${b.endpoints}</span>
-  </div>`;
+  html = `<div class="sc-quote">${b.deployment}</div>
+    <div class="sc-badge-row"><span class="sc-badge">${b.delivery}</span><span class="sc-badge">Endpoints: ${b.endpoints}</span></div>` + html;
 
   if (b.designPrinciple) {
     html += `<div class="sc-note">${b.designPrinciple}</div>`;
@@ -6218,18 +6263,18 @@ function scRenderBrief(d) {
   if (b.listSectionsTop) html += b.listSectionsTop.map(scListSectionHTML).join('');
 
   if (b.presentation) {
-    html += `<div class="sc-h2">Patient presentation</div><ul class="sc-list">${b.presentation.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `<!--SEC:Patient presentation--><ul class="sc-list">${b.presentation.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
   if (b.humanFactors) {
-    html += `<div class="sc-h2">Human factors intent</div><ul class="sc-list">${b.humanFactors.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `<!--SEC:Human factors--><ul class="sc-list">${b.humanFactors.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
   if (b.pcsoInfo) {
-    html += `<div class="sc-h2">PCSO information</div><ul class="sc-list">${b.pcsoInfo.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `<!--SEC:PCSO information--><ul class="sc-list">${b.pcsoInfo.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
-  html += `<div class="sc-h2">Scene picture and optional resources</div>
+  html += `<!--SEC:Scene and resources-->
     <table class="sc-table"><tr><th>Resource / inject</th><th>Use</th></tr>
     ${b.resources.map(r=>`<tr><td><strong>${r.name}</strong></td><td>${r.use}</td></tr>`).join('')}
     </table>`;
@@ -6237,31 +6282,31 @@ function scRenderBrief(d) {
     html += `<div class="sc-note">${b.sceneSoundsNote}</div>`;
   }
 
-  html += `<div class="sc-h2">Equipment</div><ul class="sc-list">${b.equipment.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  html += `<!--SEC:Equipment--><ul class="sc-list">${b.equipment.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   if (b.note) html += `<div class="sc-note">${b.note}</div>`;
 
   if (d.coma) {
-    html += `<div class="sc-h2">Team-working aid — COMA</div>
+    html += `<!--SEC:COMA team aid-->
       <table class="sc-table">${d.coma.map(c=>`<tr><td style="width:22%;"><strong>${c[0]}</strong></td><td>${c[1]}</td></tr>`).join('')}</table>
       <div class="sc-note">${d.comaNote}</div>`;
   }
 
   if (b.findings) {
-    html += `<div class="sc-h2">Findings</div>
+    html += `<!--SEC:Findings-->
       <table class="sc-table">${b.findings.map(f=>`<tr><td style="width:35%;"><strong>${f[0]}</strong></td><td>${f[1]}</td></tr>`).join('')}</table>`;
     if (b.findingsNote) html += `<div class="sc-note">${b.findingsNote}</div>`;
   }
 
   if (b.responderInject) {
-    html += `<div class="sc-h2">${b.responderInject.title}</div><ul class="sc-list">${b.responderInject.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `<!--SEC:${b.responderInject.title}--><ul class="sc-list">${b.responderInject.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
   if (b.identityNote) {
-    html += `<div class="sc-h2">${b.identityNote.title}</div><ul class="sc-list">${b.identityNote.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `<!--SEC:${b.identityNote.title}--><ul class="sc-list">${b.identityNote.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
   if (b.landlordInfo) {
-    html += `<div class="sc-h2">${b.landlordInfo.title}</div>
+    html += `<!--SEC:${b.landlordInfo.title}-->
       <div class="sc-note">${b.landlordInfo.note}</div>
       <table class="sc-table sc-reveal-table"><tr><th>Information</th><th>Volunteered?</th><th>Release rule</th></tr>
       ${b.landlordInfo.rows.map(row => `<tr><td><strong>${row[0]}</strong></td><td class="${row[1]==='Yes'?'sc-reveal-yes':'sc-reveal-no'}">${row[1]}</td><td>${row[2]}</td></tr>`).join('')}
@@ -6269,32 +6314,32 @@ function scRenderBrief(d) {
   }
 
   if (b.assessmentExpectations) {
-    html += `<div class="sc-h2">Systematic assessment expectations</div><ul class="sc-list">${b.assessmentExpectations.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `<!--SEC:Assessment expectations--><ul class="sc-list">${b.assessmentExpectations.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
   if (b.capacity) {
-    html += `<div class="sc-h2">${b.capacity.title}</div>
+    html += `<!--SEC:${b.capacity.title}-->
       <div class="sc-note">${b.capacity.note}</div>
       <ul class="sc-list">${b.capacity.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
   if (b.walkOff) {
-    html += `<div class="sc-h2">${b.walkOff.title}</div>
+    html += `<!--SEC:${b.walkOff.title}-->
       <div class="sc-quote">${b.walkOff.intro}</div>
       <ul class="sc-list">${b.walkOff.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
   if (b.hypoTreatment) {
-    html += `<div class="sc-h2">${b.hypoTreatment.title}</div><ul class="sc-list">${b.hypoTreatment.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `<!--SEC:${b.hypoTreatment.title}--><ul class="sc-list">${b.hypoTreatment.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
   if (b.tables) html += b.tables.map(scTableHTML).join('');
 
   if (b.goodPractice) {
-    html += `<div class="sc-h2">Good practice</div><ul class="sc-list">${b.goodPractice.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `<!--SEC:Good practice--><ul class="sc-list">${b.goodPractice.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
-  if (b.stages) b.stages.forEach(st => {
+  if (b.stages) { html += `<!--SEC:Stages-->`; b.stages.forEach(st => {
     html += `<div class="sc-stage-card">
       <div class="sc-stage-head">Stage ${st.n} — ${st.name}</div>
       <div class="sc-stage-body">`;
@@ -6337,7 +6382,7 @@ function scRenderBrief(d) {
       html += `<div class="sc-note"><strong>Progression trigger / endpoint —</strong> ${st.endpoint}</div>`;
     }
     html += `</div></div>`;
-  });
+  }); }
 
   if (b.oxygenNote) {
     html += `<div class="sc-note">${b.oxygenNote}</div>`;
@@ -6346,16 +6391,16 @@ function scRenderBrief(d) {
   if (b.listSections) html += b.listSections.map(scListSectionHTML).join('');
 
   if (b.notPenalise) {
-    html += `<div class="sc-h2">What not to penalise</div><ul class="sc-list">${b.notPenalise.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `<!--SEC:Not to penalise--><ul class="sc-list">${b.notPenalise.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
 
-  html += `<div class="sc-h2">Critical safety / must-act points</div>`;
+  html += `<!--SEC:Critical must-act points-->`;
   b.critical.forEach(c => {
     html += `<div class="sc-critical"><div class="sc-critical-issue">${c[0]}</div><div class="sc-critical-resp">${c[1]}</div></div>`;
   });
 
   if (d.observations) {
-    html += `<div class="sc-h2">Scenario performance observations</div>
+    html += `<!--SEC:Observations-->
       <div class="sc-obs-block">
       <div class="sc-obs-head">Instructor observation — not a QA criterion</div>
       ${d.observations.map(o => `<div class="sc-obs-row"><div class="sc-obs-text">${o}</div></div>`).join('')}
@@ -6363,17 +6408,17 @@ function scRenderBrief(d) {
     if (d.observationsNote) html += `<div class="sc-note">${d.observationsNote}</div>`;
   }
 
-  html += `<div class="sc-h2">Scenario-specific debrief prompts</div><ul class="sc-list">${b.debriefPrompts.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  html += `<!--SEC:Debrief prompts--><ul class="sc-list">${b.debriefPrompts.map(x=>`<li>${x}</li>`).join('')}</ul>`;
 
-  html += `<div class="sc-note">${b.governance}</div>`;
+  html += `<!--SEC:Governance and notes-->` + `<div class="sc-note">${b.governance}</div>`;
 
-  document.getElementById('scPanel-brief').innerHTML = html;
+  document.getElementById('scPanel-brief').innerHTML = scAccordion(html, 'Deployment brief');
 }
 
 function scRenderRoles(d) {
   let html = '';
   d.roles.forEach(r => {
-    html += `<div class="sc-role-card">
+    html += `<!--SEC:${r.label}-->` + `<div class="sc-role-card">
       <div class="sc-role-head" style="background:${r.colour};">${r.label}</div>
       <div class="sc-role-body">`;
     if (r.you || r.startingBehaviour || r.doNotVolunteer) {
@@ -6389,7 +6434,7 @@ function scRenderRoles(d) {
     }
     html += `</div></div>`;
   });
-  document.getElementById('scPanel-roles').innerHTML = html;
+  document.getElementById('scPanel-roles').innerHTML = scAccordion(html, 'Role cards');
 }
 
 function scSafetySection(title, items) {
@@ -6408,23 +6453,28 @@ function scVariantSelect(vid) {
   if (btns[idx]) btns[idx].classList.add('sel');
 }
 
+function scSafetySecMarked(title, arr) {
+  return arr && arr.length ? `<!--SEC:${title}-->` + scSafetySection('', arr).replace(/<div class="sc-h2"[^>]*>.*?<\/div>/, '') : '';
+}
 function scRenderSafety(d) {
-  const s = d.safety;
-  let html = `<div class="sc-note">${s.intro}</div>`;
+  const s = d.safety || {};
+  let html = `<div class="sc-note">${s.intro || 'Standard live-casualty limits apply. The instructor stays present throughout as safety officer.'}</div>`;
 
   if (d.variants) {
-    html += `<div class="sc-h2" style="margin-top:0;">Scenario variant</div>
+    html += `<!--SEC:Scenario variant-->
       <div class="sc-variant-toggle">
       ${d.variants.map(v => `<button class="sc-variant-btn" onclick="scVariantSelect('${v.id}')"><div class="sc-variant-label">${v.label}</div><div class="sc-variant-sub">${v.sub}</div></button>`).join('')}
       </div>`;
   }
 
-  html += scSafetySection('Site suitability', s.siteSuitability);
-  html += scSafetySection('Simulated blood system controls', s.bloodSystem);
-  html += scSafetySection('PPE', s.ppe);
-  html += scSafetySection('Live-casualty intervention limits', s.interventionLimits);
-  html += scSafetySection('Instructor role', s.instructorRole);
-  html += scSafetySection('Reset and redeployment', s.reset);
+  html += scSafetySecMarked('Site suitability', s.siteSuitability);
+  html += scSafetySecMarked('Simulated blood system', s.bloodSystem);
+  html += scSafetySecMarked('PPE', s.ppe);
+  html += scSafetySecMarked('Live casualty limits', s.interventionLimits);
+  html += scSafetySecMarked('Instructor role', s.instructorRole);
+  html += scSafetySecMarked('Reset', s.reset);
+  if (!s.interventionLimits) html += scSafetySecMarked('Live casualty limits', SC_REFERENCE.safety);
+  if (!s.instructorRole) html += scSafetySecMarked('Instructor presence and safety', SC_REFERENCE.instructorPresence);
 
   if (d.cueCard) {
     const c = d.cueCard;
@@ -6441,7 +6491,7 @@ function scRenderSafety(d) {
     </div>`;
   }
 
-  document.getElementById('scPanel-safety').innerHTML = html;
+  document.getElementById('scPanel-safety').innerHTML = scAccordion(html, 'Safety summary');
 }
 
 function scStorageKey(scenarioId) {
@@ -6462,9 +6512,9 @@ function scSaveState(scenarioId, state) {
 }
 
 function scRenderAssessment(d) {
-  let html = `<div class="sc-note">Assessment criteria for this scenario, for reference and preparation. Mark learners during the session in Run a Scenario.</div>`;
+  let html = `<div class="sc-note">Criteria for reference. Mark learners during the session in Run a Scenario.</div>`;
   d.assessment.forEach(group => {
-    html += `<div class="sc-assess-group"><div class="sc-assess-group-title">${group.group}</div>`;
+    html += `<!--SEC:${group.group}-->` + `<div class="sc-assess-group">`;
     group.items.forEach(([ref, crit, good]) => {
       html += `<div class="sc-assess-row">
         <div class="sc-assess-ref">${ref}</div>
@@ -6474,7 +6524,7 @@ function scRenderAssessment(d) {
     });
     html += `</div>`;
   });
-  document.getElementById('scPanel-assess').innerHTML = html;
+  document.getElementById('scPanel-assess').innerHTML = scAccordion(html, 'How to use');
 }
 
 function scPraGroup(key, learner, state) {
@@ -6497,30 +6547,30 @@ function scRenderReference() {
   const r = SC_REFERENCE;
   let html = '';
 
-  html += `<div class="sc-h2" style="margin-top:0;">Instructor presence and safety responsibility</div><ul class="sc-list">${r.instructorPresence.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  html += `<!--SEC:Instructor presence and safety--><ul class="sc-list">${r.instructorPresence.map(x=>`<li>${x}</li>`).join('')}</ul>`;
 
-  html += `<div class="sc-h2">Exercise control commands</div>
+  html += `<!--SEC:Exercise commands-->
     <table class="sc-table sc-cmd-table"><tr><th>Command</th><th>Meaning</th></tr>
     ${r.commands.map(c=>`<tr><td>${c[0]}</td><td>${c[1]}</td></tr>`).join('')}</table>`;
 
-  html += `<div class="sc-h2">Live casualty intervention limits</div><ul class="sc-list">${r.safety.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  html += `<!--SEC:Live casualty limits--><ul class="sc-list">${r.safety.map(x=>`<li>${x}</li>`).join('')}</ul>`;
 
-  html += `<div class="sc-h2">ATMIST handover</div>
+  html += `<!--SEC:ATMIST handover-->
     <table class="sc-table">${r.atmist.map(a=>`<tr><td style="width:15%;"><strong>${a[0]}</strong></td><td>${a[1]}</td></tr>`).join('')}</table>`;
 
-  html += `<div class="sc-h2">Assessment outcomes</div>
+  html += `<!--SEC:Assessment outcomes-->
     <table class="sc-table">
     <tr><td style="width:20%;" class="sc-outcome-p">Pass</td><td>${r.outcomes[0][1]}</td></tr>
     <tr><td class="sc-outcome-r">Refer</td><td>${r.outcomes[1][1]}</td></tr>
     <tr><td class="sc-outcome-n">N/A</td><td>${r.outcomes[2][1]}</td></tr>
     </table>`;
 
-  html += `<div class="sc-h2">Debrief sequence</div>`;
+  html += `<!--SEC:Debrief sequence-->`;
   r.debrief.forEach(step => {
     html += `<div class="sc-note" style="margin-bottom:8px;"><strong>${step[0]}</strong><br>${step[1]}</div>`;
   });
 
-  html += `<div class="sc-h2">Scenario pack index</div>
+  html += `<!--SEC:Scenario pack index-->
     <table class="sc-table"><tr><th>No.</th><th>Scenario</th><th>Primary theme</th><th>Status</th></tr>
     ${r.packIndex.map(p=>`<tr><td style="width:8%;"><strong>${p[0]}</strong></td><td style="width:24%;">${p[1]}</td><td>${p[2]}</td><td style="width:14%;">${p[3]}</td></tr>`).join('')}
     </table>`;
@@ -6528,13 +6578,13 @@ function scRenderReference() {
   const qsCols = SC_SCENARIOS.filter(x => x.ready).map(x => ({ id:x.id, num:scNum(x.id), refs:new Set(scGetDetail(x.id).assessment.flatMap(g => g.items.map(it => it[0]))) }))
     .sort((a, b) => a.num.localeCompare(b.num));
   const qsNames = ['Adult BLS','Child BLS','Infant BLS','Airway & ventilation','Trauma care','Medical care'];
-  html += `<div class="sc-h2">Qualsafe practical criteria coverage</div>
+  html += `<!--SEC:Qualsafe practical criteria coverage-->
     <div class="sc-note">How many pass criteria each scenario gives an opportunity to evidence, by mandatory practical assessment. Child and infant BLS are assessed at skills stations.</div>
     <table class="sc-table"><tr><th>Practical assessment</th>${qsCols.map(c => `<th>${c.num}</th>`).join('')}</tr>
     ${qsNames.map((n, i) => `<tr><td><strong>${i + 1}. ${n}</strong></td>${qsCols.map(c => { const k = [...c.refs].filter(r => r.startsWith((i + 1) + '.')).length; return `<td>${k || '—'}</td>`; }).join('')}</tr>`).join('')}
     </table>`;
 
-  document.getElementById('scPanel-ref').innerHTML = html;
+  document.getElementById('scPanel-ref').innerHTML = scAccordion(html, 'Reference');
 }
 
 // Build grid once sounds/scenarios are ready
@@ -6897,7 +6947,7 @@ function rnBriefHTML() {
   }
   return html;
 }
-// ---- Course link: pull instructors and learners from the Learner Practical Matrix ----
+// ---- Course link: pull instructors and learners from the Learner Matrix ----
 function rnCourses() {
   let list = [];
   try { list = (typeof lpmLoadCourses === 'function') ? lpmLoadCourses() : []; } catch (e) {}
@@ -7012,14 +7062,14 @@ function rnAssessHTML() {
   let html = `<div class="sc-h2" style="margin-top:0;">Session details</div>`;
   if (courses.length) {
     html += `<div class="rn-learner-field" style="margin-bottom:12px;">
-        <label>Course (from Learner Practical Matrix)</label>
+        <label>Course (from Learner Matrix)</label>
         <select id="rnCourse" class="rn-name-select" onchange="rnSetCourse(this.value)">
           <option value="">— No course / type names —</option>
           ${courses.map(c => `<option value="${c.id}" ${c.id === rnSession.courseId ? 'selected' : ''}>${rnCourseLabel(c)}</option>`).join('')}
         </select>
       </div>`;
     if (course && !instructors.length && !learnerNames.length) {
-      html += `<div class="sc-note">This course has no instructors or learners added yet. Add them in the Learner Practical Matrix, or type names below.</div>`;
+      html += `<div class="sc-note">This course has no instructors or learners added yet. Add them in the Learner Matrix, or type names below.</div>`;
     }
   }
   html += `
@@ -7332,7 +7382,7 @@ function rnEmailSummary() {
 
 // ---- Course matrix ----
 function rnShowMatrix() {
-  // Scenario sessions now feed into the single Learner Practical Matrix view
+  // Scenario sessions now feed into the single Learner Matrix view
   showView('lpm');
   lpmShowFullMatrix();
 }
@@ -7417,7 +7467,7 @@ function rnClearMatrix() {
 </script>
 <script>
 // ============================================================
-// LEARNER PRACTICAL MATRIX
+// LEARNER MATRIX
 // ============================================================
 
 const LPM_STORE_KEY = 'lpm_courses';
@@ -7425,7 +7475,7 @@ const LPM_STORE_KEY = 'lpm_courses';
 let lpmCurrentId = null;
 let lpmCourse = null;
 let lpmStepIdx = 0;
-const LPM_STEPS = ['details','learners','skills','sessions','overview','summary'];
+const LPM_STEPS = ['details','learners','skills','sessions','theory','overview','pack','summary'];
 
 function lpmLoadCourses() {
   try { return JSON.parse(localStorage.getItem(LPM_STORE_KEY) || '[]'); }
@@ -7520,7 +7570,7 @@ function lpmOpenCourse(id) {
   lpmUpdateCourseSub();
 
   document.getElementById('lpmSteps').innerHTML = LPM_STEPS.map((k,i) => {
-    const labels = {details:'Course details', learners:'Learners', skills:'Skills stations', sessions:'Scenario sessions', overview:'QA overview', summary:'Summary'};
+    const labels = {details:'Course details', learners:'Learners', skills:'Skills stations', sessions:'Scenario sessions', theory:'Theory exams', overview:'QA overview', pack:'Course pack', summary:'Summary'};
     return `<button class="rn-step" id="lpmStep${i}" onclick="lpmShowStep('${k}')">${labels[k]}</button>`;
   }).join('');
 
@@ -7542,7 +7592,9 @@ function lpmShowStep(key) {
   document.querySelectorAll('.lpm-view#lpm-course .rn-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('lpmPanel-' + key).classList.add('active');
   if (key === 'skills') { skCourseId = lpmCourse.id; skRender(); }
+  if (key === 'theory') lpmRenderTheory();
   if (key === 'overview') lpmRenderOverview();
+  if (key === 'pack') lpmRenderPack();
   if (key === 'sessions') lpmRenderSessions();
   if (key === 'summary') lpmRenderSummary();
   window.scrollTo(0,0);
@@ -7783,6 +7835,7 @@ function lpmRenderLearners() {
   let html = `<div class="sc-h2" style="margin-top:0;">Learners on this course</div>
     <div class="sc-note">Add every learner once here. They'll appear automatically in the competency record.</div>
     <input type="file" id="lpmScanInput" accept="image/*" style="display:none;" onchange="lpmHandleScan(this)">
+    <input type="file" id="lpmExamInput" accept="image/*" multiple style="display:none;" onchange="lpmExamCapture(this)">
     <button class="rn-nav-btn rn-no-print" style="margin-bottom:18px;" onclick="document.getElementById('lpmScanInput').click()">📷 Scan register (photo or screenshot)</button>
     <div id="lpmScanStatus"></div>`;
 
@@ -7835,6 +7888,8 @@ function lpmHandleScan(input) {
   const file = input.files && input.files[0];
   input.value = '';
   if (!file) return;
+  // Keep the register photo for the course pack as well as reading the names from it
+  packAddPhoto(file, 'register', 'Delegate register').catch(() => {});
   const img = new Image();
   const url = URL.createObjectURL(file);
   img.onload = () => lpmOpenCropper(img, url);
@@ -8158,7 +8213,7 @@ function lpmShowScanDraft(items, fromColumn, cropped) {
     </div>`).join('');
   const where = fromColumn ? ' in the NAME column' : cropped ? ' in the selected area' : ' (no NAME heading found, so the whole photo was searched)';
   status.innerHTML = `
-    <div class="sc-note">Found ${items.length} name${items.length===1?'':'s'}${where}.${unsure ? ` ${unsure} marked ⚠ were only read once, so check those especially.` : ''} Edit or remove any line, then confirm.</div>
+    <div class="sc-note">Found ${items.length} name${items.length===1?'':'s'}${where}.${unsure ? ` ${unsure} marked ⚠ were only read once, so check those especially.` : ''} Edit or remove any line, then confirm. The photo has been saved to the course pack.</div>
     <div id="lpmDraftList">${rows}</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 24px;">
       <button class="rn-nav-btn primary" onclick="lpmConfirmScanDraft(${items.length})">Add these learners</button>
@@ -8748,20 +8803,9 @@ function qsCollect() {
   }).filter(Boolean);
 }
 
-async function qsGenerateRecordSheet() {
-  const msg = document.getElementById('qsMsg');
-  const say = (t, err) => { msg.style.color = err ? '#C74444' : '#0F6E56'; msg.textContent = t; };
-  const rows = qsCollect();
-  if (!rows.length) { say('Add learner names first.', true); return; }
-  if (!lpmCourse.signature && !confirm('No trainer signature yet. Create the sheet without a signature?')) return;
-  const incomplete = rows.filter(r => !r.overall).map(r => r.name);
-  if (incomplete.length && !confirm(`Not every learner has a result for all six assessments yet (${incomplete.join(', ')}). Their P/R will be left uncircled. Create the record sheet anyway?`)) return;
-  if (lpmCourse.learners.filter(l => (l.name||'').trim()).length > 13) {
-    if (!confirm('The Qualsafe sheet has room for 13 learners. Only the first 13 will be included. Continue?')) return;
-  }
-  try {
-    say('Creating record sheet…');
-    const { PDFDocument, StandardFonts, rgb, degrees } = await qsLoadPdfLib();
+// Builds the filled Qualsafe record sheet and returns the PDF bytes
+async function qsRecordSheetBytes(rows) {
+  const { PDFDocument, StandardFonts, rgb, degrees } = await qsLoadPdfLib();
     const bytes = Uint8Array.from(atob(QS_RECORD_PDF_B64), c => c.charCodeAt(0));
     const pdf = await PDFDocument.load(bytes);
     const page = pdf.getPages()[0];
@@ -8824,13 +8868,30 @@ async function qsGenerateRecordSheet() {
       });
     });
 
-    const out = await pdf.save();
+  return await pdf.save();
+}
+
+async function qsGenerateRecordSheet() {
+  const msg = document.getElementById('qsMsg');
+  const say = (t, err) => { msg.style.color = err ? '#C74444' : '#0F6E56'; msg.textContent = t; };
+  const rows = qsCollect();
+  if (!rows.length) { say('Add learner names first.', true); return; }
+  if (!lpmCourse.signature && !confirm('No trainer signature yet. Create the sheet without a signature?')) return;
+  const incomplete = rows.filter(r => !r.overall).map(r => r.name);
+  if (incomplete.length && !confirm(`Not every learner has a result for all six assessments yet (${incomplete.join(', ')}). Their P/R will be left uncircled. Create the record sheet anyway?`)) return;
+  if (lpmCourse.learners.filter(l => (l.name||'').trim()).length > 13) {
+    if (!confirm('The Qualsafe sheet has room for 13 learners. Only the first 13 will be included. Continue?')) return;
+  }
+  try {
+    say('Creating record sheet…');
+    const out = await qsRecordSheetBytes(rows);
     const blob = new Blob([out], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
     const fname = 'FREC3_Record_Sheet_' + (lpmCourse.courseName || 'course').replace(/[^A-Za-z0-9]+/g, '_') + '_' + new Date().toISOString().slice(0, 10) + '.pdf';
     const a = document.getElementById('qsLink');
     a.href = url; a.download = fname; a.style.display = 'inline-flex';
-    say(referred.length > 3 ? 'Record sheet ready. Note: more than 3 learners referred — only the first 3 fit the referral table.' : 'Record sheet ready — open it to print or save.');
+    const referredCount = rows.filter(r => r.overall === 'R').length;
+    say(referredCount > 3 ? 'Record sheet ready. Note: more than 3 learners referred — only the first 3 fit the referral table.' : 'Record sheet ready — open it to print or save.');
     window.open(url, '_blank');
   } catch (e) {
     say('Could not create the record sheet: ' + (e.message || e), true);
@@ -8900,6 +8961,228 @@ function qsClearSignature() {
   delete lpmCourse.signature; delete lpmCourse.signatureAt;
   lpmPersist();
   lpmRenderOverview();
+}
+
+// ============ COURSE PACK — photos of paperwork, collated into one PDF ============
+const PACK_DB = 'sc_pack_db';
+function packOpen() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(PACK_DB, 1);
+    r.onupgradeneeded = () => { const db = r.result; if (!db.objectStoreNames.contains('files')) db.createObjectStore('files', { keyPath:'id' }).createIndex('course', 'courseId'); };
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+}
+async function packTx(mode, fn) {
+  const db = await packOpen();
+  return new Promise((res, rej) => {
+    const tx = db.transaction('files', mode), store = tx.objectStore('files');
+    const out = fn(store);
+    tx.oncomplete = () => res(out && out.result !== undefined ? out.result : out);
+    tx.onerror = () => rej(tx.error);
+  });
+}
+async function packList(courseId, kind) {
+  const all = await packTx('readonly', st => st.getAll());
+  return (all || []).filter(f => f.courseId === courseId && (!kind || f.kind === kind)).sort((a, b) => (a.addedAt || '').localeCompare(b.addedAt || ''));
+}
+async function packAdd(rec) { await packTx('readwrite', st => st.put(rec)); }
+async function packDelete(id) { await packTx('readwrite', st => st.delete(id)); }
+
+// Shrink a photo so a whole course pack stays a sensible size
+function packShrink(file, maxSide) {
+  return new Promise((resolve, reject) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const sc = Math.min(1, (maxSide || 1700) / Math.max(img.width, img.height));
+      const cv = document.createElement('canvas');
+      cv.width = Math.round(img.width * sc); cv.height = Math.round(img.height * sc);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url);
+      resolve({ dataUrl: cv.toDataURL('image/jpeg', 0.72), w: cv.width, h: cv.height });
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not read that photo')); };
+    img.src = url;
+  });
+}
+async function packAddPhoto(file, kind, title, learnerName) {
+  const shrunk = await packShrink(file);
+  await packAdd({ id: 'F' + Date.now() + Math.random().toString(36).slice(2,6), courseId: lpmCourse.id,
+    kind, title, learnerName: learnerName || '', dataUrl: shrunk.dataUrl, w: shrunk.w, h: shrunk.h, addedAt: new Date().toISOString() });
+}
+
+// ---- Theory exams step ----
+let lpmExamKind = 'mc';
+const PACK_KINDS = { mc:'Multiple choice exam', anat:'Applied anatomy and physiology exam', register:'Delegate register', other:'Other paperwork' };
+
+function lpmExamPick(kind) { lpmExamKind = kind; document.getElementById('lpmExamInput').click(); }
+async function lpmExamCapture(input) {
+  const files = Array.from(input.files || []); input.value = '';
+  if (!files.length) return;
+  const msg = document.getElementById('lpmExamMsg');
+  msg.textContent = 'Saving photo…';
+  try {
+    for (const f of files) await packAddPhoto(f, lpmExamKind, PACK_KINDS[lpmExamKind]);
+    msg.textContent = files.length + ' page' + (files.length === 1 ? '' : 's') + ' added.';
+  } catch (e) { msg.textContent = 'Could not save that photo: ' + (e.message || e); }
+  lpmRenderTheory();
+}
+async function lpmDeletePackFile(id) {
+  if (!confirm('Delete this page from the course pack?')) return;
+  await packDelete(id); lpmRenderTheory();
+}
+async function lpmSetPackLearner(id, name) {
+  const all = await packTx('readonly', st => st.getAll());
+  const rec = (all || []).find(f => f.id === id);
+  if (rec) { rec.learnerName = name; await packAdd(rec); }
+}
+async function lpmRenderTheory() {
+  const el = document.getElementById('lpmPanel-theory');
+  if (!el) return;
+  const files = await packList(lpmCourse.id);
+  const names = (lpmCourse.learners || []).map(l => (l.name || '').trim()).filter(Boolean);
+  const group = (kind, label, hint) => {
+    const list = files.filter(f => f.kind === kind);
+    return `<div class="sc-h2">${label} <span style="font-weight:400;color:#6B7A94;font-size:0.85rem;">· ${list.length} page${list.length===1?'':'s'}</span></div>
+      <p class="sc-p" style="font-size:0.85rem;">${hint}</p>
+      <button class="rn-nav-btn primary rn-no-print" onclick="lpmExamPick('${kind}')">📷 Add photos</button>
+      <div class="lpm-pack-grid">${list.map(f => `<div class="lpm-pack-item">
+          <img src="${f.dataUrl}" alt="">
+          <select class="rn-name-select" onchange="lpmSetPackLearner('${f.id}', this.value)">
+            <option value="">Learner not set</option>
+            ${names.map(n => `<option value="${lpmEsc(n)}" ${n===f.learnerName?'selected':''}>${lpmEsc(n)}</option>`).join('')}
+          </select>
+          <button class="lpm-learner-remove" onclick="lpmDeletePackFile('${f.id}')">Delete</button>
+        </div>`).join('')}</div>`;
+  };
+  el.innerHTML = `<div class="sc-note">Photograph each completed paper exam. Pages are stored on this iPad and collated into the course pack PDF.</div>
+    <p id="lpmExamMsg" class="sc-p" style="min-height:18px;"></p>
+    ${group('mc','Multiple choice exam','One photo per page. Take them in order, and set the learner for each page.')}
+    ${group('anat','Applied anatomy and physiology exam','One photo per page, in order.')}
+    ${group('register','Delegate register and other paperwork','Register photos scanned on the Learners step appear here automatically.')}
+    ${group('other','Other paperwork','Anything else the IQA needs, such as declaration forms.')}`;
+}
+
+// ---- Course pack PDF ----
+async function lpmBuildPack(action) {
+  const msg = document.getElementById('lpmPackMsg');
+  const say = (t, err) => { msg.style.color = err ? '#C74444' : '#0F6E56'; msg.textContent = t; };
+  try {
+    say('Building course pack…');
+    const { PDFDocument, StandardFonts, rgb } = await qsLoadPdfLib();
+    const pdf = await PDFDocument.create();
+    const font = await pdf.embedFont(StandardFonts.Helvetica);
+    const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+    const ink = rgb(0.05, 0.1, 0.3), grey = rgb(0.42, 0.48, 0.58);
+    const A4 = [595.28, 841.89];
+
+    // 1. Cover page
+    const cover = pdf.addPage(A4);
+    let y = 780;
+    const line = (t, f, size, col) => { cover.drawText(t, { x: 50, y, size, font: f, color: col || ink }); y -= size + 8; };
+    line('COURSE PACK', bold, 12, grey);
+    line(lpmCourse.courseName || 'Untitled course', bold, 22);
+    const dates = lpmCourse.startDate ? (lpmCourse.endDate && lpmCourse.endDate !== lpmCourse.startDate ? fmtD(lpmCourse.startDate) + ' – ' + fmtD(lpmCourse.endDate) : fmtD(lpmCourse.startDate)) : 'Dates not set';
+    line(dates, font, 12);
+    if (lpmCourse.courseRef) line('Reference: ' + lpmCourse.courseRef, font, 11, grey);
+    if (lpmCourse.location) line('Location: ' + lpmCourse.location, font, 11, grey);
+    line('Instructors: ' + (lpmInstructorLine(lpmCourse) || 'Not set'), font, 11, grey);
+    line('Pack created: ' + fmtD(new Date()), font, 11, grey);
+    y -= 10;
+    line('Learners', bold, 13);
+    (lpmCourse.learners || []).filter(l => (l.name || '').trim()).forEach((l, i) => line((i + 1) + '. ' + l.name.trim(), font, 11));
+    y -= 6;
+    line('Contents', bold, 13);
+    const files = await packList(lpmCourse.id);
+    const counts = k => files.filter(f => f.kind === k).length;
+    ['Qualsafe practical assessment record sheet',
+     'Multiple choice exam papers (' + counts('mc') + ')',
+     'Applied anatomy and physiology papers (' + counts('anat') + ')',
+     'Delegate register (' + counts('register') + ')',
+     'Other paperwork (' + counts('other') + ')'].forEach(t => line('• ' + t, font, 11));
+
+    // 2. Qualsafe record sheet
+    let recordSheetPage = -1;
+    try {
+      const rows = qsCollect();
+      if (rows.length) {
+        const rsBytes = await qsRecordSheetBytes(rows);
+        const rs = await PDFDocument.load(rsBytes);
+        const [pg] = await pdf.copyPages(rs, [0]);
+        pdf.addPage(pg);
+        recordSheetPage = pdf.getPageCount() - 1;
+      }
+    } catch (e) {}
+
+    // 3. Paperwork photos, in order
+    const order = ['mc','anat','register','other'];
+    for (const kind of order) {
+      const list = files.filter(f => f.kind === kind);
+      for (let i = 0; i < list.length; i++) {
+        const f = list[i];
+        const page = pdf.addPage(A4);
+        const img = await pdf.embedJpg(f.dataUrl);
+        const top = 56, margin = 34;
+        const maxW = A4[0] - margin * 2, maxH = A4[1] - top - margin;
+        const sc = Math.min(maxW / img.width, maxH / img.height);
+        page.drawText(PACK_KINDS[kind] + (f.learnerName ? ' — ' + f.learnerName : '') + '   ·   page ' + (i + 1) + ' of ' + list.length,
+          { x: margin, y: A4[1] - 34, size: 10, font: bold, color: ink });
+        page.drawImage(img, { x: (A4[0] - img.width * sc) / 2, y: margin, width: img.width * sc, height: img.height * sc });
+      }
+    }
+
+    // Footer on every page
+    const pages = pdf.getPages();
+    pages.forEach((pg, i) => {
+      if (i === recordSheetPage) return; // the Qualsafe sheet keeps its own footer
+      pg.drawText((lpmCourse.courseName || 'Course pack') + '  ·  page ' + (i + 1) + ' of ' + pages.length, { x: 34, y: 18, size: 8, font, color: grey });
+    });
+
+    const bytes = await pdf.save();
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const fname = 'Course_Pack_' + (lpmCourse.courseName || 'course').replace(/[^A-Za-z0-9]+/g, '_') + '_' + (lpmCourse.startDate || isoLocal()) + '.pdf';
+
+    if (action === 'share' && navigator.canShare && navigator.canShare({ files: [new File([blob], fname, { type:'application/pdf' })] })) {
+      await navigator.share({ files: [new File([blob], fname, { type:'application/pdf' })], title: fname, text: 'Course pack: ' + (lpmCourse.courseName || '') });
+      say('Course pack shared.');
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.getElementById('lpmPackLink');
+    a.href = url; a.download = fname; a.style.display = 'inline-flex';
+    window.open(url, '_blank');
+    if (action === 'share') {
+      say(pages.length + ' pages ready. Save the PDF, then attach it to your email.');
+      const subject = encodeURIComponent('Course pack — ' + (lpmCourse.courseName || '') + ' ' + dates);
+      const body = encodeURIComponent('Course pack attached.\n\nCourse: ' + (lpmCourse.courseName || '') + '\nDates: ' + dates + '\nInstructors: ' + (lpmInstructorLine(lpmCourse) || '') + '\nLearners: ' + (lpmCourse.learners || []).filter(l => (l.name||'').trim()).length + '\nPages: ' + pages.length);
+      setTimeout(() => { location.href = 'mailto:?subject=' + subject + '&body=' + body; }, 600);
+    } else {
+      say(pages.length + ' pages ready — open it to save, print or share.');
+    }
+  } catch (e) { say('Could not build the course pack: ' + (e.message || e), true); }
+}
+
+async function lpmRenderPack() {
+  const el = document.getElementById('lpmPanel-pack');
+  if (!el) return;
+  const files = await packList(lpmCourse.id);
+  const c = k => files.filter(f => f.kind === k).length;
+  const named = (lpmCourse.learners || []).filter(l => (l.name || '').trim()).length;
+  el.innerHTML = `<div class="sc-note">One PDF containing everything an IQA or Qualsafe needs: cover sheet, the practical assessment record sheet and photographs of all paper work.</div>
+    <table class="sc-table"><tr><th>Included</th><th>Pages</th></tr>
+      <tr><td>Cover sheet — course, instructors and ${named} learner${named===1?'':'s'}</td><td>1</td></tr>
+      <tr><td>Qualsafe practical assessment record sheet</td><td>1</td></tr>
+      <tr><td>Multiple choice exam papers</td><td>${c('mc')}</td></tr>
+      <tr><td>Applied anatomy and physiology papers</td><td>${c('anat')}</td></tr>
+      <tr><td>Delegate register</td><td>${c('register')}</td></tr>
+      <tr><td>Other paperwork</td><td>${c('other')}</td></tr>
+    </table>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;" class="rn-no-print">
+      <button class="rn-nav-btn primary" onclick="lpmBuildPack('save')">Build course pack PDF</button>
+      <button class="rn-nav-btn" onclick="lpmBuildPack('share')">Build and email / share</button>
+      <a id="lpmPackLink" class="rn-nav-btn" style="display:none;text-decoration:none;" target="_blank">Open / download PDF</a>
+    </div>
+    <p id="lpmPackMsg" style="font-size:0.85rem;margin-top:10px;min-height:20px;"></p>
+    <p class="sc-p" style="font-size:0.78rem;color:#6B7A94;">Photos stay on this iPad until you build the pack. Check every page is readable before submitting.</p>`;
 }
 </script>
 </body>
