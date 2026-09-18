@@ -733,6 +733,16 @@ function fmtD(v) {
   .rn-debrief-step { margin:14px 0; }
   .rn-debrief-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; margin-bottom:2px; }
   .rn-danger { color:#C74444 !important; border-color:#E8B4B4 !important; }
+  .rn-qa-group { border:1px solid #E6EAF0; border-radius:8px; margin-bottom:10px; overflow:hidden; }
+  .rn-qa-group-head { display:flex; align-items:center; gap:10px; width:100%; background:#F7F9FC; border:0; padding:14px 14px; cursor:pointer; font:inherit; text-align:left; }
+  .rn-qa-group-title { flex:1; font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; }
+  .rn-qa-group-count { font-family:'Public Sans',sans-serif; font-size:0.75rem; font-weight:700; color:#6B7A94; background:#fff; border:1px solid #E6EAF0; border-radius:100px; padding:2px 8px; }
+  .rn-qa-group-count.done { color:#0F6E56; border-color:#9FD3BC; background:#DDF1E8; }
+  .rn-qa-group-body { display:none; }
+  .rn-qa-group.open .rn-qa-group-body { display:block; }
+  .rn-qa-group.open .rn-qa-group-head { border-bottom:1px solid #E6EAF0; }
+  .rn-qa-group .rn-qa-group-head .rn-qa-arrow::before { content:'▸'; }
+  .rn-qa-group.open > .rn-qa-group-head .rn-qa-arrow::before { content:'▾'; }
   .rn-qa-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:18px 0 6px; }
   .rn-qa-hint { font-family:'Public Sans',sans-serif; font-size:0.78rem; color:#6B7A94; }
   .rn-qa-expand { border:1px solid #D8DEE8; background:#fff; color:#2B5BD7; border-radius:6px; padding:6px 10px; font-size:0.78rem; font-weight:600; cursor:pointer; white-space:nowrap; }
@@ -6975,11 +6985,13 @@ function rnToggleQa(key) {
   const open = row.classList.toggle('open');
   row.querySelector('.rn-qa-head').setAttribute('aria-expanded', open);
 }
+function rnToggleQaGroup(gi) {
+  document.getElementById('rnQaG-' + gi).classList.toggle('open');
+}
 function rnToggleAllQa(btn) {
-  const rows = document.querySelectorAll('#rnPanel-assess .rn-qa-row');
-  const open = btn.textContent === 'Expand all';
-  rows.forEach(r => { r.classList.toggle('open', open); r.querySelector('.rn-qa-head').setAttribute('aria-expanded', open); });
-  btn.textContent = open ? 'Collapse all' : 'Expand all';
+  const open = btn.textContent.indexOf('Expand') === 0;
+  document.querySelectorAll('#rnPanel-assess .rn-qa-group').forEach(g => g.classList.toggle('open', open));
+  btn.textContent = open ? 'Collapse all sections' : 'Expand all sections';
 }
 
 function rnAssessHTML() {
@@ -7036,12 +7048,19 @@ function rnAssessHTML() {
     <p id="rnLearnerErr" style="color:#C74444;font-size:0.82rem;min-height:18px;margin-bottom:8px;"></p>`;
 
   html += `<div class="rn-qa-toolbar">
-      <div class="rn-qa-hint">Tap a heading for the full criterion and what good looks like.</div>
-      <button class="rn-qa-expand" onclick="rnToggleAllQa(this)">Expand all</button>
+      <div class="rn-qa-hint">Tap a section to open it. Tap a criterion for the full wording.</div>
+      <button class="rn-qa-expand" onclick="rnToggleAllQa(this)">Expand all sections</button>
     </div>`;
 
   d.assessment.forEach((group, gi) => {
-    html += `<div class="sc-assess-group"><div class="sc-assess-group-title">${group.group}</div>`;
+    const marked = group.items.filter((it, ii) => rnSession.learners.some(l => (l.results || {})[gi + '_' + ii])).length;
+    html += `<div class="sc-assess-group rn-qa-group ${gi === 0 ? 'open' : ''}" id="rnQaG-${gi}">
+      <button class="rn-qa-group-head" onclick="rnToggleQaGroup(${gi})">
+        <span class="rn-qa-group-title">${group.group}</span>
+        <span class="rn-qa-group-count" id="rnQaGc-${gi}">${marked}/${group.items.length}</span>
+        <span class="rn-qa-arrow"></span>
+      </button>
+      <div class="rn-qa-group-body">`;
     group.items.forEach((item, ii) => {
       const [ref, crit, good] = item;
       const key = gi + '_' + ii;
@@ -7063,7 +7082,7 @@ function rnAssessHTML() {
         </div>
       </div>`;
     });
-    html += `</div>`;
+    html += `</div></div>`;
   });
 
   if (d.observations) {
@@ -7086,6 +7105,14 @@ function rnPra(key, li) {
   return `<div class="sc-pra-group">${mk('P','Pass','p')}${mk('R','Refer','r')}${mk('N','N/A','n')}</div>`;
 }
 
+function rnUpdateQaGroupCount(gi) {
+  const el = document.getElementById('rnQaGc-' + gi);
+  if (!el || !rnDetail || !rnDetail.assessment[gi]) return;
+  const items = rnDetail.assessment[gi].items;
+  const marked = items.filter((it, ii) => rnSession.learners.some(l => (l.results || {})[gi + '_' + ii])).length;
+  el.textContent = marked + '/' + items.length;
+  el.classList.toggle('done', marked === items.length);
+}
 function rnSetPra(key, li, val) {
   const res = rnSession.learners[li].results;
   res[key] = (res[key] === val) ? null : val;
@@ -7093,6 +7120,7 @@ function rnSetPra(key, li, val) {
     const b = document.getElementById(`rnP-${li}-${key}-${v}`);
     if (b) b.classList.toggle('sel', res[key] === v);
   });
+  rnUpdateQaGroupCount(Number(key.split('_')[0]));
 }
 
 function rnSetLearner(i, name) {
