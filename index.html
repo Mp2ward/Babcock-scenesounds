@@ -7054,7 +7054,7 @@ function rnAssessHTML() {
 
   d.assessment.forEach((group, gi) => {
     const marked = group.items.filter((it, ii) => rnSession.learners.some(l => (l.results || {})[gi + '_' + ii])).length;
-    html += `<div class="sc-assess-group rn-qa-group ${gi === 0 ? 'open' : ''}" id="rnQaG-${gi}">
+    html += `<div class="sc-assess-group rn-qa-group" id="rnQaG-${gi}">
       <button class="rn-qa-group-head" onclick="rnToggleQaGroup(${gi})">
         <span class="rn-qa-group-title">${group.group}</span>
         <span class="rn-qa-group-count" id="rnQaGc-${gi}">${marked}/${group.items.length}</span>
