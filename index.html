@@ -733,6 +733,16 @@ function fmtD(v) {
   .rn-debrief-step { margin:14px 0; }
   .rn-debrief-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; margin-bottom:2px; }
   .rn-danger { color:#C74444 !important; border-color:#E8B4B4 !important; }
+  .fb-counter { display:flex; align-items:baseline; gap:12px; margin:18px 0 6px; }
+  .fb-count-num { font-family:'Public Sans',sans-serif; font-size:2.6rem; font-weight:800; color:#0D1B4C; }
+  .fb-count-num.done { color:#0F6E56; }
+  .fb-count-label { color:#6B7A94; font-size:0.9rem; }
+  .fb-qr-card { border:1px solid #D8DEE8; border-radius:12px; padding:18px; background:#fff; text-align:center; max-width:280px; margin-top:10px; }
+  .fb-qr-title { font-family:'Public Sans',sans-serif; font-weight:700; color:#0D1B4C; margin-bottom:10px; }
+  .fb-qr { width:190px; height:190px; }
+  .fb-qr-sub { font-size:0.72rem; color:#8494AC; margin-top:8px; }
+  .fb-opt { width:100%; min-height:38px; border:0; background:#fff; cursor:pointer; font-size:0.78rem; color:#0D1B4C; }
+  .fb-opt.sel { background:#DDF1E8; color:#0F6E56; font-weight:700; }
   .lpm-confirm { border:1px solid #D8DEE8; border-radius:10px; padding:16px; background:#fff; margin-bottom:16px; }
   .lpm-pack-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; margin:12px 0 22px; }
   .lpm-pack-item { border:1px solid #D8DEE8; border-radius:8px; padding:8px; background:#fff; display:flex; flex-direction:column; gap:6px; }
@@ -1370,8 +1380,8 @@ window.addEventListener('load', function () {
         <button class="rn-step" onclick="lpmShowStep('sessions')">Scenario sessions</button>
         <button class="rn-step" onclick="lpmShowStep('theory')">Theory exams</button>
         <button class="rn-step" onclick="lpmShowStep('overview')">QA overview</button>
+        <button class="rn-step" onclick="lpmShowStep('feedback')">Feedback</button>
         <button class="rn-step" onclick="lpmShowStep('pack')">Course pack</button>
-        <button class="rn-step" onclick="lpmShowStep('summary')">Summary</button>
       </div>
 
       <div class="rn-panel" id="lpmPanel-details"></div>
@@ -1379,9 +1389,9 @@ window.addEventListener('load', function () {
       <div class="rn-panel" id="lpmPanel-skills"></div>
       <div class="rn-panel" id="lpmPanel-sessions"></div>
       <div class="rn-panel" id="lpmPanel-theory"></div>
+      <div class="rn-panel" id="lpmPanel-feedback"></div>
       <div class="rn-panel" id="lpmPanel-overview"></div>
       <div class="rn-panel" id="lpmPanel-pack"></div>
-      <div class="rn-panel" id="lpmPanel-summary"></div>
 
     </div>
   </div>
@@ -7476,7 +7486,7 @@ const LPM_STORE_KEY = 'lpm_courses';
 let lpmCurrentId = null;
 let lpmCourse = null;
 let lpmStepIdx = 0;
-const LPM_STEPS = ['details','learners','skills','sessions','theory','overview','pack','summary'];
+const LPM_STEPS = ['details','learners','skills','sessions','theory','overview','feedback','pack'];
 
 function lpmLoadCourses() {
   try { return JSON.parse(localStorage.getItem(LPM_STORE_KEY) || '[]'); }
@@ -7571,7 +7581,7 @@ function lpmOpenCourse(id) {
   lpmUpdateCourseSub();
 
   document.getElementById('lpmSteps').innerHTML = LPM_STEPS.map((k,i) => {
-    const labels = {details:'Course details', learners:'Learners', skills:'Skills stations', sessions:'Scenario sessions', theory:'Theory exams', overview:'QA overview', pack:'Course pack', summary:'Summary'};
+    const labels = {details:'Course details', learners:'Learners', skills:'Skills stations', sessions:'Scenario sessions', theory:'Theory exams', overview:'QA overview', feedback:'Feedback', pack:'Course pack'};
     return `<button class="rn-step" id="lpmStep${i}" onclick="lpmShowStep('${k}')">${labels[k]}</button>`;
   }).join('');
 
@@ -7579,7 +7589,6 @@ function lpmOpenCourse(id) {
   lpmRenderLearners();
   lpmRenderOverview();
   lpmRenderSessions();
-  lpmRenderSummary();
   lpmShowStep('details');
   lpmShowView('course');
 }
@@ -7594,10 +7603,10 @@ function lpmShowStep(key) {
   document.getElementById('lpmPanel-' + key).classList.add('active');
   if (key === 'skills') { skCourseId = lpmCourse.id; skRender(); }
   if (key === 'theory') lpmRenderTheory();
+  if (key === 'feedback') lpmRenderFeedback();
   if (key === 'overview') lpmRenderOverview();
   if (key === 'pack') lpmRenderPack();
   if (key === 'sessions') lpmRenderSessions();
-  if (key === 'summary') lpmRenderSummary();
   window.scrollTo(0,0);
 }
 
@@ -8400,7 +8409,6 @@ function lpmDeleteSession(id) {
   lpmSaveCourses(courses);
   lpmCourse.linkedSessionIds = (lpmCourse.linkedSessionIds || []).filter(x => x !== id);
   lpmRenderSessions();
-  lpmRenderSummary();
 }
 function lpmSessionCard(s, isLinked) {
   const learnerLine = (s.learners || []).map(l => {
@@ -8435,43 +8443,6 @@ function lpmUnlinkSession(sessionId) {
   lpmRenderSessions();
 }
 
-function lpmRenderSummary() {
-  const c = lpmCourse;
-  if (!c.qa) c.qa = {};
-  let html = `<div class="sc-h2" style="margin-top:0;">${lpmEsc(c.courseName || 'Untitled course')}</div>
-    <div class="sc-note">${fmtD(c.startDate)} to ${fmtD(c.endDate)} · ${c.location||'Location not set'} · Instructor: ${lpmInstructorLine(c)||'—'}</div>`;
-
-  if (!c.learners.length) {
-    html += `<div class="rn-empty">Add learners to see a summary.</div>`;
-  } else {
-    c.learners.forEach((l, li) => {
-      let p = 0, r = 0, notYet = 0;
-      LPM_QA_ITEMS.forEach(q => {
-        const val = c.qa['row' + li + '_' + q.key];
-        if (val === 'P') p++;
-        else if (val === 'R') r++;
-        else notYet++;
-      });
-      html += `<div class="rn-summary-card">
-        <div class="rn-summary-name">${lpmEsc(l.name || 'Unnamed learner')}</div>
-        <div class="rn-summary-counts">
-          <span class="rn-m-p">${p} pass</span>
-          <span class="rn-m-r">${r} referral</span>
-          <span class="rn-m-n">${notYet} not yet assessed</span>
-        </div>
-      </div>`;
-    });
-  }
-
-  html += `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;" class="rn-no-print">
-      <button class="rn-nav-btn primary" onclick="window.print()">Print / save as PDF</button>
-      <button class="rn-nav-btn" onclick="lpmExportCsv()">Export CSV</button>
-      <button class="rn-nav-btn" onclick="lpmEmailSummary()">Email summary</button>
-      <button class="rn-nav-btn" onclick="lpmDeleteCourse()">Delete this course record</button>
-    </div>`;
-
-  document.getElementById('lpmPanel-summary').innerHTML = html;
-}
 
 function lpmEmailSummary() {
   const c = lpmCourse;
@@ -9031,7 +9002,7 @@ async function packAddPhoto(file, kind, title, learnerName) {
     kind, title, learnerName: learnerName || '', dataUrl: shrunk.dataUrl, w: shrunk.w, h: shrunk.h, addedAt: new Date().toISOString() });
 }
 
-const PACK_KINDS = { anat:'Applied anatomy and physiology exam', mc:'Multiple choice exam', register:'Delegate register', other:'Other paperwork' };
+const PACK_KINDS = { feedback:'Learner feedback form', anat:'Applied anatomy and physiology exam', mc:'Multiple choice exam', register:'Delegate register', other:'Other paperwork' };
 // ---- Theory exams: a grid of learners against the two papers ----
 const EXAM_KINDS = { anat:'Applied anatomy and physiology', mc:'Multiple choice' };
 let lpmExamPending = null;
@@ -9162,6 +9133,27 @@ async function lpmRenderTheory() {
 }
 
 // ---- Course pack PDF ----
+let lpmPackFile = null;
+// Open the finished pack, or share/email it
+async function lpmSendPack() {
+  const msg = document.getElementById('lpmPackMsg');
+  const say = (t, err) => { msg.style.color = err ? '#C74444' : '#0F6E56'; msg.textContent = t; };
+  if (!lpmPackFile) { say('Complete the course pack first.', true); return; }
+  const { blob, fname, pages, dates } = lpmPackFile;
+  try {
+    const file = new File([blob], fname, { type: 'application/pdf' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: fname, text: 'Course pack: ' + (lpmCourse.courseName || '') });
+      say('Course pack sent.');
+      return;
+    }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  const subject = encodeURIComponent('Course pack — ' + (lpmCourse.courseName || '') + ' ' + dates);
+  const body = encodeURIComponent('Course pack attached.\n\nCourse: ' + (lpmCourse.courseName || '') + '\nDates: ' + dates + '\nInstructors: ' + (lpmInstructorLine(lpmCourse) || '') + '\nLearners: ' + (lpmCourse.learners || []).filter(l => (l.name||'').trim()).length + '\nPages: ' + pages);
+  say('Sharing not available on this device — save the PDF from "Open course pack", then attach it to the email.');
+  location.href = 'mailto:?subject=' + subject + '&body=' + body;
+}
+
 async function lpmBuildPack(action) {
   const msg = document.getElementById('lpmPackMsg');
   const say = (t, err) => { msg.style.color = err ? '#C74444' : '#0F6E56'; msg.textContent = t; };
@@ -9193,13 +9185,26 @@ async function lpmBuildPack(action) {
     line('Contents', bold, 13);
     const files = await packList(lpmCourse.id);
     const counts = k => files.filter(f => f.kind === k).length;
-    ['Qualsafe practical assessment record sheet',
+    ['Delegate register (' + counts('register') + ')',
+     'Qualsafe practical assessment record sheet',
      'Applied anatomy and physiology papers (' + counts('anat') + ')',
      'Multiple choice exam papers (' + counts('mc') + ')',
-     'Delegate register (' + counts('register') + ')',
-     'Other paperwork (' + counts('other') + ')'].forEach(t => line('• ' + t, font, 11));
+     'Other paperwork (' + counts('other') + ')',
+     'Learner feedback forms (' + ((lpmCourse.feedback || []).length + counts('feedback')) + ')'].forEach(t => line('• ' + t, font, 11));
 
-    // 2. Qualsafe record sheet
+    // 2. Delegate register photos
+    const drawPhoto = async (f, label) => {
+      const page = pdf.addPage(A4);
+      const img = await pdf.embedJpg(f.dataUrl);
+      const top = 56, margin = 34;
+      const sc = Math.min((A4[0] - margin * 2) / img.width, (A4[1] - top - margin) / img.height);
+      page.drawText(label, { x: margin, y: A4[1] - 34, size: 10, font: bold, color: ink });
+      page.drawImage(img, { x: (A4[0] - img.width * sc) / 2, y: margin, width: img.width * sc, height: img.height * sc });
+    };
+    const reg = files.filter(f => f.kind === 'register');
+    for (let i = 0; i < reg.length; i++) await drawPhoto(reg[i], 'Delegate register  ·  page ' + (i + 1) + ' of ' + reg.length);
+
+    // 3. Qualsafe practical assessment record sheet
     let recordSheetPage = -1;
     try {
       const rows = qsCollect();
@@ -9212,27 +9217,56 @@ async function lpmBuildPack(action) {
       }
     } catch (e) {}
 
-    // 3. Paperwork photos, in order
-    const order = ['anat','mc','register','other'];
-    for (const kind of order) {
-      const list = files.filter(f => f.kind === kind);
-      for (let i = 0; i < list.length; i++) {
-        const f = list[i];
-        const page = pdf.addPage(A4);
-        const img = await pdf.embedJpg(f.dataUrl);
-        const top = 56, margin = 34;
-        const maxW = A4[0] - margin * 2, maxH = A4[1] - top - margin;
-        const sc = Math.min(maxW / img.width, maxH / img.height);
-        page.drawText((PACK_KINDS[kind] || kind) + (f.learnerName ? ' — ' + f.learnerName : '') + '   ·   page ' + (i + 1) + ' of ' + list.length,
-          { x: margin, y: A4[1] - 34, size: 10, font: bold, color: ink });
-        page.drawImage(img, { x: (A4[0] - img.width * sc) / 2, y: margin, width: img.width * sc, height: img.height * sc });
+    // 4. Theory papers, learner by learner: Applied A&P then multiple choice
+    const learners = (lpmCourse.learners || []).filter(l => (l.name || '').trim());
+    for (const l of learners) {
+      for (const kind of ['anat','mc']) {
+        const list = files.filter(f => f.kind === kind && f.learnerId === l.id);
+        for (let i = 0; i < list.length; i++) {
+          await drawPhoto(list[i], l.name.trim() + '  ·  ' + PACK_KINDS[kind] + '  ·  page ' + (i + 1) + ' of ' + list.length);
+        }
       }
     }
+    // Any exam pages that were never matched to a learner
+    const orphan = files.filter(f => (f.kind === 'anat' || f.kind === 'mc') && !learners.some(l => l.id === f.learnerId));
+    for (let i = 0; i < orphan.length; i++) await drawPhoto(orphan[i], 'Unassigned  ·  ' + PACK_KINDS[orphan[i].kind] + '  ·  page ' + (i + 1) + ' of ' + orphan.length);
+
+    // 5. Other paperwork
+    const other = files.filter(f => f.kind === 'other');
+    for (let i = 0; i < other.length; i++) await drawPhoto(other[i], 'Other paperwork  ·  page ' + (i + 1) + ' of ' + other.length);
+
+    // 6. Learner feedback forms
+    let feedbackPages = [];
+    for (const entry of (lpmCourse.feedback || [])) {
+      try {
+        const pg = await fbFillPage(pdf, entry, PDFDocument);
+        pdf.addPage(pg);
+        feedbackPages.push(pdf.getPageCount() - 1);
+      } catch (e) {
+        // Official form not available — add a plain summary page instead
+        const page = pdf.addPage(A4);
+        let fy = 780;
+        const fline = (t, f2, size) => { page.drawText(t, { x: 50, y: fy, size, font: f2 || font, color: ink }); fy -= size + 7; };
+        fline('Learner feedback', bold, 16);
+        fline((entry.name || 'Anonymous') + '   ·   ' + (lpmCourse.courseName || ''), font, 11);
+        fy -= 6;
+        const r2 = entry.ratings || {};
+        [...FB_VENUE, ...FB_TRAINER, ['pace','Pace of the course'], ['howconfident','Confidence using new skills']]
+          .forEach(([k, l]) => fline(l + ': ' + (r2[k] || '—'), font, 11));
+        fy -= 4;
+        fline('Trainer out of 10: ' + (entry.rateTrainer || '—') + '     Training centre out of 10: ' + (entry.rateCentre || '—'), font, 11);
+        if (entry.comments) { fy -= 4; fline('Comments:', bold, 11); entry.comments.match(/.{1,86}(\s|$)/g).forEach(t => fline(t.trim(), font, 10)); }
+        fline('(Official Qualsafe feedback form not found next to the app — upload Learner_Feedback_Form.pdf to use it.)', font, 8);
+      }
+    }
+
+    const fbPhotos = files.filter(f => f.kind === 'feedback');
+    for (let i = 0; i < fbPhotos.length; i++) await drawPhoto(fbPhotos[i], 'Learner feedback form  ·  ' + (i + 1) + ' of ' + fbPhotos.length);
 
     // Footer on every page
     const pages = pdf.getPages();
     pages.forEach((pg, i) => {
-      if (i === recordSheetPage) return; // the Qualsafe sheet keeps its own footer
+      if (i === recordSheetPage || feedbackPages.includes(i)) return; // official forms keep their own footers
       pg.drawText((lpmCourse.courseName || 'Course pack') + '  ·  page ' + (i + 1) + ' of ' + pages.length, { x: 34, y: 18, size: 8, font, color: grey });
     });
 
@@ -9240,48 +9274,228 @@ async function lpmBuildPack(action) {
     const blob = new Blob([bytes], { type: 'application/pdf' });
     const fname = 'Course_Pack_' + (lpmCourse.courseName || 'course').replace(/[^A-Za-z0-9]+/g, '_') + '_' + (lpmCourse.startDate || isoLocal()) + '.pdf';
 
-    if (action === 'share' && navigator.canShare && navigator.canShare({ files: [new File([blob], fname, { type:'application/pdf' })] })) {
+    if (false && navigator.canShare && navigator.canShare({ files: [new File([blob], fname, { type:'application/pdf' })] })) {
       await navigator.share({ files: [new File([blob], fname, { type:'application/pdf' })], title: fname, text: 'Course pack: ' + (lpmCourse.courseName || '') });
       say('Course pack shared.');
       return;
     }
+    lpmPackFile = { blob, fname, pages: pages.length, dates };
     const url = URL.createObjectURL(blob);
     const a = document.getElementById('lpmPackLink');
     a.href = url; a.download = fname; a.style.display = 'inline-flex';
-    window.open(url, '_blank');
-    if (action === 'share') {
-      say(pages.length + ' pages ready. Save the PDF, then attach it to your email.');
-      const subject = encodeURIComponent('Course pack — ' + (lpmCourse.courseName || '') + ' ' + dates);
-      const body = encodeURIComponent('Course pack attached.\n\nCourse: ' + (lpmCourse.courseName || '') + '\nDates: ' + dates + '\nInstructors: ' + (lpmInstructorLine(lpmCourse) || '') + '\nLearners: ' + (lpmCourse.learners || []).filter(l => (l.name||'').trim()).length + '\nPages: ' + pages.length);
-      setTimeout(() => { location.href = 'mailto:?subject=' + subject + '&body=' + body; }, 600);
-    } else {
-      say(pages.length + ' pages ready — open it to save, print or share.');
-    }
+    const sendBtn = document.getElementById('lpmPackSend');
+    if (sendBtn) sendBtn.style.display = 'inline-flex';
+    const buildBtn = document.getElementById('lpmPackBuild');
+    if (buildBtn) buildBtn.textContent = 'Rebuild course pack';
+    say('Course pack complete — ' + pages.length + ' pages. Open it to check, then send it.');
   } catch (e) { say('Could not build the course pack: ' + (e.message || e), true); }
 }
 
 async function lpmRenderPack() {
   const el = document.getElementById('lpmPanel-pack');
   if (!el) return;
+  lpmPackFile = null;
   const files = await packList(lpmCourse.id);
   const c = k => files.filter(f => f.kind === k).length;
   const named = (lpmCourse.learners || []).filter(l => (l.name || '').trim()).length;
   el.innerHTML = `<div class="sc-note">One PDF containing everything an IQA or Qualsafe needs: cover sheet, the practical assessment record sheet and photographs of all paper work.</div>
     <table class="sc-table"><tr><th>Included</th><th>Pages</th></tr>
       <tr><td>Cover sheet — course, instructors and ${named} learner${named===1?'':'s'}</td><td>1</td></tr>
-      <tr><td>Qualsafe practical assessment record sheet</td><td>1</td></tr>
-      <tr><td>Applied anatomy and physiology papers</td><td>${c('anat')}</td></tr>
-      <tr><td>Multiple choice exam papers</td><td>${c('mc')}</td></tr>
       <tr><td>Delegate register</td><td>${c('register')}</td></tr>
+      <tr><td>Qualsafe practical assessment record sheet</td><td>1</td></tr>
+      <tr><td>Applied anatomy and physiology papers (learner order)</td><td>${c('anat')}</td></tr>
+      <tr><td>Multiple choice exam papers (learner order)</td><td>${c('mc')}</td></tr>
       <tr><td>Other paperwork</td><td>${c('other')}</td></tr>
+      <tr><td>Learner feedback forms</td><td>${(lpmCourse.feedback || []).length + c('feedback')}</td></tr>
     </table>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;" class="rn-no-print">
-      <button class="rn-nav-btn primary" onclick="lpmBuildPack('save')">Build course pack PDF</button>
-      <button class="rn-nav-btn" onclick="lpmBuildPack('share')">Build and email / share</button>
-      <a id="lpmPackLink" class="rn-nav-btn" style="display:none;text-decoration:none;" target="_blank">Open / download PDF</a>
+      <button class="rn-nav-btn primary" id="lpmPackBuild" onclick="lpmBuildPack('save')">Complete course</button>
+      <a id="lpmPackLink" class="rn-nav-btn" style="display:none;text-decoration:none;" target="_blank">Open course pack</a>
+      <button class="rn-nav-btn" id="lpmPackSend" style="display:none;" onclick="lpmSendPack()">Send course pack</button>
     </div>
     <p id="lpmPackMsg" style="font-size:0.85rem;margin-top:10px;min-height:20px;"></p>
     <p class="sc-p" style="font-size:0.78rem;color:#6B7A94;">Photos stay on this iPad until you build the pack. Check every page is readable before submitting.</p>`;
+}
+
+// ============ LEARNER FEEDBACK (Qualsafe learner feedback form) ============
+const FB_URL = 'Learner_Feedback_Form.pdf'; // sits next to index.html
+// Tick-box positions on the official form
+const FB_BOXES = {"Training Commitment Leaflet": {"No": [375.0, 695.9, 386.8, 707.4], "Yes": [333.6, 695.8, 345.0, 707.5]}, "Venue": {"Excellent": [248.8, 545.9, 260.2, 557.6], "Very Good": [310.7, 545.9, 322.1, 557.6], "Good": [374.2, 545.9, 385.6, 557.6], "Satisfactory": [438.0, 545.9, 449.4, 557.6], "Poor": [502.1, 545.9, 513.5, 557.6]}, "Classroom": {"Excellent": [249.2, 526.2, 260.2, 538.0], "Very Good": [310.7, 526.2, 322.1, 538.0], "Good": [374.2, 526.2, 385.2, 538.0], "Satisfactory": [438.0, 526.2, 449.4, 538.0], "Poor": [501.5, 526.2, 513.5, 538.0]}, "Handouts": {"Excellent": [249.2, 506.6, 260.2, 518.4], "Very Good": [310.7, 506.6, 322.1, 518.4], "Good": [374.2, 506.6, 385.2, 518.4], "Satisfactory": [438.0, 506.6, 449.4, 518.4], "Poor": [502.1, 506.6, 513.5, 518.4]}, "Equipment": {"Excellent": [249.2, 486.6, 260.2, 498.4], "Very Good": [310.7, 486.6, 322.1, 498.4], "Good": [374.2, 486.6, 385.2, 498.4], "Satisfactory": [438.0, 486.6, 449.4, 498.1], "Poor": [502.1, 486.6, 513.5, 498.4]}, "Course Content": {"Excellent": [249.2, 466.7, 260.2, 478.4], "Very Good": [310.7, 466.7, 322.1, 478.4], "Good": [374.2, 466.7, 385.2, 478.4], "Satisfactory": [438.0, 466.7, 449.4, 478.1], "Poor": [502.1, 466.7, 513.5, 478.4]}, "Subject Knowledge": {"Excellent": [249.2, 412.7, 260.2, 424.4], "Very Good": [310.7, 412.7, 322.1, 424.4], "Good": [374.2, 412.7, 385.2, 424.4], "Satisfactory": [438.0, 412.7, 449.4, 424.1], "Poor": [502.1, 412.7, 513.5, 424.4]}, "Interest": {"Excellent": [249.2, 392.4, 260.2, 404.2], "Very Good": [310.7, 392.4, 322.1, 404.2], "Good": [374.2, 392.4, 385.2, 404.2], "Satisfactory": [438.0, 392.4, 449.4, 403.8], "Poor": [502.1, 392.4, 513.5, 404.2]}, "Teaching Methods": {"Excellent": [248.8, 372.4, 259.6, 384.2], "Very Good": [310.7, 372.4, 322.1, 383.5], "Good": [374.2, 372.4, 385.2, 384.2], "Satisfactory": [438.0, 372.4, 449.4, 383.9], "Poor": [502.1, 374.4, 513.5, 386.2]}, "Support": {"Excellent": [248.8, 352.5, 259.6, 363.5], "Very Good": [310.7, 352.5, 322.1, 364.2], "Good": [374.2, 352.8, 385.2, 364.2], "Satisfactory": [438.0, 352.5, 449.4, 363.9], "Poor": [502.1, 352.5, 513.5, 364.3]}, "Appearance": {"Excellent": [248.8, 333.2, 259.6, 344.9], "Very Good": [310.7, 333.2, 322.1, 344.9], "Good": [374.2, 333.5, 385.2, 344.9], "Satisfactory": [438.0, 333.2, 449.4, 344.6], "Poor": [502.1, 333.2, 513.5, 345.0]}, "Confidence": {"Excellent": [248.8, 313.2, 259.6, 325.0], "Very Good": [310.7, 313.2, 322.1, 325.0], "Good": [374.2, 313.5, 385.2, 325.6], "Satisfactory": [438.7, 313.2, 449.4, 324.6], "Poor": [502.1, 313.2, 513.5, 325.0]}, "Pace": {"Excellent": [248.8, 259.9, 259.6, 271.6], "Very Good": [310.7, 259.9, 322.1, 271.6], "Good": [374.2, 260.2, 385.2, 271.6], "Satisfactory": [438.0, 259.9, 449.4, 271.3], "Poor": [502.1, 259.9, 513.5, 271.6]}, "How confident": {"Excellent": [248.8, 210.7, 259.6, 222.5], "Very Good": [310.7, 210.7, 322.1, 222.5], "Good": [374.2, 211.0, 385.2, 222.5], "Satisfactory": [438.0, 210.7, 449.4, 222.1], "Poor": [502.1, 210.7, 513.5, 222.5]}};
+const FB_SCALE = ['Excellent','Very Good','Good','Satisfactory','Poor'];
+const FB_CONF = ['Extremely','Very','Confident','Fairly','Not at all'];
+const FB_VENUE = [['venue','Venue/facilities'],['classroom','Classroom set-up'],['handouts','Handouts/books, etc'],['equipment','Equipment'],['content','Course contents']];
+const FB_TRAINER = [['knowledge','Subject knowledge'],['interest','Ability to hold your interest'],['methods','Use of effective teaching methods'],['support','Support and guidance'],['appearance','Appearance, eg clean and tidy'],['confidence','Confidence']];
+let fbEditing = null;
+
+function fbList() { return lpmCourse.feedback || (lpmCourse.feedback = []); }
+function fbFor(lid) { return fbList().find(f => f.learnerId === lid); }
+
+async function lpmRenderFeedback() {
+  const el = document.getElementById('lpmPanel-feedback');
+  if (!el) return;
+  const learners = (lpmCourse.learners || []).filter(l => (l.name || '').trim()).length;
+  const photos = await packList(lpmCourse.id, 'feedback');
+  const forms = fbList().length;
+  const total = forms + photos.length;
+  el.innerHTML = `<div class="sc-note">Feedback is anonymous. Learners can scan the QR code, or you can photograph completed paper forms. Everything is added to the course pack.</div>
+    <div class="fb-counter">
+      <div class="fb-count-num ${learners && total >= learners ? 'done' : ''}">${total}/${learners || '—'}</div>
+      <div class="fb-count-label">feedback form${total === 1 ? '' : 's'} received${learners ? ' of ' + learners + ' learners' : ''}</div>
+    </div>
+    <div class="fb-qr-card">
+      <div class="fb-qr-title">Scan to give feedback</div>
+      ${fbFakeQR()}
+      <div class="fb-qr-sub">Preview only — phone feedback goes live once the online service is set up.</div>
+    </div>
+    <div id="fbForm"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;" class="rn-no-print">
+      <input type="file" id="fbPhotoInput" accept="image/*" multiple style="display:none;" onchange="fbPhotoCapture(this)">
+      <button class="rn-nav-btn primary" onclick="document.getElementById('fbPhotoInput').click()">📷 Photograph paper form</button>
+      <button class="rn-nav-btn" onclick="fbOpen('')">+ Enter feedback on this iPad</button>
+    </div>
+    <p id="fbMsg" style="font-size:0.85rem;color:#6B7A94;min-height:18px;margin-top:8px;"></p>
+    ${total ? `<div class="sc-h2">Received</div>
+      <div class="lpm-pack-grid">
+        ${forms ? fbList().map((f, i) => `<div class="lpm-pack-item" style="justify-content:space-between;">
+            <div style="font-weight:600;">Form ${i + 1}</div>
+            <div style="font-size:0.75rem;color:#6B7A94;">Entered on this iPad · ${fmtD(f.savedAt)}</div>
+            <button class="lpm-learner-remove" onclick="fbOpen('', '${f.id}')">Open / edit</button>
+          </div>`).join('') : ''}
+        ${photos.map((f, i) => `<div class="lpm-pack-item">
+            <a href="${f.dataUrl}" target="_blank"><img src="${f.dataUrl}" alt="Feedback form"></a>
+            <div style="font-size:0.75rem;color:#6B7A94;">Photo · ${fmtD(f.addedAt)}</div>
+            <button class="lpm-learner-remove" onclick="fbDeletePhoto('${f.id}')">Delete</button>
+          </div>`).join('')}
+      </div>` : ''}`;
+}
+
+// Placeholder QR block — a real code is generated once the online service is live
+function fbFakeQR() {
+  const n = 21, seed = (lpmCourse.id || 'x').split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  let cells = '';
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+    const finder = (x < 7 && y < 7) || (x > n - 8 && y < 7) || (x < 7 && y > n - 8);
+    const inRing = finder && !((x % 6 > 0 && x % 6 < 5 && y % 6 > 0 && y % 6 < 5) && !(x % 6 === 3 && y % 6 === 3));
+    const on = finder ? inRing : ((x * 7 + y * 13 + seed) % 5 < 2);
+    if (on) cells += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+  }
+  return `<svg class="fb-qr" viewBox="-1 -1 ${n + 2} ${n + 2}" shape-rendering="crispEdges" aria-label="QR code placeholder"><rect x="-1" y="-1" width="${n + 2}" height="${n + 2}" fill="#fff"/><g fill="#0D1B4C">${cells}</g></svg>`;
+}
+
+async function fbPhotoCapture(input) {
+  const files = Array.from(input.files || []); input.value = '';
+  if (!files.length) return;
+  const msg = document.getElementById('fbMsg');
+  msg.textContent = 'Saving…';
+  try {
+    for (const f of files) await packAddPhoto(f, 'feedback', 'Learner feedback form');
+    msg.textContent = files.length + ' form' + (files.length === 1 ? '' : 's') + ' added.';
+  } catch (e) { msg.textContent = 'Could not save that photo.'; }
+  lpmRenderFeedback();
+}
+async function fbDeletePhoto(id) {
+  if (!confirm('Delete this feedback photo?')) return;
+  await packDelete(id); lpmRenderFeedback();
+}
+
+
+function fbOpen(learnerId, entryId) {
+  const existing = entryId ? fbList().find(f => f.id === entryId) : (learnerId ? fbFor(learnerId) : null);
+  fbEditing = existing ? JSON.parse(JSON.stringify(existing)) : { id:'FB' + Date.now(), learnerId: learnerId || '', ratings:{} };
+  if (learnerId && !existing) fbEditing.name = ((lpmCourse.learners || []).find(l => l.id === learnerId) || {}).name || '';
+  fbRenderForm();
+  document.getElementById('fbForm').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+function fbSet(k, v) { fbEditing[k] = v; }
+function fbSetRating(k, v) {
+  fbEditing.ratings[k] = v;
+  document.querySelectorAll(`[data-fb="${k}"]`).forEach(b => b.classList.toggle('sel', b.dataset.val === v));
+}
+function fbRenderForm() {
+  const f = fbEditing, r = f.ratings || {};
+  const row = (key, label, opts) => `<tr><td class="sk-crit" style="min-width:180px;">${label}</td>
+    ${opts.map(o => `<td class="sk-cell"><button class="fb-opt ${r[key]===o?'sel':''}" data-fb="${key}" data-val="${o}" onclick="fbSetRating('${key}','${o}')">${o}</button></td>`).join('')}</tr>`;
+  document.getElementById('fbForm').innerHTML = `<div class="lpm-confirm">
+    <div class="sc-h2" style="margin-top:0;">Learner feedback${f.learnerId ? ' — ' + lpmEsc(f.name || '') : ' (anonymous)'}</div>
+    <div class="lpm-field-row">
+      <div class="lpm-field rn-learner-field"><label>Your name (optional)</label><input value="${lpmEsc(f.name)}" oninput="fbSet('name', this.value)"></div>
+      <div class="lpm-field rn-learner-field"><label>Your email (optional)</label><input value="${lpmEsc(f.email)}" oninput="fbSet('email', this.value)"></div>
+    </div>
+    <div class="lpm-field-row">
+      <div class="lpm-field rn-learner-field"><label>Your title</label><input value="${lpmEsc(f.title)}" oninput="fbSet('title', this.value)"></div>
+      <div class="lpm-field rn-learner-field"><label>Your telephone</label><input value="${lpmEsc(f.phone)}" oninput="fbSet('phone', this.value)"></div>
+    </div>
+    <div class="rn-learner-field" style="margin-top:10px;"><label>Seen the training commitment leaflet?</label>
+      <select class="rn-name-select" onchange="fbSet('leaflet', this.value)">
+        <option value="">—</option><option value="Yes" ${f.leaflet==='Yes'?'selected':''}>Yes</option><option value="No" ${f.leaflet==='No'?'selected':''}>No</option></select></div>
+    <div class="sc-h2">What did you think of the:</div>
+    <div class="sk-wrap"><table class="sk-table">${FB_VENUE.map(([k, l]) => row(k, l, FB_SCALE)).join('')}</table></div>
+    <div class="sc-h2">What did you think of the trainer's:</div>
+    <div class="sk-wrap"><table class="sk-table">${FB_TRAINER.map(([k, l]) => row(k, l, FB_SCALE)).join('')}</table></div>
+    <div class="sc-h2">Pace and confidence</div>
+    <div class="sk-wrap"><table class="sk-table">${row('pace','How was the pace of the course?',FB_SCALE)}${row('howconfident','How confident do you feel using your new knowledge/skills?',FB_CONF)}</table></div>
+    <div class="lpm-field-row" style="margin-top:12px;">
+      <div class="lpm-field rn-learner-field"><label>Rate the trainer out of 10</label><input type="number" min="1" max="10" value="${lpmEsc(f.rateTrainer)}" oninput="fbSet('rateTrainer', this.value)"></div>
+      <div class="lpm-field rn-learner-field"><label>Rate the training centre out of 10</label><input type="number" min="1" max="10" value="${lpmEsc(f.rateCentre)}" oninput="fbSet('rateCentre', this.value)"></div>
+    </div>
+    <div class="rn-learner-field" style="margin-top:10px;"><label>Any further comments</label>
+      <textarea rows="4" style="width:100%;" oninput="fbSet('comments', this.value)">${lpmEsc(f.comments)}</textarea></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+      <button class="rn-nav-btn primary" onclick="fbSave()">Save feedback</button>
+      <button class="rn-nav-btn" onclick="fbCancel()">Cancel</button>
+      ${fbList().some(x => x.id === f.id) ? `<button class="rn-nav-btn rn-danger" onclick="fbDelete()">Delete</button>` : ''}
+    </div>
+  </div>`;
+}
+function fbSave() {
+  const list = fbList();
+  const i = list.findIndex(x => x.id === fbEditing.id);
+  fbEditing.savedAt = new Date().toISOString();
+  if (i >= 0) list[i] = fbEditing; else list.push(fbEditing);
+  lpmPersist(); fbEditing = null; lpmRenderFeedback();
+}
+function fbCancel() { fbEditing = null; lpmRenderFeedback(); }
+function fbDelete() {
+  if (!confirm('Delete this feedback form?')) return;
+  lpmCourse.feedback = fbList().filter(x => x.id !== fbEditing.id);
+  lpmPersist(); fbEditing = null; lpmRenderFeedback();
+}
+
+// Fill the official Qualsafe form for one learner and return a page to add to the pack
+async function fbFillPage(pdf, entry, PDFDocument) {
+  const bytes = await fetch(FB_URL).then(r => { if (!r.ok) throw new Error('form not found'); return r.arrayBuffer(); });
+  const doc = await PDFDocument.load(bytes);
+  const form = doc.getForm();
+  const text = (n, v, size) => { try { const f2 = form.getTextField(n); f2.setText(v || ''); f2.setFontSize(size || 10); } catch (e) {} };
+  // The tick boxes are separate widgets, so they are drawn on after the text fields are flattened
+  const ticks = [];
+  const pick = (group, value) => { if (value && FB_BOXES[group] && FB_BOXES[group][value]) ticks.push(FB_BOXES[group][value]); };
+  text('fillable Trainers Name', lpmInstructorLine(lpmCourse) || '');
+  text('fillable Venue Name', lpmCourse.location || '');
+  text('fillable Course Start Date', fmtD(lpmCourse.startDate));
+  text('fillable Your Title', entry.title || '');
+  text('fillable Your Name', entry.name || '');
+  text('fillable Your Telephone', entry.phone || '');
+  text('fillable Your Email', entry.email || '');
+  text('fillable Rate Trainer', entry.rateTrainer || '');
+  text('fillable Rate Training Centre', entry.rateCentre || '');
+  text('fillable Comments', entry.comments || '', 10);
+  pick('Training Commitment Leaflet', entry.leaflet);
+  const r = entry.ratings || {};
+  const map = { venue:'Venue', classroom:'Classroom', handouts:'Handouts', equipment:'Equipment', content:'Course Content',
+    knowledge:'Subject Knowledge', interest:'Interest', methods:'Teaching Methods', support:'Support', appearance:'Appearance', confidence:'Confidence', pace:'Pace' };
+  Object.entries(map).forEach(([k, n]) => pick(n, r[k]));
+  if (r.howconfident) pick('How confident', FB_SCALE[FB_CONF.indexOf(r.howconfident)]);
+  form.flatten();
+  const fbPage = doc.getPages()[0];
+  const { rgb } = await qsLoadPdfLib();
+  ticks.forEach(r => {
+    const cx = (r[0] + r[2]) / 2, cy = (r[1] + r[3]) / 2, s2 = Math.min(r[2] - r[0], r[3] - r[1]) * 0.42;
+    fbPage.drawLine({ start:{ x: cx - s2, y: cy }, end:{ x: cx - s2 * 0.2, y: cy - s2 }, thickness: 1.6, color: rgb(0.05, 0.1, 0.3) });
+    fbPage.drawLine({ start:{ x: cx - s2 * 0.2, y: cy - s2 }, end:{ x: cx + s2, y: cy + s2 }, thickness: 1.6, color: rgb(0.05, 0.1, 0.3) });
+  });
+  const [page] = await pdf.copyPages(doc, [0]);
+  return page;
 }
 </script>
 </body>
