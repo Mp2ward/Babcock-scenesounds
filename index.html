@@ -655,7 +655,7 @@ function fmtD(v) {
   /* ---- Run a Scenario ---- */
   .rn-view { display:none; }
   .rn-view.active { display:block; }
-  .rn-wrap { max-width:920px; margin:0 auto; padding:24px 20px 60px; }
+  .rn-wrap { max-width:920px; margin:0 auto; padding:24px 20px 60px;  width:100%; box-sizing:border-box; }
 
   .rn-pick-row { display:block; width:100%; text-align:left; border:none; border-top:1px solid #D8DEE8; background:#FFFFFF; padding:16px 4px; cursor:pointer; }
   .rn-pick-row:last-of-type { border-bottom:1px solid #D8DEE8; }
@@ -748,7 +748,7 @@ function fmtD(v) {
   .rn-debrief-step { margin:14px 0; }
   .rn-debrief-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; margin-bottom:2px; }
   .rn-danger { color:#C74444 !important; border-color:#E8B4B4 !important; }
-  .cpd-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid #D8DEE8; border-radius:8px; }
+  .cpd-table-wrap { width:100%; max-width:100%; box-sizing:border-box; overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid #D8DEE8; border-radius:8px; }
   .cpd-table { width:100%; border-collapse:collapse; font-family:'Public Sans',sans-serif; min-width:560px; }
   .cpd-table th { background:#0D1B4C; color:#fff; font-size:0.78rem; font-weight:700; text-align:left; padding:9px 12px; white-space:nowrap; }
   .cpd-table td { padding:9px 12px; font-size:0.85rem; color:#0D1B4C; border-top:1px solid #E6EAF0; vertical-align:top; }
@@ -768,7 +768,7 @@ function fmtD(v) {
   .cpd-learn-emoji { font-size:1.5rem; }
   .cpd-learn-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.9rem; color:#0D1B4C; margin-top:6px; }
   .cpd-learn-sub { font-size:0.75rem; color:#6B7A94; margin-top:3px; }
-  .cpd-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin:16px 0; }
+  .cpd-cards { width:100%; box-sizing:border-box; display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin:16px 0; }
   .cpd-card { border:1px solid #D8DEE8; border-left:4px solid #B8C2D0; border-radius:10px; padding:14px; background:#fff; }
   .cpd-card.ok { border-left-color:#0F6E56; background:#F4FAF7; }
   .cpd-num { font-family:'Public Sans',sans-serif; font-size:1.7rem; font-weight:800; color:#0D1B4C; }
