@@ -469,7 +469,7 @@ function fmtD(v) {
   .hub-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.9rem;
            letter-spacing:0.04em; color:#0D1B4C; margin-bottom:4px; }
   .hub-p { font-size:0.9rem; color:#6B7A94; margin-bottom:26px; }
-  .hub-tiles { display:grid; grid-template-rows:repeat(5, 1fr); gap:12px; margin-bottom:12px; }
+  .hub-tiles { display:grid; grid-template-rows:repeat(6, 1fr); gap:12px; margin-bottom:12px; }
   .hub-tile { display:flex; align-items:center; gap:16px; padding:18px 20px;
               border:1px solid #D8DEE8; background:#FFFFFF; cursor:pointer;
               text-align:left; width:100%; box-sizing:border-box; transition:all 0.18s; }
@@ -498,15 +498,30 @@ function fmtD(v) {
               font-family:'Public Sans',sans-serif; font-weight:600; font-size:0.75rem;
               letter-spacing:0.1em; text-transform:uppercase; flex-shrink:0; }
   .back-hub:hover { border-color:#8FF5C0; color:#8FF5C0; }
-  @media (max-width:640px) {
+  /* Keep the full name readable when the Menu and Contact buttons are showing */
+  @media (max-width:1000px) {
+    .brand-title { font-size:1rem; letter-spacing:0.05em; }
+  }
+  @media (max-width:820px) {
     .header-contact { display:none; }
-    .brand-sub { display:none; }
     header .status-bar { display:none !important; }
+    .brand-title { font-size:0.95rem; letter-spacing:0.04em; }
+    .brand-sub { font-size:0.54rem; letter-spacing:0.12em; }
+  }
+  @media (max-width:640px) {
+    .brand-sub { display:none; }
+    .brand-title { font-size:0.88rem; letter-spacing:0.03em; }
   }
   @media (max-width:480px) {
-    .brand-logo { height:22px; }
-    .brand-title { font-size:0.9rem; letter-spacing:0.03em; }
-    .brand-divider { height:20px; }
+    .brand-logo { height:20px; }
+    .brand-title { font-size:0.72rem; letter-spacing:0.01em; }
+    .brand-divider { height:18px; }
+    .back-hub { padding:5px 9px; font-size:0.62rem; }
+    header { padding:10px 10px; gap:8px; }
+  }
+  @media (max-width:400px) {
+    .brand-divider { display:none; }
+    .brand-title { font-size:0.68rem; letter-spacing:0; }
   }
   .stub { max-width:720px; margin:0 auto; padding:56px 20px; text-align:center; }
   .stub-icon { font-size:2.4rem; margin-bottom:14px; }
@@ -733,6 +748,26 @@ function fmtD(v) {
   .rn-debrief-step { margin:14px 0; }
   .rn-debrief-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; margin-bottom:2px; }
   .rn-danger { color:#C74444 !important; border-color:#E8B4B4 !important; }
+  .cpd-tiles { display:flex; flex-direction:column; gap:12px; margin:18px 0; max-width:640px; }
+  .cpd-tile { display:flex; align-items:center; gap:16px; padding:18px 20px; border:1px solid #D8DEE8; border-radius:12px; background:#fff; cursor:pointer; font:inherit; text-align:left; border-left:4px solid #0F6E56; }
+  .cpd-tile.learn { border-left-color:#6B3FA0; }
+  .cpd-tile-emoji { font-size:1.8rem; }
+  .cpd-tile-body { flex:1; min-width:0; }
+  .cpd-tile-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.05rem; color:#0D1B4C; }
+  .cpd-tile-sub { font-size:0.82rem; color:#6B7A94; margin-top:3px; }
+  .cpd-learn-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; max-width:620px; margin:0 auto; }
+  .cpd-learn-card { border:1px solid #E6E0F0; border-radius:10px; padding:16px 12px; background:#FBF9FE; opacity:0; transform:translateY(8px); animation:cpdRise .5s ease-out forwards; }
+  @keyframes cpdRise { to { opacity:1; transform:translateY(0); } }
+  .cpd-learn-emoji { font-size:1.5rem; }
+  .cpd-learn-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.9rem; color:#0D1B4C; margin-top:6px; }
+  .cpd-learn-sub { font-size:0.75rem; color:#6B7A94; margin-top:3px; }
+  .cpd-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin:16px 0; }
+  .cpd-card { border:1px solid #D8DEE8; border-left:4px solid #B8C2D0; border-radius:10px; padding:14px; background:#fff; }
+  .cpd-card.ok { border-left-color:#0F6E56; background:#F4FAF7; }
+  .cpd-num { font-family:'Public Sans',sans-serif; font-size:1.7rem; font-weight:800; color:#0D1B4C; }
+  .cpd-card.ok .cpd-num { color:#0F6E56; }
+  .cpd-label { font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.85rem; color:#0D1B4C; margin-top:2px; }
+  .cpd-note { font-size:0.75rem; color:#6B7A94; margin-top:4px; }
   .fb-counter { display:flex; align-items:baseline; gap:12px; margin:18px 0 6px; }
   .fb-count-num { font-family:'Public Sans',sans-serif; font-size:2.6rem; font-weight:800; color:#0D1B4C; }
   .fb-count-num.done { color:#0F6E56; }
@@ -1008,6 +1043,16 @@ window.addEventListener('load', function () {
       <div style="flex:1;min-width:0;">
         <div class="hub-title">RUN A SCENARIO</div>
         <div class="hub-sub">Cards and sound together</div>
+      </div>
+      <span class="hub-chev">&rsaquo;</span>
+    </button>
+
+    <button class="hub-tile" onclick="showView('cpd');cpdOpen();">
+      <div class="hub-accent" style="background:#0F6E56;"></div>
+      <span class="hub-emoji">📘</span>
+      <div style="flex:1;min-width:0;">
+        <div class="hub-title">INSTRUCTOR CPD LOG</div>
+        <div class="hub-sub">Teaching, assessing and updates — built from your courses</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
@@ -1321,6 +1366,10 @@ window.addEventListener('load', function () {
 
 
 <!-- ============ LEARNER MATRIX ============ -->
+<div class="app-view" id="view-cpd">
+  <div class="rn-wrap" id="cpdRoot"></div>
+</div>
+
 <div class="app-view" id="view-knowledge">
   <div class="rn-wrap">
     <div class="kc-page">
@@ -9496,6 +9545,233 @@ async function fbFillPage(pdf, entry, PDFDocument) {
   });
   const [page] = await pdf.copyPages(doc, [0]);
   return page;
+}
+
+// ============ INSTRUCTOR CPD LOG ============
+const CPD_KEY = 'cpd_log_v1';
+const CPD_TYPES = ['Teaching / delivery','Assessment','Clinical refresher / ILS','Guideline update (RCUK, JRCALC, HSE)','Standardisation meeting','EQA / IQA feedback','Course attended','Other'];
+let cpdWho = '';
+let cpdEdit = null;
+
+function cpdLoad() { try { return JSON.parse(localStorage.getItem(CPD_KEY) || '{}'); } catch (e) { return {}; } }
+function cpdSave(all) { try { localStorage.setItem(CPD_KEY, JSON.stringify(all)); } catch (e) {} }
+function cpdManual(who) { return (cpdLoad()[who] || []); }
+
+// Everything the instructor has actually delivered in the app counts automatically
+function cpdAuto(who) {
+  const out = [];
+  let courses = [];
+  try { courses = lpmLoadCourses(); } catch (e) {}
+  courses.forEach(c => {
+    const team = [c.instructor1, c.instructor2, ...(c.extraInstructors || [])].filter(Boolean);
+    if (!team.includes(who)) return;
+    const days = LPM_COURSE_LENGTH_DAYS[c.courseName] || 1;
+    const learners = (c.learners || []).filter(l => (l.name || '').trim()).length;
+    out.push({ auto:true, date: c.startDate || '', type:'Teaching / delivery', hours: days * 7,
+      title: (c.courseName || 'Course') + (c.location ? ' — ' + c.location : ''),
+      detail: learners + ' learner' + (learners === 1 ? '' : 's') + (team.length > 1 ? ', co-delivered with ' + team.filter(t => t !== who).join(', ') : '') });
+    const assessed = (c.records || []).length + ((c.linkedSessionIds || []).length);
+    if (assessed) out.push({ auto:true, date: c.startDate || '', type:'Assessment', hours: Math.max(1, Math.round(days * 1.5)),
+      title: 'Practical assessment — ' + (c.courseName || 'course'), detail: assessed + ' assessment record' + (assessed === 1 ? '' : 's') + ' completed' });
+  });
+  let sessions = [];
+  try { sessions = rnLoadSessions(); } catch (e) {}
+  sessions.filter(s => s.instructor === who).forEach(s => out.push({ auto:true, date: s.date || '', type:'Assessment', hours: 1,
+    title: 'Scenario: ' + (s.scenarioTitle || 'scenario'), detail: (s.learners || []).filter(l => l.name).map(l => l.name).join(', ') }));
+  return out;
+}
+function cpdEntries(who) {
+  return [...cpdAuto(who), ...cpdManual(who)].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+}
+function cpdWindow(entries, years) {
+  const cut = new Date(); cut.setFullYear(cut.getFullYear() - years);
+  return entries.filter(e => e.date && new Date(e.date) >= cut);
+}
+
+function cpdOpen() {
+  if (!cpdWho) cpdWho = LPM_INSTRUCTOR_NAMES[0] || '';
+  cpdHome();
+}
+
+// Landing page: My CPD, and the CPD Learning library that is on the way
+function cpdHome() {
+  const root = document.getElementById('cpdRoot');
+  if (!root) return;
+  const all = cpdEntries(cpdWho), y3 = cpdWindow(all, 3);
+  const hrs = y3.reduce((t, e) => t + (Number(e.hours) || 0), 0);
+  root.innerHTML = `<div class="hub-eyebrow">Digital Training Centre</div>
+    <div class="hub-h" style="margin-bottom:6px;">CPD</div>
+    <p class="sc-p">Your record of teaching, assessing and learning — ready for external quality assurance.</p>
+    <div class="cpd-tiles">
+      <button class="cpd-tile" onclick="cpdRender()">
+        <span class="cpd-tile-emoji">📘</span>
+        <div class="cpd-tile-body">
+          <div class="cpd-tile-title">My CPD</div>
+          <div class="cpd-tile-sub">${hrs} hours recorded over the last 3 years · ${all.length} activities</div>
+        </div>
+        <span class="hub-chev">&rsaquo;</span>
+      </button>
+      <button class="cpd-tile learn" onclick="cpdLearning()">
+        <span class="cpd-tile-emoji">🎓</span>
+        <div class="cpd-tile-body">
+          <div class="cpd-tile-title">CPD Learning <span class="kc-badge">Coming soon</span></div>
+          <div class="cpd-tile-sub">Study sessions, videos, resources and quizzes — logged automatically</div>
+          <div class="kc-bar"><div class="kc-bar-fill"></div></div>
+        </div>
+        <span class="hub-chev">&rsaquo;</span>
+      </button>
+    </div>`;
+}
+
+function cpdLearning() {
+  const root = document.getElementById('cpdRoot');
+  root.innerHTML = `<button class="rn-nav-btn rn-no-print" onclick="cpdHome()">← CPD</button>
+    <div class="kc-page">
+      <div class="kc-icon">🎓</div>
+      <div class="hub-eyebrow">CPD Learning</div>
+      <div class="hub-h" style="margin-bottom:6px;">Learn, then log it automatically</div>
+      <span class="kc-badge kc-badge-lg">Coming soon</span>
+      <p class="sc-p" style="max-width:560px;margin:16px auto 22px;">Short study sessions, videos, manufacturer guides and quizzes drawn from Resuscitation Council UK, Qualsafe, JRCALC and equipment manufacturers. Finish one and the hours drop straight into your CPD log, with the reflection prompt ready to complete.</p>
+      <div class="cpd-learn-grid">
+        ${[['🎥','Video sessions','Short clinical and teaching updates'],
+           ['📄','Guideline briefings','RCUK, JRCALC and HSE changes, summarised'],
+           ['🧰','Manufacturer training','AED, suction and airway equipment'],
+           ['❓','Knowledge quizzes','Check what you have taken in'],
+           ['🗂️','Resource library','Downloadable references for your portfolio'],
+           ['⏱️','Auto-logging','Hours and reflection added to My CPD']].map((c, i) => `
+          <div class="cpd-learn-card" style="animation-delay:${i * 0.09}s">
+            <div class="cpd-learn-emoji">${c[0]}</div>
+            <div class="cpd-learn-title">${c[1]}</div>
+            <div class="cpd-learn-sub">${c[2]}</div>
+          </div>`).join('')}
+      </div>
+      <div class="kc-progress" style="margin-top:26px;">
+        <div class="kc-progress-top"><span>In development</span><span class="kc-pct">42%</span></div>
+        <div class="kc-bar kc-bar-lg"><div class="kc-bar-fill" style="width:42%;"></div></div>
+      </div>
+      <div class="kc-steps">
+        <div class="kc-step done"><span>✓</span>CPD log and portfolio export</div>
+        <div class="kc-step active"><span class="kc-spin"></span>Content partnerships and library</div>
+        <div class="kc-step"><span>3</span>Videos and quizzes</div>
+        <div class="kc-step"><span>4</span>Automatic logging</div>
+      </div>
+    </div>`;
+}
+function cpdRender() {
+  const root = document.getElementById('cpdRoot');
+  if (!root) return;
+  const all = cpdEntries(cpdWho);
+  const y3 = cpdWindow(all, 3), y1 = cpdWindow(all, 1);
+  const hours = list => list.reduce((t, e) => t + (Number(e.hours) || 0), 0);
+  const teachHours = hours(y3.filter(e => e.type === 'Teaching / delivery'));
+  const assessCount = y3.filter(e => e.type === 'Assessment').length;
+  const refresher = y1.find(e => e.type === 'Clinical refresher / ILS');
+  const card = (num, label, ok, note) => `<div class="cpd-card ${ok ? 'ok' : ''}">
+      <div class="cpd-num">${num}</div><div class="cpd-label">${label}</div><div class="cpd-note">${note}</div></div>`;
+  root.innerHTML = `<button class="rn-nav-btn rn-no-print" onclick="cpdHome()">← CPD</button>
+    <div class="hub-eyebrow" style="margin-top:14px;">Digital Training Centre</div>
+    <div class="hub-h" style="margin-bottom:4px;">My CPD</div>
+    <p class="sc-p">A rolling record of teaching, assessment and updates, built from the courses delivered in this app. Qualsafe expects a CPD portfolio kept for at least three years and available for external quality assurance.</p>
+    <div class="rn-learner-field" style="max-width:320px;"><label>Instructor</label>
+      <select class="rn-name-select" onchange="cpdWho=this.value;cpdRender()">
+        ${LPM_INSTRUCTOR_NAMES.map(n => `<option ${n===cpdWho?'selected':''}>${lpmEsc(n)}</option>`).join('')}
+      </select></div>
+    <div class="cpd-cards">
+      ${card(teachHours + ' hrs', 'Teaching in the last 3 years', teachHours >= 36, 'Qualsafe log of experience: 36 hours')}
+      ${card(assessCount, 'Courses assessed in 3 years', assessCount >= 6, 'Qualsafe log of experience: 6 courses')}
+      ${card(refresher ? '✓' : '—', 'Annual clinical refresher', !!refresher, refresher ? fmtD(refresher.date) + ' — ' + lpmEsc(refresher.title) : 'Not recorded in the last 12 months')}
+      ${card(hours(y1) + ' hrs', 'All CPD in the last 12 months', hours(y1) > 0, 'Teaching, assessing and updates')}
+    </div>
+    <div id="cpdForm"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:16px 0;" class="rn-no-print">
+      <button class="rn-nav-btn primary" onclick="cpdAdd()">+ Add CPD activity</button>
+      <button class="rn-nav-btn" onclick="cpdExport()">Export CPD portfolio (PDF)</button>
+      <a id="cpdLink" class="rn-nav-btn" style="display:none;text-decoration:none;" target="_blank">Open PDF</a>
+    </div>
+    <p id="cpdMsg" style="font-size:0.85rem;min-height:18px;"></p>
+    <div class="sk-wrap"><table class="sk-table">
+      <tr><th class="sk-corner" style="min-width:90px;">Date</th><th class="sk-name" style="min-width:150px;"><div class="sk-name-txt">Activity</div></th>
+        <th class="sk-name" style="min-width:110px;"><div class="sk-name-txt">Type</div></th><th class="sk-name" style="min-width:60px;"><div class="sk-name-txt">Hours</div></th><th class="sk-name" style="min-width:70px;"><div class="sk-name-txt"></div></th></tr>
+      ${all.length ? all.map((e, i) => `<tr>
+        <td class="sk-crit" style="min-width:90px;">${fmtD(e.date)}</td>
+        <td class="sk-crit" style="position:static;"><strong>${lpmEsc(e.title)}</strong>${e.detail ? `<div style="font-size:0.75rem;color:#6B7A94;">${lpmEsc(e.detail)}</div>` : ''}</td>
+        <td class="sk-crit" style="position:static;font-size:0.8rem;">${lpmEsc(e.type)}</td>
+        <td class="sk-crit" style="position:static;text-align:center;">${e.hours || '—'}</td>
+        <td class="sk-crit" style="position:static;">${e.auto ? '<span style="font-size:0.72rem;color:#6B7A94;">From app</span>' : `<button class="lpm-learner-remove" onclick="cpdDelete('${e.id}')">Delete</button>`}</td>
+      </tr>`).join('') : `<tr><td class="sk-crit" colspan="5">No activity recorded yet.</td></tr>`}
+    </table></div>`;
+}
+function cpdAdd(entry) {
+  cpdEdit = entry || { id:'C' + Date.now(), date: isoLocal(), type: CPD_TYPES[2], title:'', detail:'', hours: 2 };
+  document.getElementById('cpdForm').innerHTML = `<div class="lpm-confirm">
+    <div class="sc-h2" style="margin-top:0;">Add CPD activity</div>
+    <div class="lpm-field-row">
+      <div class="lpm-field rn-learner-field"><label>Date</label><input type="date" value="${cpdEdit.date}" oninput="cpdEdit.date=this.value"></div>
+      <div class="lpm-field rn-learner-field"><label>Hours</label><input type="number" min="0" step="0.5" value="${cpdEdit.hours}" oninput="cpdEdit.hours=this.value"></div>
+    </div>
+    <div class="rn-learner-field" style="margin-top:10px;"><label>Type</label>
+      <select class="rn-name-select" onchange="cpdEdit.type=this.value">${CPD_TYPES.map(t => `<option ${t===cpdEdit.type?'selected':''}>${t}</option>`).join('')}</select></div>
+    <div class="rn-learner-field" style="margin-top:10px;"><label>Activity</label><input value="${lpmEsc(cpdEdit.title)}" placeholder="e.g. Annual ILS refresher" oninput="cpdEdit.title=this.value"></div>
+    <div class="rn-learner-field" style="margin-top:10px;"><label>What you took from it</label><textarea rows="3" style="width:100%;" oninput="cpdEdit.detail=this.value">${lpmEsc(cpdEdit.detail)}</textarea></div>
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button class="rn-nav-btn primary" onclick="cpdSaveEntry()">Save</button>
+      <button class="rn-nav-btn" onclick="cpdEdit=null;cpdRender()">Cancel</button>
+    </div></div>`;
+}
+function cpdSaveEntry() {
+  if (!cpdEdit.title.trim()) { alert('Give the activity a name.'); return; }
+  const all = cpdLoad();
+  all[cpdWho] = all[cpdWho] || [];
+  all[cpdWho].push(cpdEdit);
+  cpdSave(all); cpdEdit = null; cpdRender();
+}
+function cpdDelete(id) {
+  if (!confirm('Delete this CPD entry?')) return;
+  const all = cpdLoad();
+  all[cpdWho] = (all[cpdWho] || []).filter(e => e.id !== id);
+  cpdSave(all); cpdRender();
+}
+
+async function cpdExport() {
+  const msg = document.getElementById('cpdMsg');
+  const say = (t, err) => { msg.style.color = err ? '#C74444' : '#0F6E56'; msg.textContent = t; };
+  try {
+    say('Building CPD portfolio…');
+    const { PDFDocument, StandardFonts, rgb } = await qsLoadPdfLib();
+    const pdf = await PDFDocument.create();
+    const font = await pdf.embedFont(StandardFonts.Helvetica), bold = await pdf.embedFont(StandardFonts.HelveticaBold);
+    const ink = rgb(0.05, 0.1, 0.3), grey = rgb(0.42, 0.48, 0.58);
+    const A4 = [595.28, 841.89];
+    const all = cpdEntries(cpdWho), y3 = cpdWindow(all, 3);
+    const hours = list => list.reduce((t, e) => t + (Number(e.hours) || 0), 0);
+    let page = pdf.addPage(A4), y = 780;
+    const line = (t, f, size, col) => {
+      if (y < 60) { page = pdf.addPage(A4); y = 790; }
+      page.drawText(String(t).slice(0, 110), { x: 45, y, size, font: f || font, color: col || ink }); y -= size + 6;
+    };
+    line('CPD PORTFOLIO', bold, 11, grey);
+    line(cpdWho, bold, 20);
+    line('Produced ' + fmtD(new Date()) + '  ·  Digital Training Centre', font, 10, grey);
+    y -= 8;
+    line('Summary — last 3 years', bold, 13);
+    line('Teaching and delivery: ' + hours(y3.filter(e => e.type === 'Teaching / delivery')) + ' hours (Qualsafe log of experience: 36 hours)', font, 10);
+    line('Courses assessed: ' + y3.filter(e => e.type === 'Assessment').length + ' (Qualsafe log of experience: 6 courses)', font, 10);
+    line('Total recorded CPD: ' + hours(y3) + ' hours across ' + y3.length + ' activities', font, 10);
+    y -= 8;
+    line('Activity log', bold, 13);
+    all.forEach(e => {
+      line(fmtD(e.date) + '   ' + e.title + '   (' + e.type + ', ' + (e.hours || 0) + ' hrs)', bold, 9.5);
+      if (e.detail) line('      ' + e.detail, font, 9, grey);
+    });
+    y -= 6;
+    line('Records marked "from app" are generated from courses delivered in Digital Training Centre.', font, 8, grey);
+    const bytes = await pdf.save();
+    const url = URL.createObjectURL(new Blob([bytes], { type:'application/pdf' }));
+    const a = document.getElementById('cpdLink');
+    a.href = url; a.download = 'CPD_' + cpdWho.replace(/\W+/g, '_') + '_' + isoLocal() + '.pdf'; a.style.display = 'inline-flex';
+    window.open(url, '_blank');
+    say('CPD portfolio ready.');
+  } catch (e) { say('Could not build the portfolio: ' + (e.message || e), true); }
 }
 </script>
 </body>
