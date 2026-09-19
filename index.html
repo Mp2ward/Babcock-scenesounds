@@ -748,6 +748,13 @@ function fmtD(v) {
   .rn-debrief-step { margin:14px 0; }
   .rn-debrief-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1rem; color:#0D1B4C; margin-bottom:2px; }
   .rn-danger { color:#C74444 !important; border-color:#E8B4B4 !important; }
+  .cpd-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid #D8DEE8; border-radius:8px; }
+  .cpd-table { width:100%; border-collapse:collapse; font-family:'Public Sans',sans-serif; min-width:560px; }
+  .cpd-table th { background:#0D1B4C; color:#fff; font-size:0.78rem; font-weight:700; text-align:left; padding:9px 12px; white-space:nowrap; }
+  .cpd-table td { padding:9px 12px; font-size:0.85rem; color:#0D1B4C; border-top:1px solid #E6EAF0; vertical-align:top; }
+  .cpd-table tr:nth-child(even) td { background:#F7F9FC; }
+  .cpd-detail { font-size:0.75rem; color:#6B7A94; margin-top:2px; }
+  .cpd-src { font-size:0.72rem; color:#6B7A94; white-space:nowrap; }
   .cpd-tiles { display:flex; flex-direction:column; gap:12px; margin:18px 0; max-width:640px; }
   .cpd-tile { display:flex; align-items:center; gap:16px; padding:18px 20px; border:1px solid #D8DEE8; border-radius:12px; background:#fff; cursor:pointer; font:inherit; text-align:left; border-left:4px solid #0F6E56; }
   .cpd-tile.learn { border-left-color:#6B3FA0; }
@@ -9689,16 +9696,15 @@ function cpdRender() {
       <a id="cpdLink" class="rn-nav-btn" style="display:none;text-decoration:none;" target="_blank">Open PDF</a>
     </div>
     <p id="cpdMsg" style="font-size:0.85rem;min-height:18px;"></p>
-    <div class="sk-wrap"><table class="sk-table">
-      <tr><th class="sk-corner" style="min-width:90px;">Date</th><th class="sk-name" style="min-width:150px;"><div class="sk-name-txt">Activity</div></th>
-        <th class="sk-name" style="min-width:110px;"><div class="sk-name-txt">Type</div></th><th class="sk-name" style="min-width:60px;"><div class="sk-name-txt">Hours</div></th><th class="sk-name" style="min-width:70px;"><div class="sk-name-txt"></div></th></tr>
-      ${all.length ? all.map((e, i) => `<tr>
-        <td class="sk-crit" style="min-width:90px;">${fmtD(e.date)}</td>
-        <td class="sk-crit" style="position:static;"><strong>${lpmEsc(e.title)}</strong>${e.detail ? `<div style="font-size:0.75rem;color:#6B7A94;">${lpmEsc(e.detail)}</div>` : ''}</td>
-        <td class="sk-crit" style="position:static;font-size:0.8rem;">${lpmEsc(e.type)}</td>
-        <td class="sk-crit" style="position:static;text-align:center;">${e.hours || '—'}</td>
-        <td class="sk-crit" style="position:static;">${e.auto ? '<span style="font-size:0.72rem;color:#6B7A94;">From app</span>' : `<button class="lpm-learner-remove" onclick="cpdDelete('${e.id}')">Delete</button>`}</td>
-      </tr>`).join('') : `<tr><td class="sk-crit" colspan="5">No activity recorded yet.</td></tr>`}
+    <div class="cpd-table-wrap"><table class="cpd-table">
+      <tr><th style="width:96px;">Date</th><th>Activity</th><th style="width:150px;">Type</th><th style="width:64px;text-align:right;">Hours</th><th style="width:78px;"></th></tr>
+      ${all.length ? all.map(e => `<tr>
+        <td>${fmtD(e.date)}</td>
+        <td><strong>${lpmEsc(e.title)}</strong>${e.detail ? `<div class="cpd-detail">${lpmEsc(e.detail)}</div>` : ''}</td>
+        <td>${lpmEsc(e.type)}</td>
+        <td style="text-align:right;">${e.hours || '—'}</td>
+        <td>${e.auto ? '<span class="cpd-src">From app</span>' : `<button class="lpm-learner-remove" onclick="cpdDelete('${e.id}')">Delete</button>`}</td>
+      </tr>`).join('') : `<tr><td colspan="5" style="color:#6B7A94;">No activity recorded yet.</td></tr>`}
     </table></div>`;
 }
 function cpdAdd(entry) {
