@@ -485,11 +485,20 @@ function fmtD(v) {
   #cloudBadge .cl-who { color:#fff; font-weight:600; }
   #cloudBadge .cl-out { background:none; border:1px solid rgba(255,255,255,0.28); color:#B8CBEC; border-radius:6px; padding:4px 8px; font-size:0.68rem; cursor:pointer; }
   @media (max-width:820px) { #cloudBadge .cl-st, #cloudBadge .cl-who { display:none; } }
-  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview) input,
-  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview) select,
-  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview) textarea,
-  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview) button:not(.lpm-eye):not(.sk-tab):not(.lpm-learner-remove) { pointer-events:none; opacity:0.75; }
+  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview):not(#lpmPanel-iqa) input,
+  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview):not(#lpmPanel-iqa) select,
+  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview):not(#lpmPanel-iqa) textarea,
+  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview):not(#lpmPanel-iqa) button:not(.lpm-eye):not(.sk-tab):not(.lpm-learner-remove) { pointer-events:none; opacity:0.75; }
   .lpm-ro .sk-tick, .lpm-ro .lpm-ov-tick { pointer-events:none; }
+  .iqa-state { border:1px solid #D8DEE8; border-left:4px solid #B8C2D0; border-radius:8px; padding:10px 12px; margin-bottom:10px; font-size:0.88rem; color:#0D1B4C; background:#fff; }
+  .iqa-state.sub { border-left-color:#2B5BD7; background:#F4F7FE; }
+  .iqa-state.wait { border-left-color:#B8C2D0; color:#5A6478; }
+  .iqa-state.ok { border-left-color:#0F6E56; background:#F4FAF7; }
+  .iqa-state.act { border-left-color:#B06A00; background:#FFF9EF; }
+  .iqa-state.ret { border-left-color:#C74444; background:#FDF3F3; }
+  #lpmPanel-iqa textarea, #fbForm textarea, .tk-box textarea { font:inherit; padding:10px; border:1px solid #D8DEE8; border-radius:8px; box-sizing:border-box; }
+  .iqa-notes { margin-top:6px; white-space:pre-wrap; color:#1F2533; }
+  .adm-status.sub { background:#EAF1FD; color:#2B5BD7; }
   .adm-wrap { max-width:1100px; }
   .adm-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin:16px 0; }
   .adm-stats > div { border:1px solid #D8DEE8; border-left:4px solid #B8C2D0; border-radius:8px; padding:12px; background:#fff; }
@@ -1561,6 +1570,7 @@ window.addEventListener('load', function () {
         <button class="rn-step" onclick="lpmShowStep('overview')">QA overview</button>
         <button class="rn-step" onclick="lpmShowStep('feedback')">Feedback</button>
         <button class="rn-step" onclick="lpmShowStep('pack')">Course pack</button>
+        <button class="rn-step lpm-iqa-tab" onclick="lpmShowStep('iqa')" style="display:none;">IQA</button>
       </div>
 
       <div class="rn-panel" id="lpmPanel-details"></div>
@@ -1571,6 +1581,7 @@ window.addEventListener('load', function () {
       <div class="rn-panel" id="lpmPanel-feedback"></div>
       <div class="rn-panel" id="lpmPanel-overview"></div>
       <div class="rn-panel" id="lpmPanel-pack"></div>
+      <div class="rn-panel" id="lpmPanel-iqa"></div>
 
     </div>
   </div>
@@ -7689,7 +7700,7 @@ const LPM_STORE_KEY = 'lpm_courses';
 let lpmCurrentId = null;
 let lpmCourse = null;
 let lpmStepIdx = 0;
-const LPM_STEPS = ['details','learners','skills','sessions','theory','overview','feedback','pack'];
+const LPM_STEPS = ['details','learners','skills','sessions','theory','overview','feedback','pack','iqa'];
 
 function lpmLoadCourses() {
   try { return JSON.parse(localStorage.getItem(LPM_STORE_KEY) || '[]'); }
@@ -7791,7 +7802,7 @@ function lpmOpenCourse(id) {
   const ro = CLOUD_ON && found.owner && found.owner !== cloudMe();
   document.getElementById('view-lpm').classList.toggle('lpm-ro', !!ro);
   const rob = document.getElementById('lpmRoBanner');
-  if (rob) rob.innerHTML = ro ? `<div class="sc-note" style="margin:8px 0 0;">Read-only — ${lpmEsc(found.ownerName || 'another instructor')}'s course. You can view everything and build the course pack, but not change it.</div>` : '';
+  if (rob) rob.innerHTML = ro ? `<div class="sc-note" style="margin:8px 0 0;">Read-only — ${lpmEsc(found.ownerName || 'another instructor')}'s course. You can view everything, build the course pack and record the IQA review, but not change the course.</div>` : '';
   if (CLOUD_ON && typeof cloudPullFiles === 'function') cloudPullFiles(id).then(n => { if (n && lpmCourse && lpmCourse.id === id) { try { lpmShowStep(LPM_STEPS[lpmStepIdx]); } catch (e) {} } });
   if (LPM_COURSE_LENGTH_DAYS[lpmCourse.courseName] && lpmCourse.startDate) {
     const st = new Date(lpmCourse.startDate + 'T00:00:00');
@@ -7804,7 +7815,7 @@ function lpmOpenCourse(id) {
   lpmUpdateCourseSub();
 
   document.getElementById('lpmSteps').innerHTML = LPM_STEPS.map((k,i) => {
-    const labels = {details:'Course details', learners:'Learners', skills:'Skills stations', sessions:'Scenario sessions', theory:'Theory exams', overview:'QA overview', feedback:'Feedback', pack:'Course pack'};
+    const labels = {details:'Course details', learners:'Learners', skills:'Skills stations', sessions:'Scenario sessions', theory:'Theory exams', overview:'QA overview', feedback:'Feedback', pack:'Course pack', iqa:'IQA review'};
     return `<button class="rn-step" id="lpmStep${i}" onclick="lpmShowStep('${k}')">${labels[k]}</button>`;
   }).join('');
 
@@ -7817,6 +7828,9 @@ function lpmOpenCourse(id) {
 }
 
 function lpmShowStep(key) {
+  const isRev = typeof cloudIsReviewer === 'function' && cloudIsReviewer();
+  document.querySelectorAll('#lpmSteps .rn-step').forEach((t, i) => { if (LPM_STEPS[i] === 'iqa') { t.classList.add('lpm-iqa-tab'); t.style.display = isRev ? '' : 'none'; } });
+  if (key === 'iqa' && !isRev) key = 'pack';
   lpmStepIdx = LPM_STEPS.indexOf(key);
   document.querySelectorAll('#lpmSteps .rn-step').forEach((b,i) => {
     b.classList.toggle('active', LPM_STEPS[i] === key);
@@ -7829,6 +7843,7 @@ function lpmShowStep(key) {
   if (key === 'feedback') lpmRenderFeedback();
   if (key === 'overview') lpmRenderOverview();
   if (key === 'pack') lpmRenderPack();
+  if (key === 'iqa') lpmRenderIqa();
   if (key === 'sessions') lpmRenderSessions();
   window.scrollTo(0,0);
 }
@@ -9638,6 +9653,8 @@ async function lpmBuildPack(action) {
     if (lpmCourse.location) line('Location: ' + lpmCourse.location, font, 11, grey);
     line('Instructors: ' + (lpmInstructorLine(lpmCourse) || 'Not set'), font, 11, grey);
     line('Pack created: ' + fmtD(new Date()), font, 11, grey);
+    const rv = iqaFor(lpmCourse.id);
+    if (rv) line('IQA: ' + rv.outcome + ' — ' + rv.iqa_name + ', ' + fmtD(rv.review_date), font, 11, grey);
     y -= 10;
     line('Learners and theory scores', bold, 13);
     const scoreTxt = (lid, k) => { const x = ((lpmCourse.examScores || {})[lid] || {})[k]; if (!x) return '—'; if (x.result) return x.result === 'P' ? 'Pass' : 'Referral'; return x.total ? x.score + '/' + x.total + ' — ' + (x.score >= (lpmCourse.mcPassMark || 28) ? 'Pass' : 'Referral') : '—'; };
@@ -9755,11 +9772,11 @@ async function lpmBuildPack(action) {
     const url = URL.createObjectURL(blob);
     const a = document.getElementById('lpmPackLink');
     a.href = url; a.download = fname; a.style.display = 'inline-flex';
-    const sendBtn = document.getElementById('lpmPackSend');
+    const sendBtn = document.getElementById('lpmPackSubmit');
     if (sendBtn) sendBtn.style.display = 'inline-flex';
     const buildBtn = document.getElementById('lpmPackBuild');
     if (buildBtn) buildBtn.textContent = 'Rebuild course pack';
-    say('Course pack complete — ' + pages.length + ' pages. Open it to check, then send it.');
+    say('Course pack complete — ' + pages.length + ' pages. Open it to check, then submit it.');
   } catch (e) { say('Could not build the course pack: ' + (e.message || e), true); }
 }
 
@@ -9770,7 +9787,7 @@ async function lpmRenderPack() {
   const files = await packList(lpmCourse.id);
   const c = k => files.filter(f => f.kind === k).length;
   const named = (lpmCourse.learners || []).filter(l => (l.name || '').trim()).length;
-  el.innerHTML = `<div class="sc-note">One PDF containing everything an IQA or Qualsafe needs: cover sheet, the practical assessment record sheet and photographs of all paper work.</div>
+  el.innerHTML = lpmSubmissionHTML(lpmCourse) + `<div class="sc-note">One PDF containing everything an IQA or Qualsafe needs. Tap <b>Complete course</b> to build it, check it, then <b>Submit course pack</b> to send it to the IQA team for review.</div>
     <table class="sc-table"><tr><th>Included</th><th>Pages</th></tr>
       <tr><td>Cover sheet — course, instructors and ${named} learner${named===1?'':'s'}</td><td>1</td></tr>
       <tr><td>Delegate register</td><td>${c('register')}</td></tr>
@@ -9783,7 +9800,7 @@ async function lpmRenderPack() {
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;" class="rn-no-print">
       <button class="rn-nav-btn primary" id="lpmPackBuild" onclick="lpmBuildPack('save')">Complete course</button>
       <a id="lpmPackLink" class="rn-nav-btn" style="display:none;text-decoration:none;" target="_blank">Open course pack</a>
-      <button class="rn-nav-btn" id="lpmPackSend" style="display:none;" onclick="lpmSendPack()">Send course pack</button>
+      <button class="rn-nav-btn" id="lpmPackSubmit" style="display:none;" onclick="lpmSubmitPack()">Submit course pack</button>
     </div>
     <p id="lpmPackMsg" style="font-size:0.85rem;margin-top:10px;min-height:20px;"></p>
     <p class="sc-p" style="font-size:0.78rem;color:#6B7A94;">Photos stay on this iPad until you build the pack. Check every page is readable before submitting.</p>`;
@@ -10453,6 +10470,7 @@ async function cloudPull() {
     const crow = await cloudRest('cpd?select=data&owner=eq.' + me) || [];
     if (crow[0]) { cpdSaveRaw(crow[0].data); synced.cpd = cloudHash(crow[0].data); }
     cloudSetSynced(synced);
+    await iqaPull();
     cloudSetStatus('Saved');
   } catch (e) { cloudSetStatus('Sync error — retrying'); }
 }
@@ -10673,7 +10691,8 @@ function admRenderHub() {
   if (!admVisible()) return;
   const courses = lpmLoadCourses();
   const owners = new Set(courses.map(c => c.owner).filter(Boolean));
-  const cs = document.getElementById('hubAdmCoursesSub'); if (cs) cs.textContent = courses.length + ' course' + (courses.length === 1 ? '' : 's') + ' · search, paperwork and course packs';
+  const waiting = courses.filter(c => c.submission && !iqaFor(c.id)).length;
+  const cs = document.getElementById('hubAdmCoursesSub'); if (cs) cs.textContent = (waiting ? waiting + ' awaiting IQA review · ' : '') + courses.length + ' course' + (courses.length === 1 ? '' : 's') + ' · search, paperwork and packs';
   const is = document.getElementById('hubAdmInstrSub'); if (is) is.textContent = Math.max(owners.size, admState.profiles.filter(p => p.role === 'instructor').length) + ' instructors · courses and CPD logs';
 }
 
@@ -10690,6 +10709,16 @@ async function admLoad() {
 
 // ---------- Course status ----------
 function admCourseStatus(c) {
+  const rv = iqaFor(c.id);
+  if (c.submission) {
+    const base = admCourseStatusBase(c);
+    if (!rv) return Object.assign(base, { label:'Submitted — awaiting IQA', cls:'sub' });
+    if (rv.outcome === 'Returned to instructor') return Object.assign(base, { label:'Returned to instructor', cls:'warn' });
+    return Object.assign(base, { label:'IQA ' + rv.outcome.toLowerCase(), cls:'ok' });
+  }
+  return admCourseStatusBase(c);
+}
+function admCourseStatusBase(c) {
   const learners = (c.learners || []).filter(l => (l.name || '').trim());
   const n = learners.length;
   const ex = c.examScores || {};
@@ -10723,11 +10752,12 @@ function admRenderCourses() {
     if (!q) return true;
     const hay = [c.courseName, c.courseRef, c.location, c.ownerName, lpmInstructorLine(c), fmtD(c.startDate), ...admLearnerNames(c)].join(' ').toLowerCase();
     return hay.includes(q);
-  }).sort((a, b) => (b.startDate || '').localeCompare(a.startDate || ''));
+  }).sort((a, b) => ((admCourseStatus(b).cls === 'sub') - (admCourseStatus(a).cls === 'sub')) || (b.startDate || '').localeCompare(a.startDate || ''));
   const totalLearners = all.reduce((t, c) => t + admLearnerNames(c).length, 0);
   const month = isoLocal().slice(0, 7);
   const thisMonth = all.filter(c => (c.startDate || '').startsWith(month)).length;
   const outstanding = all.filter(c => admCourseStatus(c).cls === 'warn').length;
+  const awaiting = all.filter(c => admCourseStatus(c).cls === 'sub').length;
   const learnerHit = c => q ? admLearnerNames(c).filter(n => n.toLowerCase().includes(q)) : [];
 
   root.innerHTML = `<button class="rn-nav-btn rn-no-print" onclick="showView('hub')">← Home</button>
@@ -10738,6 +10768,7 @@ function admRenderCourses() {
       <div><b>${all.length}</b><span>Courses</span></div>
       <div><b>${totalLearners}</b><span>Learners</span></div>
       <div><b>${thisMonth}</b><span>This month</span></div>
+      <div class="${awaiting ? 'warn' : ''}" style="cursor:pointer;" onclick="admState.status='sub';admRenderCourses()"><b>${awaiting}</b><span>Awaiting IQA review</span></div>
       <div class="${outstanding ? 'warn' : ''}"><b>${outstanding}</b><span>Paperwork outstanding</span></div>
     </div>
     <div class="adm-filters">
@@ -10746,7 +10777,7 @@ function admRenderCourses() {
         <option value="">All instructors</option>${owners.map(([id, n]) => `<option value="${id}" ${id === admState.owner ? 'selected' : ''}>${lpmEsc(n)}</option>`).join('')}</select>
       <select class="rn-name-select" onchange="admState.status=this.value;admRenderCourses()">
         <option value="">Any status</option>
-        ${[['up','Upcoming'],['prog','In progress'],['warn','Paperwork outstanding'],['ok','Ready to submit']].map(([v, l]) => `<option value="${v}" ${v === admState.status ? 'selected' : ''}>${l}</option>`).join('')}</select>
+        ${[['sub','Submitted — awaiting IQA'],['up','Upcoming'],['prog','In progress'],['warn','Outstanding or returned'],['ok','Ready / reviewed']].map(([v, l]) => `<option value="${v}" ${v === admState.status ? 'selected' : ''}>${l}</option>`).join('')}</select>
       <div class="adm-dates"><label>From</label><input type="date" value="${admState.from}" onchange="admState.from=this.value;admRenderCourses()"><label>To</label><input type="date" value="${admState.to}" onchange="admState.to=this.value;admRenderCourses()"></div>
     </div>
     <div class="adm-bar"><span>${list.length} of ${all.length} course${all.length === 1 ? '' : 's'}</span>
@@ -10764,7 +10795,7 @@ function admRenderCourses() {
           <div class="adm-actions">
             <button class="rn-nav-btn" onclick="admOpen('${c.id}','overview')">Open</button>
             <button class="rn-nav-btn" onclick="admOpen('${c.id}','theory')">Papers</button>
-            <button class="rn-nav-btn primary" onclick="admOpen('${c.id}','pack')">Course pack</button>
+            ${c.submission ? `<button class="rn-nav-btn primary" onclick="admOpen('${c.id}','iqa')">IQA review</button>` : `<button class="rn-nav-btn primary" onclick="admOpen('${c.id}','pack')">Course pack</button>`}
           </div>
         </div>
       </div>`; }).join('') : `<div class="rn-empty">No courses match.</div>`}</div>`;
@@ -10895,6 +10926,126 @@ async function admCpdPdf(id) {
     cpdWho = prev;
     const s2 = cpdLoad(); if (had === undefined) delete s2[inst.name]; else s2[inst.name] = had; cpdSaveRaw(s2);
   }
+}
+
+// =====================================================================
+// COURSE PACK SUBMISSION AND IQA REVIEW
+// =====================================================================
+const IQA_NAMES = ['Eve Wright', 'Andy Maxted'];
+const IQA_OUTCOMES = ['Accepted', 'Accepted with actions', 'Returned to instructor'];
+const REVIEWS_KEY = 'dtc_iqa_reviews';
+function iqaReviews() { try { return JSON.parse(localStorage.getItem(REVIEWS_KEY) || '{}'); } catch (e) { return {}; } }
+function iqaSaveLocal(m) { try { localStorage.setItem(REVIEWS_KEY, JSON.stringify(m)); } catch (e) {} }
+function iqaFor(courseId) { return iqaReviews()[courseId] || null; }
+
+async function iqaPull() {
+  if (!CLOUD_ON || !cloud.session || !navigator.onLine) return;
+  try {
+    const rows = await cloudRest('iqa_reviews?select=course_id,iqa_name,review_date,outcome,notes,updated_at') || [];
+    const m = {}; rows.forEach(r => { m[r.course_id] = r; }); iqaSaveLocal(m);
+  } catch (e) {}
+}
+
+// ---------- Instructor: submit the finished pack ----------
+async function lpmSubmitPack() {
+  const msg = document.getElementById('lpmPackMsg');
+  const say = (t, err) => { msg.style.color = err ? '#C74444' : '#0F6E56'; msg.textContent = t; };
+  if (!lpmPackFile) { say('Tap "Complete course" first to build the pack.', true); return; }
+  const sub = lpmCourse.submission;
+  if (sub && !confirm('This course was already submitted on ' + fmtD(sub.at) + '. Submit the updated pack in its place?')) return;
+  if (!CLOUD_ON || !cloud.session) { say('Sign in to submit course packs for IQA review.', true); return; }
+  if (!navigator.onLine) { say('You are offline. Connect to the internet to submit the pack.', true); return; }
+  const btn = document.getElementById('lpmPackSubmit'); if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+  try {
+    await cloudPush(); // the course record must exist on the server first
+    const path = cloudMe() + '/' + lpmCourse.id + '/course-pack.pdf';
+    await cloudFetch('/storage/v1/object/course-files/' + path, { method:'POST', body: lpmPackFile.blob, json:false, headers:{ 'Content-Type':'application/pdf', 'x-upsert':'true' } });
+    lpmCourse.submission = { at: new Date().toISOString(), by: (cloud.profile && cloud.profile.full_name) || '', pages: lpmPackFile.pages, path };
+    lpmPersist();
+    await cloudPush();
+    lpmRenderPack();
+    setTimeout(() => { const m2 = document.getElementById('lpmPackMsg'); if (m2) { m2.style.color = '#0F6E56'; m2.textContent = 'Submitted — the course pack is now with the IQA team for review.'; } }, 50);
+  } catch (e) {
+    say('Could not submit: ' + (e.message || e) + '. Check the connection and try again.', true);
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit course pack'; }
+  }
+}
+function lpmSubmissionHTML(c) {
+  const s = c.submission, r = iqaFor(c.id);
+  if (!s) return '';
+  let h = `<div class="iqa-state sub"><b>Submitted for IQA review</b> — ${fmtD(s.at)}${s.by ? ' by ' + lpmEsc(s.by) : ''} · ${s.pages || '?'} pages</div>`;
+  if (r) {
+    const cls = r.outcome === 'Accepted' ? 'ok' : r.outcome === 'Returned to instructor' ? 'ret' : 'act';
+    h += `<div class="iqa-state ${cls}"><b>IQA: ${lpmEsc(r.outcome)}</b> — ${lpmEsc(r.iqa_name)}, ${fmtD(r.review_date)}${r.notes ? `<div class="iqa-notes">${lpmEsc(r.notes)}</div>` : ''}</div>`;
+  } else {
+    h += `<div class="iqa-state wait">Awaiting IQA review</div>`;
+  }
+  return h;
+}
+
+// ---------- Admin / IQA: open the submitted pack ----------
+async function iqaOpenPack(courseId, btn) {
+  const c = lpmLoadCourses().find(x => x.id === courseId);
+  if (!c || !c.submission || !c.submission.path) return;
+  const old = btn.textContent; btn.textContent = 'Opening…'; btn.disabled = true;
+  try {
+    const res = await cloudFetch('/storage/v1/object/authenticated/course-files/' + c.submission.path, { json:false });
+    const url = URL.createObjectURL(await res.blob());
+    const a = document.createElement('a');
+    a.href = url; a.target = '_blank'; a.className = btn.className; a.textContent = 'Open submitted pack'; a.style.textDecoration = 'none';
+    a.download = 'Course_Pack_' + (c.courseName || 'course').replace(/[^A-Za-z0-9]+/g, '_') + '_' + (c.startDate || '') + '.pdf';
+    btn.replaceWith(a);
+    window.open(url, '_blank');
+  } catch (e) { btn.textContent = old; btn.disabled = false; alert('Could not open the submitted pack: ' + (e.message || e)); }
+}
+
+// ---------- The IQA tab (admin / IQA only) ----------
+function lpmRenderIqa() {
+  const el = document.getElementById('lpmPanel-iqa');
+  if (!el) return;
+  const c = lpmCourse, s = c.submission, r = iqaFor(c.id) || {};
+  const outcome = r.outcome || '';
+  el.innerHTML = `<div class="sc-h2" style="margin-top:0;">IQA review</div>
+    ${s ? `<div class="iqa-state sub"><b>Submitted</b> ${fmtD(s.at)}${s.by ? ' by ' + lpmEsc(s.by) : ''} · ${s.pages || '?'} pages
+        <div style="margin-top:8px;"><button class="rn-nav-btn primary" onclick="iqaOpenPack('${c.id}', this)">Open submitted pack</button></div></div>`
+        : `<div class="sc-note">This course pack hasn't been submitted yet. You can still review the course using the other tabs.</div>`}
+    <div class="lpm-field-row" style="margin-top:14px;">
+      <div class="lpm-field rn-learner-field"><label>IQA</label>
+        <select id="iqaName" class="rn-name-select">
+          <option value="">— Select IQA —</option>
+          ${IQA_NAMES.map(n => `<option ${n === r.iqa_name ? 'selected' : ''}>${n}</option>`).join('')}
+        </select></div>
+      <div class="lpm-field rn-learner-field"><label>Date</label>
+        <input id="iqaDate" type="date" value="${r.review_date || isoLocal()}"></div>
+    </div>
+    <div class="rn-learner-field" style="margin-top:10px;"><label>Outcome</label>
+      <div class="lpm-res-pick">${IQA_OUTCOMES.map(o => `<button class="lpm-res-btn ${o === outcome ? 'sel' : ''}" data-v="${o}" onclick="lpmPickRes(this)">${o}</button>`).join('')}</div></div>
+    <div class="rn-learner-field" style="margin-top:10px;"><label>Comments and actions for the instructor</label>
+      <textarea id="iqaNotes" rows="4" style="width:100%;">${lpmEsc(r.notes || '')}</textarea></div>
+    <div style="display:flex;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap;">
+      <button class="rn-nav-btn primary" onclick="iqaSave()">Save IQA review</button>
+      <span id="iqaMsg" style="font-size:0.85rem;"></span>
+    </div>
+    ${r.updated_at ? `<p class="sc-p" style="font-size:0.75rem;color:#6B7A94;margin-top:10px;">Last saved ${fmtD(r.updated_at)} ${new Date(r.updated_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</p>` : ''}`;
+}
+async function iqaSave() {
+  const m = document.getElementById('iqaMsg');
+  const say = (t, err) => { m.style.color = err ? '#C74444' : '#0F6E56'; m.textContent = t; };
+  const name = document.getElementById('iqaName').value, date = document.getElementById('iqaDate').value;
+  const sel = document.querySelector('#lpmPanel-iqa .lpm-res-btn.sel'), outcome = sel ? sel.dataset.v : '';
+  const notes = document.getElementById('iqaNotes').value.trim();
+  if (!name) return say('Select the IQA.', true);
+  if (!date) return say('Enter the review date.', true);
+  if (!outcome) return say('Choose an outcome.', true);
+  if (outcome !== 'Accepted' && !notes) return say('Add comments so the instructor knows what to do.', true);
+  const row = { course_id: lpmCourse.id, iqa_name: name, review_date: date, outcome, notes, reviewer: cloudMe(), updated_at: new Date().toISOString() };
+  say('Saving…');
+  try {
+    await cloudRest('iqa_reviews?on_conflict=course_id', 'POST', [row], 'resolution=merge-duplicates,return=minimal');
+    const all = iqaReviews(); all[lpmCourse.id] = row; iqaSaveLocal(all);
+    lpmRenderIqa();
+    setTimeout(() => { const m2 = document.getElementById('iqaMsg'); if (m2) { m2.style.color = '#0F6E56'; m2.textContent = 'IQA review saved.'; } }, 30);
+  } catch (e) { say('Could not save: ' + (e.message || e), true); }
 }
 </script>
 </body>
