@@ -10238,7 +10238,7 @@ async function cloudForgot() {
   const email = document.getElementById('clEmail').value.trim();
   const m = document.getElementById('clMsg');
   if (!email) { m.textContent = 'Enter your email first, then tap Forgotten password.'; return; }
-  try { await cloudAuth('recover', { email }); m.textContent = 'If that account exists, a reset link has been emailed.'; }
+  try { await cloudAuth('recover?redirect_to=' + encodeURIComponent(location.origin + location.pathname), { email }); m.textContent = 'If that account exists, a reset link has been emailed.'; }
   catch (e) { m.textContent = 'Could not send the reset email.'; }
 }
 
@@ -10427,9 +10427,65 @@ async function cloudAfterLogin() {
   try { lpmRenderCourseList(); } catch (e) {}
 }
 
+// ---------- Invite and password-reset links ----------
+// Supabase emails link back to the app with the session in the address, e.g.
+//   #access_token=…&refresh_token=…&expires_in=3600&type=invite   (or type=recovery)
+async function cloudHandleEmailLink() {
+  const h = new URLSearchParams((location.hash || '').replace(/^#/, ''));
+  if (h.get('error')) {
+    history.replaceState(null, '', location.pathname + location.search);
+    cloudShowLogin(h.get('error_code') === 'otp_expired'
+      ? 'That email link has expired. Ask your administrator to send a new invite, or use "Forgotten password".'
+      : 'That email link could not be used: ' + (h.get('error_description') || h.get('error')).replace(/\+/g, ' '));
+    return true;
+  }
+  const at = h.get('access_token'), type = h.get('type');
+  if (!at) return false;
+  history.replaceState(null, '', location.pathname + location.search); // remove tokens from the address bar
+  try {
+    const res = await fetch(CLOUD.url + '/auth/v1/user', { headers: { apikey: CLOUD.key, Authorization: 'Bearer ' + at } });
+    const user = await res.json();
+    if (!res.ok) throw new Error(user.msg || 'Link not valid');
+    cloudSaveSession({ access_token: at, refresh_token: h.get('refresh_token'), expires_in: Number(h.get('expires_in')) || 3600, user });
+  } catch (e) { cloudShowLogin('That email link could not be used. Ask for a new invite, or use "Forgotten password".'); return true; }
+  if (type === 'invite' || type === 'recovery' || type === 'signup') { cloudShowSetPassword(type); return true; }
+  return false;
+}
+function cloudShowSetPassword(type) {
+  let ov = document.getElementById('cloudLogin');
+  if (!ov) { ov = document.createElement('div'); ov.id = 'cloudLogin'; document.body.appendChild(ov); }
+  ov.innerHTML = `<div class="cl-box">
+      <div class="cl-brand">${type === 'recovery' ? 'Reset your password' : 'Welcome — create your password'}</div>
+      <div class="cl-sub">${lpmEsc((cloud.session.user && cloud.session.user.email) || '')}</div>
+      <label>New password (at least 10 characters)</label><input id="clNew1" type="password" autocomplete="new-password">
+      <label>Confirm password</label><input id="clNew2" type="password" autocomplete="new-password" onkeydown="if(event.key==='Enter')cloudSetPassword()">
+      <button class="rn-nav-btn primary" style="width:100%;margin-top:14px;" onclick="cloudSetPassword()">Save password and continue</button>
+      <div id="clMsg" class="cl-msg"></div>
+    </div>`;
+  setTimeout(() => { const e = document.getElementById('clNew1'); if (e) e.focus(); }, 50);
+}
+async function cloudSetPassword() {
+  const a = document.getElementById('clNew1').value, b = document.getElementById('clNew2').value;
+  const m = document.getElementById('clMsg');
+  if (a.length < 10) { m.textContent = 'Use at least 10 characters.'; return; }
+  if (a !== b) { m.textContent = 'The two passwords don\'t match.'; return; }
+  m.style.color = '#6B7A94'; m.textContent = 'Saving…';
+  try {
+    await cloudFetch('/auth/v1/user', { method:'PUT', body: JSON.stringify({ password: a }) });
+    await cloudLoadProfile();
+    document.getElementById('cloudLogin').remove();
+    await cloudAfterLogin();
+  } catch (e) {
+    m.style.color = '#C74444';
+    let msg = e.message; try { const j = JSON.parse(e.message); msg = j.msg || j.message || msg; } catch (x) {}
+    m.textContent = 'Could not save the password: ' + msg;
+  }
+}
+
 // ---------- Start-up ----------
 async function cloudInit() {
   if (!CLOUD_ON) return;
+  if (await cloudHandleEmailLink()) return;
   try { cloud.session = JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY) || 'null'); } catch (e) {}
   if (!cloud.session) { cloudShowLogin(); return; }
   try { await cloudLoadProfile(); } catch (e) {
