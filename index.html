@@ -466,18 +466,42 @@ function fmtD(v) {
   .app-view.active { display:flex; flex-direction:column; min-height:calc(100vh - 160px); }
   .hub { max-width:720px; margin:0 auto; padding:32px 20px 48px; width:100%; }
   .hub-eyebrow { font-family:'Public Sans',sans-serif; font-size:0.85rem; font-weight:500; color:#6B7A94; margin-bottom:6px; }
-  .hub-h { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.9rem;
+  .hub-h { font-family:'Public Sans',sans-serif; font-weight:600; font-size:1.55rem;
            letter-spacing:0.04em; color:#0D1B4C; margin-bottom:4px; }
   .hub-p { font-size:0.9rem; color:#6B7A94; margin-bottom:26px; }
-  .hub-tiles { display:grid; grid-template-rows:repeat(6, 1fr); gap:12px; margin-bottom:12px; }
+  .hub-tiles { display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
+  .lpm-res-pick { display:flex; gap:8px; flex-wrap:wrap; }
+  .lpm-res-btn { flex:1; min-width:110px; border:1px solid #D8DEE8; background:#fff; border-radius:8px; padding:12px; font-weight:600; color:#0D1B4C; cursor:pointer; }
+  .lpm-res-btn.sel { border-color:#2B5BD7; background:#EAF1FD; }
+  .lpm-pr { width:100%; border:0; border-top:1px solid #E6EAF0; background:#FAFBFD; font-size:0.72rem; padding:6px 2px; color:#8494AC; cursor:pointer; }
+  .lpm-pr.p { background:#DDF1E8; color:#0F6E56; font-weight:700; }
+  .lpm-pr.r { background:#FCEBD2; color:#B06A00; font-weight:700; }
+  .lpm-score.p { background:#DDF1E8; color:#0F6E56; font-weight:700; }
+  .lpm-score.r { background:#FCEBD2; color:#B06A00; font-weight:700; }
+  .lpm-score { width:100%; box-sizing:border-box; border:0; border-top:1px solid #E6EAF0; text-align:center; font-size:0.75rem; padding:5px 2px; color:#0D1B4C; background:#FAFBFD; }
+  .lpm-switch { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:6px; }
+  .lpm-switch .rn-name-select { max-width:360px; flex:1; min-width:200px; }
+  .sk-tick.rn-tick { min-height:44px; border:1px solid #C9D2DE; border-radius:6px; font-size:1.05rem; }
+  .lpm-days { display:flex; flex-direction:column; gap:8px; }
+  .lpm-days-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .lpm-days-name { min-width:120px; font-size:0.85rem; color:#0D1B4C; font-weight:600; }
+  .lpm-day { border:1px solid #D8DEE8; background:#fff; color:#6B7A94; border-radius:6px; padding:6px 10px; font-size:0.78rem; cursor:pointer; }
+  .lpm-day.on { background:#DDF1E8; border-color:#9FD3BC; color:#0F6E56; font-weight:700; }
+  .sc-tile-meta { font-size:0.72rem; color:#8494AC; margin-top:6px; }
+  .sc-meta-strip { display:flex; flex-wrap:wrap; gap:6px 22px; margin:12px 0 4px; padding-top:10px; border-top:1px solid #E6EAF0; }
+  .sc-meta-strip div { font-size:0.82rem; color:#0D1B4C; }
+  .sc-meta-strip span { display:block; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:#8494AC; margin-bottom:2px; }
+  .hub-group { font-family:'Public Sans',sans-serif; font-size:0.72rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#8494AC; margin:20px 0 8px; }
   .hub-tile { display:flex; align-items:center; gap:16px; padding:18px 20px;
               border:1px solid #D8DEE8; background:#FFFFFF; cursor:pointer;
-              text-align:left; width:100%; box-sizing:border-box; transition:all 0.18s; }
+              text-align:left; width:100%; box-sizing:border-box; transition:all 0.18s;
+              min-height:78px; }
+  .hub-tile .hub-sub { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
   .hub-tile:hover { background:#F7F9FC; border-color:#2B5BD7; }
   .hub-tile.primary { border:1px solid #D8DEE8; }
   .hub-accent { width:4px; align-self:stretch; flex-shrink:0; }
   .hub-emoji { font-size:1.6rem; line-height:1; flex-shrink:0; }
-  .hub-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.1rem;
+  .hub-title { font-family:'Public Sans',sans-serif; font-weight:600; font-size:1rem; letter-spacing:0;
                letter-spacing:0.05em; color:#0D1B4C; line-height:1.25;
                overflow-wrap:break-word; word-break:break-word; }
   .hub-sub { font-size:0.8rem; color:#6B7A94; margin-top:3px; line-height:1.4; }
@@ -486,7 +510,9 @@ function fmtD(v) {
                padding:4px 10px; border-radius:4px; flex-shrink:0; }
 
   @media (max-width:480px) {
-    .hub-tile { padding:14px 14px; gap:12px; }
+    .hub-tile { padding:14px 14px; gap:12px; min-height:74px; }
+    .hub-tile .hub-sub { -webkit-line-clamp:2; min-height:2.03rem; }
+    .hub-title { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .hub-emoji { font-size:1.3rem; }
     .hub-title { font-size:0.86rem; letter-spacing:0.02em; }
     .hub-sub { font-size:0.72rem; }
@@ -756,7 +782,7 @@ function fmtD(v) {
   .cpd-detail { font-size:0.75rem; color:#6B7A94; margin-top:2px; }
   .cpd-src { font-size:0.72rem; color:#6B7A94; white-space:nowrap; }
   .cpd-tiles { display:flex; flex-direction:column; gap:12px; margin:18px 0; max-width:640px; }
-  .cpd-tile { display:flex; align-items:center; gap:16px; padding:18px 20px; border:1px solid #D8DEE8; border-radius:12px; background:#fff; cursor:pointer; font:inherit; text-align:left; border-left:4px solid #0F6E56; }
+  .cpd-tile { display:flex; align-items:center; gap:16px; padding:18px 20px; border:1px solid #D8DEE8; border-radius:8px; background:#fff; cursor:pointer; font:inherit; text-align:left; border-left:4px solid #0F6E56; }
   .cpd-tile.learn { border-left-color:#6B3FA0; }
   .cpd-tile-emoji { font-size:1.8rem; }
   .cpd-tile-body { flex:1; min-width:0; }
@@ -779,7 +805,7 @@ function fmtD(v) {
   .fb-count-num { font-family:'Public Sans',sans-serif; font-size:2.6rem; font-weight:800; color:#0D1B4C; }
   .fb-count-num.done { color:#0F6E56; }
   .fb-count-label { color:#6B7A94; font-size:0.9rem; }
-  .fb-qr-card { border:1px solid #D8DEE8; border-radius:12px; padding:18px; background:#fff; text-align:center; max-width:280px; margin-top:10px; }
+  .fb-qr-card { border:1px solid #D8DEE8; border-radius:8px; padding:18px; background:#fff; text-align:center; max-width:280px; margin-top:10px; }
   .fb-qr-title { font-family:'Public Sans',sans-serif; font-weight:700; color:#0D1B4C; margin-bottom:10px; }
   .fb-qr { width:190px; height:190px; }
   .fb-qr-sub { font-size:0.72rem; color:#8494AC; margin-top:8px; }
@@ -906,7 +932,7 @@ function fmtD(v) {
   }
 
 
-  /* ---- Learner Matrix ---- */
+  /* ---- Course Matrix ---- */
   .lpm-view { display:none; }
   .lpm-view.active { display:block; }
 
@@ -999,7 +1025,7 @@ window.addEventListener('load', function () {
       <span class="dot"></span>STANDBY
     </div>
     <button class="back-hub" id="backHub" onclick="showView('hub')">&larr; Menu</button>
-    <a href="mailto:info@scenesounds.app" class="header-contact" style="background:none;border:1px solid;padding:6px 14px;border-radius:6px;font-family:'Public Sans',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;flex-shrink:0;transition:all 0.2s;">Contact</a>
+    <a href="mailto:info@scenesounds.app?subject=Support%20ticket%20%E2%80%94%20Digital%20Training%20Centre&body=Describe%20the%20problem%3A%0A%0AWhich%20screen%3A%0A%0ACourse%20(if%20relevant)%3A%0A" class="header-contact" style="background:none;border:1px solid;padding:6px 14px;border-radius:6px;font-family:'Public Sans',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;flex-shrink:0;transition:all 0.2s;">Create ticket</a>
   </div>
 </header>
 
@@ -1010,67 +1036,63 @@ window.addEventListener('load', function () {
   <div class="hub">
     <div class="hub-eyebrow">Babcock International</div>
     <div class="hub-h">Digital Training Centre</div>
-    <div class="hub-p" style="margin-bottom:6px;">Interactive emergency care practical scenario and training for professional clinical educators and instructors.</div>
-    <div class="hub-p">Choose how you want to run this session.</div>
+    <div class="hub-p">Your scenarios, sounds and learner records in one place.</div>
 
+    <div class="hub-group">Training</div>
     <div class="hub-tiles">
     <button class="hub-tile" onclick="showView('lpm');lpmShowPick();">
       <div class="hub-accent" style="background:#4A6B52;"></div>
-      <span class="hub-emoji">📋</span>
       <div style="flex:1;min-width:0;">
-        <div class="hub-title">LEARNER MATRIX</div>
-        <div class="hub-sub">Course details, learner names, live competency record</div>
+        <div class="hub-title">Course Matrix</div>
+        <div class="hub-sub" id="hubLpmSub">Course records, skills stations, exams and course packs</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
 
     <button class="hub-tile" onclick="showView('cards')">
       <div class="hub-accent" style="background:#0E7C86;"></div>
-      <span class="hub-emoji">🗂️</span>
       <div style="flex:1;min-width:0;">
-        <div class="hub-title">SCENARIO CARDS</div>
-        <div class="hub-sub">Scenario briefs and patient cards</div>
-      </div>
-      <span class="hub-chev">&rsaquo;</span>
-    </button>
-
-    <button class="hub-tile" onclick="showView('sounds')">
-      <div class="hub-accent" style="background:#2B5BD7;"></div>
-      <span class="hub-emoji">🎛️</span>
-      <div style="flex:1;min-width:0;">
-        <div class="hub-title">SOUNDBOARD</div>
-        <div class="hub-sub">68 sounds across 4 categories, live mixer</div>
+        <div class="hub-title">Scenario Cards</div>
+        <div class="hub-sub" id="hubCardsSub">Briefs, role-player cards and assessment criteria</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
 
     <button class="hub-tile primary" onclick="showView('run');rnRenderPick();">
       <div class="hub-accent" style="background:#2B5BD7;"></div>
-      <span class="hub-emoji">▶️</span>
       <div style="flex:1;min-width:0;">
-        <div class="hub-title">RUN A SCENARIO</div>
-        <div class="hub-sub">Cards and sound together</div>
+        <div class="hub-title">Run a Scenario</div>
+        <div class="hub-sub">Brief, safety, roles, sound and assessment in one flow</div>
+      </div>
+      <span class="hub-chev">&rsaquo;</span>
+    </button>
+    </div>
+
+    <div class="hub-group">Tools</div>
+    <div class="hub-tiles">
+    <button class="hub-tile" onclick="showView('sounds')">
+      <div class="hub-accent" style="background:#2B5BD7;"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="hub-title">Soundboard</div>
+        <div class="hub-sub" id="hubSoundSub">68 sound effects · 4 categories · live mixer</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
 
     <button class="hub-tile" onclick="showView('cpd');cpdOpen();">
       <div class="hub-accent" style="background:#0F6E56;"></div>
-      <span class="hub-emoji">📘</span>
       <div style="flex:1;min-width:0;">
-        <div class="hub-title">INSTRUCTOR CPD LOG</div>
-        <div class="hub-sub">Teaching, assessing and updates — built from your courses</div>
+        <div class="hub-title">CPD Log</div>
+        <div class="hub-sub" id="hubCpdSub">Teaching and assessing hours, built from your courses</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
 
     <button class="hub-tile kc-tile" onclick="showView('knowledge')">
       <div class="hub-accent" style="background:#6B3FA0;"></div>
-      <span class="hub-emoji">🧠</span>
       <div style="flex:1;min-width:0;">
-        <div class="hub-title">KNOWLEDGE CENTRE <span class="kc-badge">Coming soon</span></div>
-        <div class="hub-sub">Interactive pop quizzes</div>
-        <div class="kc-bar"><div class="kc-bar-fill"></div></div>
+        <div class="hub-title">Knowledge Centre <span class="kc-badge">In development</span></div>
+        <div class="hub-sub">Pop quizzes for learners — not yet available</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
@@ -1195,24 +1217,24 @@ window.addEventListener('load', function () {
 
   <div id="scenario-grid-mil" style="display:none;"></div>
 
-  <div class="section-label">💾 My Saved Scenarios</div>
+  <div class="section-label">My saved scenarios</div>
   <div id="scenario-grid-custom" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
-    <div id="no-custom-msg" style="color:var(--muted);font-size:0.8rem;padding:12px 4px;letter-spacing:0.04em;">No saved scenarios yet — build one below.</div>
+    <div id="no-custom-msg" style="color:var(--muted);font-size:0.8rem;padding:12px 4px;letter-spacing:0.04em;">You haven't saved any scenarios on this device.</div>
   </div>
 
   <!-- Builder — Pro only -->
-  <div id="scenario-builder-locked" hidden style="display:none;background:var(--surface);border:1px solid rgba(92,107,138,0.2);border-radius:14px;padding:28px 20px;margin-bottom:32px;text-align:center;">
+  <div id="scenario-builder-locked" hidden style="display:none;background:var(--surface);border:1px solid rgba(92,107,138,0.2);border-radius:8px;padding:28px 20px;margin-bottom:32px;text-align:center;">
     <div style="font-size:2rem;margin-bottom:12px;">🔒</div>
     <div style="font-family:'Public Sans',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.08em;color:#5C6B8A;margin-bottom:8px;">MAKE YOUR OWN</div>
-    <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:20px;">Build and save your own custom scenarios.<br>Available on Pro.</p>
-    <button onclick="showPricingModal()" style="background:var(--fire);color:#FFFFFF;border:none;border-radius:7px;padding:11px 28px;font-family:'Public Sans',sans-serif;font-weight:900;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">⚡ Try Pro — £3.99/mo</button>
+    <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:20px;">Build and save your own scenarios.</p>
+    
   </div>
 
   <!-- Builder — shown to Pro users -->
   <div id="scenario-builder" style="
     background:var(--surface);
     border:1px solid #5C6B8A44;
-    border-radius:14px;
+    border-radius:8px;
     padding:20px;
     margin-bottom:32px;
   ">
@@ -1274,7 +1296,7 @@ window.addEventListener('load', function () {
     <div class="hub" style="padding-top:32px;">
       <div class="hub-eyebrow">Babcock International</div>
       <div class="hub-h">Scenario cards</div>
-      <div class="hub-p">Select a scenario to view the brief, role-player cards and assessment checklist.</div>
+      <div class="hub-p">Brief, role-player cards, safety and assessment criteria.</div>
 
       <div class="sc-grid-tiles" id="scGridTiles"></div>
     </div>
@@ -1289,6 +1311,7 @@ window.addEventListener('load', function () {
       <div class="sc-detail-head">
         <div class="sc-detail-title" id="scDetailTitle">Nightclub Chest Pain</div>
         <div class="sc-detail-sub" id="scDetailSub">Suspected cocaine-associated acute coronary syndrome</div>
+        <div class="sc-meta-strip" id="scDetailMeta"></div>
       </div>
 
       <div class="sc-tabs" id="scTabs">
@@ -1318,7 +1341,7 @@ window.addEventListener('load', function () {
     <div class="rn-wrap">
       <div class="hub-eyebrow">Babcock International</div>
       <div class="hub-h">Run a scenario</div>
-      <div class="hub-p">Pick a scenario to run the brief, safety checks, sound and assessment together.</div>
+      <div class="hub-p">Choose a scenario to run.</div>
       <div id="rnPickList"></div>
     </div>
   </div>
@@ -1332,6 +1355,7 @@ window.addEventListener('load', function () {
         <div class="rn-head-meta" id="rnHeadMeta"></div>
         <div class="rn-head-title" id="rnHeadTitle"></div>
         <div class="rn-head-sub" id="rnHeadSub"></div>
+        <div class="sc-meta-strip" id="rnHeadMeta2"></div>
       </div>
 
       <div class="rn-sound rn-no-print" id="rnSoundTile">
@@ -1372,7 +1396,7 @@ window.addEventListener('load', function () {
 </div>
 
 
-<!-- ============ LEARNER MATRIX ============ -->
+<!-- ============ COURSE MATRIX ============ -->
 <div class="app-view" id="view-cpd">
   <div class="rn-wrap" id="cpdRoot"></div>
 </div>
@@ -1383,12 +1407,8 @@ window.addEventListener('load', function () {
       <div class="kc-icon">🧠</div>
       <div class="hub-eyebrow">Knowledge Centre</div>
       <div class="hub-h" style="margin-bottom:6px;">Interactive pop quizzes</div>
-      <span class="kc-badge kc-badge-lg">Coming soon</span>
-      <p class="sc-p" style="max-width:520px;margin:16px auto 22px;">Quick quizzes that learners join on their phones by scanning a QR code, with live class results and scores saved to the Learner Matrix.</p>
-      <div class="kc-progress">
-        <div class="kc-progress-top"><span>In development</span><span class="kc-pct">68%</span></div>
-        <div class="kc-bar kc-bar-lg"><div class="kc-bar-fill"></div></div>
-      </div>
+      <span class="kc-badge kc-badge-lg">In development</span>
+      <p class="sc-p" style="max-width:520px;margin:16px auto 22px;">Quick quizzes that learners join on their phones by scanning a QR code, with live class results and scores saved to the Course Matrix.</p>
       <div class="kc-steps">
         <div class="kc-step done"><span>✓</span>Concept and design</div>
         <div class="kc-step active"><span class="kc-spin"></span>QR join and live results</div>
@@ -1405,8 +1425,8 @@ window.addEventListener('load', function () {
   <div class="lpm-view active" id="lpm-pick">
     <div class="rn-wrap">
       <div class="hub-eyebrow">Babcock International</div>
-      <div class="hub-h">Learner Matrix</div>
-      <div class="hub-p">Course details, learner names and live competency records — separate from, and in addition to, any scenario sessions run through Run a Scenario.</div>
+      <div class="hub-h">Course Matrix</div>
+      <div class="hub-p">Course records, skills stations, theory exams, feedback and course packs.</div>
 
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;">
         <button class="rn-nav-btn primary" onclick="lpmNewCourse()">+ New course record</button>
@@ -1420,10 +1440,13 @@ window.addEventListener('load', function () {
   <div class="lpm-view" id="lpm-course">
     <div class="rn-wrap">
 
-      <button class="sc-back rn-no-print" onclick="lpmShowPick()">&larr; All courses</button>
+      <div class="lpm-switch rn-no-print">
+        <button class="sc-back" onclick="lpmShowPick()">&larr; All courses</button>
+        <select class="rn-name-select" id="lpmCourseSwitch" onchange="if(this.value){lpmOpenCourse(this.value);lpmShowStep(LPM_STEPS[lpmStepIdx]||'details');}"></select>
+      </div>
 
       <div class="rn-head">
-        <div class="lpm-main-title">Learner Matrix</div>
+        <div class="lpm-main-title">Course Matrix</div>
         <div class="lpm-course-name" id="lpmCourseTitle">Course record</div>
         <div class="lpm-course-date" id="lpmCourseDate"></div>
         <div class="rn-head-sub" id="lpmCourseSub"></div>
@@ -2005,7 +2028,6 @@ function createSoundBtn(sound) {
         <span class="btn-sub">${sound.sub}</span>
         <div style="position:absolute;top:6px;right:6px;font-size:0.7rem;">🔒</div>
       `;
-      btn.onclick = () => showPricingModal();
       return btn;
     }
   }
@@ -2501,7 +2523,7 @@ function renderCustomScenarios() {
       background:var(--surface);
       border:1px solid var(--border);
       border-left:4px solid #5C6B8A;
-      border-radius:12px;padding:16px 18px;
+      border-radius:8px;padding:16px 18px;
       cursor:pointer;transition:all 0.2s;position:relative;
     `;
     card.innerHTML = `
@@ -2641,6 +2663,8 @@ window.addEventListener('load', function () {
 // SCENARIO CARDS — DATA
 // ============================================================
 
+// Operational detail shown on the scenario cards
+const SC_META = {"1": {"duration": "20\u201325 min", "learners": "2", "level": "FREC 3", "equipment": "Defibrillator, oxygen, BVM, monitoring, aspirin", "revised": "2026-09-08"}, "2": {"duration": "20\u201330 min", "learners": "2", "level": "FREC 3", "equipment": "Tourniquet, haemostatic dressings, wound packing, oxygen, AED", "revised": "2026-09-08"}, "3": {"duration": "15\u201320 min", "learners": "2", "level": "FREC 3", "equipment": "Blood glucose meter, glucose gel, oxygen, obs kit", "revised": "2026-09-08"}, "4": {"duration": "20\u201330 min", "learners": "2", "level": "FREC 3", "equipment": "Suction manikin, BVM and oxygen, OPA/NPA, AED", "revised": "2026-09-15"}, "5": {"duration": "25\u201330 min", "learners": "2\u20133", "level": "FREC 3", "equipment": "Resus manikin, BVM and oxygen, suction, AED, blankets", "revised": "2026-09-15"}, "6": {"duration": "25\u201330 min", "learners": "2\u20133", "level": "FREC 3", "equipment": "Pelvic binder, scoop stretcher, head blocks, oxygen, trauma dressings", "revised": "2026-09-19"}};
 const SC_SCENARIOS = [
   // Medical 01–06
   {
@@ -6213,6 +6237,7 @@ function scRenderGrid() {
       <span class="sc-tile-icon">${s.icon}</span>
       <div class="sc-tile-title">${scNumTitle(s)}</div>
       <div class="sc-tile-sub">${s.sub}</div>
+      ${SC_META[s.id] ? `<div class="sc-tile-meta">${SC_META[s.id].duration} · ${SC_META[s.id].learners} learners</div>` : ''}
     </button>
   `).join('') + `</div>`).join('');
 }
@@ -6241,6 +6266,8 @@ function scOpen(id) {
   scCurrentDetail = d;
   document.getElementById('scDetailTitle').textContent = scNum(id) + ' - ' + d.title;
   document.getElementById('scDetailSub').textContent = d.sub;
+  const m = SC_META[id], strip = document.getElementById('scDetailMeta');
+  if (strip) strip.innerHTML = m ? `<div><span>Duration</span>${m.duration}</div><div><span>Learners</span>${m.learners}</div><div><span>Level</span>${m.level}</div><div><span>Equipment</span>${m.equipment}</div><div><span>Last revised</span>${fmtD(m.revised)}</div>` : '';
 
   scRenderBrief(d);
   scRenderRoles(d);
@@ -6765,7 +6792,7 @@ function rnStart(id) {
     notes: '',
     courseId: ''
   };
-  const recent = rnCourses()[0];
+  const recent = rnCourses().find(c => c.id === rnPendingCourseId) || rnCourses()[0];
   if (recent) {
     rnSession.courseId = recent.id;
     const instr = lpmAllInstructors(recent);
@@ -6775,6 +6802,8 @@ function rnStart(id) {
   document.getElementById('rnHeadMeta').style.display = 'none';
   document.getElementById('rnHeadTitle').textContent = scNum(id) + ' - ' + d.title;
   document.getElementById('rnHeadSub').textContent = d.sub;
+  const rm = SC_META[id], rstrip = document.getElementById('rnHeadMeta2');
+  if (rstrip) rstrip.innerHTML = rm ? `<div><span>Duration</span>${rm.duration}</div><div><span>Learners</span>${rm.learners}</div><div><span>Level</span>${rm.level}</div><div><span>Last revised</span>${fmtD(rm.revised)}</div>` : '';
 
   rnBuildSteps();
   rnRenderSound();
@@ -6954,18 +6983,14 @@ function rnSafetyHTML() {
   const d = rnDetail;
   const sf = d.safety || {};
   const list = arr => `<ul class="sc-list">${arr.map(x=>`<li>${x}</li>`).join('')}</ul>`;
-  let html = `<div class="sc-h2" style="margin-top:0;">H&amp;S brief</div>`;
-
-  if (sf.siteSuitability) html += `<div class="rn-safe-h">Site and setup</div>` + list(sf.siteSuitability);
-  if (sf.bloodSystem) html += `<div class="rn-safe-h">Simulated blood system</div>` + list(sf.bloodSystem);
-  if (sf.ppe) html += `<div class="rn-safe-h">PPE</div>` + list(sf.ppe);
-  html += `<div class="rn-safe-h">Live casualty limits</div>` + list(sf.interventionLimits || SC_REFERENCE.safety);
-
-  html += `<details class="rn-collapse">
-      <summary>Exercise commands</summary>
-      <table class="sc-table sc-cmd-table"><tr><th>Command</th><th>Meaning</th></tr>
-      ${SC_REFERENCE.commands.map(c=>`<tr><td>${c[0]}</td><td>${c[1]}</td></tr>`).join('')}</table>
-    </details>`;
+  let html = '';
+  if (sf.siteSuitability) html += `<!--SEC:Site and setup-->` + list(sf.siteSuitability);
+  if (sf.bloodSystem) html += `<!--SEC:Simulated blood system-->` + list(sf.bloodSystem);
+  if (sf.ppe) html += `<!--SEC:PPE-->` + list(sf.ppe);
+  html += `<!--SEC:Live casualty limits-->` + list(sf.interventionLimits || SC_REFERENCE.safety);
+  html += `<!--SEC:Exercise commands--><table class="sc-table sc-cmd-table"><tr><th>Command</th><th>Meaning</th></tr>
+      ${SC_REFERENCE.commands.map(c=>`<tr><td>${c[0]}</td><td>${c[1]}</td></tr>`).join('')}</table>`;
+  html = scAccordion(html, 'H&amp;S brief');
 
   if (d.variants) {
     html += `<div class="sc-h2">Variant running today</div>
@@ -6991,30 +7016,26 @@ function rnToggleHs() {
 }
 function rnBriefHTML() {
   const b = rnDetail.brief;
-  let html = `<div class="sc-h2" style="margin-top:0;">Crew deployment brief</div>
-    <div class="sc-quote">${b.deployment}</div>`;
+  let html = `<!--SEC:Crew deployment brief--><div class="sc-quote">${b.deployment}</div>`;
 
   if (b.findings) {
-    html += `<div class="sc-h2">Starting findings</div>
+    html += `<!--SEC:Starting findings-->
       <table class="sc-table">${b.findings.map(f=>`<tr><td style="width:35%;"><strong>${f[0]}</strong></td><td>${f[1]}</td></tr>`).join('')}</table>`;
   }
 
   if (b.stages) {
     b.stages.forEach(st => {
-      html += `<div class="sc-stage-card">
-        <div class="sc-stage-head">Stage ${st.n} — ${st.name}</div>
-        <div class="sc-stage-body">`;
+      html += `<!--SEC:Stage ${st.n} — ${st.name}-->`;
       if (st.intro) html += `<p class="sc-p">${st.intro}</p>`;
       if (st.findings) {
         html += `<table class="sc-table">${st.findings.map(f=>`<tr><td style="width:35%;"><strong>${f[0]}</strong></td><td>${f[1]}</td></tr>`).join('')}</table>`;
       }
       if (st.actions) html += `<ul class="sc-list">${st.actions.map(x=>`<li>${x}</li>`).join('')}</ul>`;
-      html += `</div></div>`;
     });
   }
-  return html;
+  return scAccordion(html);
 }
-// ---- Course link: pull instructors and learners from the Learner Matrix ----
+// ---- Course link: pull instructors and learners from the Course Matrix ----
 function rnCourses() {
   let list = [];
   try { list = (typeof lpmLoadCourses === 'function') ? lpmLoadCourses() : []; } catch (e) {}
@@ -7129,14 +7150,14 @@ function rnAssessHTML() {
   let html = `<div class="sc-h2" style="margin-top:0;">Session details</div>`;
   if (courses.length) {
     html += `<div class="rn-learner-field" style="margin-bottom:12px;">
-        <label>Course (from Learner Matrix)</label>
+        <label>Course (from Course Matrix)</label>
         <select id="rnCourse" class="rn-name-select" onchange="rnSetCourse(this.value)">
           <option value="">— No course / type names —</option>
           ${courses.map(c => `<option value="${c.id}" ${c.id === rnSession.courseId ? 'selected' : ''}>${rnCourseLabel(c)}</option>`).join('')}
         </select>
       </div>`;
     if (course && !instructors.length && !learnerNames.length) {
-      html += `<div class="sc-note">This course has no instructors or learners added yet. Add them in the Learner Matrix, or type names below.</div>`;
+      html += `<div class="sc-note">This course has no instructors or learners added yet. Add them in the Course Matrix, or type names below.</div>`;
     }
   }
   html += `
@@ -7165,7 +7186,7 @@ function rnAssessHTML() {
     <p id="rnLearnerErr" style="color:#C74444;font-size:0.82rem;min-height:18px;margin-bottom:8px;"></p>`;
 
   html += `<div class="rn-qa-toolbar">
-      <div class="rn-qa-hint">Tap a section to open it. Tap a criterion for the full wording.</div>
+      <div class="rn-qa-hint">Tap a box: ✓ pass → R refer → blank (not observed). Tap a criterion for the full wording.</div>
       <button class="rn-qa-expand" onclick="rnToggleAllQa(this)">Expand all sections</button>
     </div>`;
 
@@ -7218,8 +7239,17 @@ function rnAssessHTML() {
 }
 
 function rnPra(key, li) {
-  const mk = (val,label,cls) => `<button class="sc-pra-btn ${cls}" id="rnP-${li}-${key}-${val}" onclick="rnSetPra('${key}',${li},'${val}')">${label}</button>`;
-  return `<div class="sc-pra-group">${mk('P','Pass','p')}${mk('R','Refer','r')}${mk('N','N/A','n')}</div>`;
+  const v = ((rnSession.learners[li] || {}).results || {})[key] || '';
+  return `<button class="sk-tick rn-tick ${v==='P'?'c':v==='R'?'r':''}" id="rnT-${li}-${key}" onclick="rnCyclePra('${key}',${li})">${v==='P'?'✓':v==='R'?'R':''}</button>`;
+}
+function rnCyclePra(key, li) {
+  const res = rnSession.learners[li].results;
+  const cur = res[key] || '';
+  const next = cur === '' ? 'P' : cur === 'P' ? 'R' : '';
+  res[key] = next || null;
+  const b = document.getElementById(`rnT-${li}-${key}`);
+  if (b) { b.className = 'sk-tick rn-tick' + (next === 'P' ? ' c' : next === 'R' ? ' r' : ''); b.textContent = next === 'P' ? '✓' : next === 'R' ? 'R' : ''; }
+  rnUpdateQaGroupCount(Number(key.split('_')[0]));
 }
 
 function rnUpdateQaGroupCount(gi) {
@@ -7261,35 +7291,38 @@ function rnSetVariant(vid, el) {
   el.classList.add('sel');
 }
 function rnRolesHTML() {
-  let html = `<div class="sc-h2" style="margin-top:0;">Role-player cards</div>
-    <div class="sc-note">Brief each role player before the crew enters.</div>`;
+  let html = '';
   rnDetail.roles.forEach(r => {
-    html += `<div class="sc-role-card">
+    html += `<!--SEC:${r.label}--><div class="sc-role-card">
       <div class="sc-role-head" style="background:${r.colour};">${r.label}</div>
       <div class="sc-role-body">`;
     if (r.you) html += `<div class="sc-role-meta"><div class="sc-role-meta-item"><div class="sc-role-meta-label">You are</div><div class="sc-role-meta-val">${r.you}</div></div></div>`;
     html += `<ul class="sc-list">${r.points.map(x=>`<li>${x}</li>`).join('')}</ul>`;
     html += `</div></div>`;
   });
-  return html;
+  return `<div class="sc-note">Brief each role player before the crew enters.</div>` + scAccordion(html);
 }
 function rnDebriefHTML() {
-  let html = `<div class="sc-h2" style="margin-top:0;">Debrief sequence</div>
-    <p class="sc-p">The sequence is fixed. The feedback within it stays fluid and learner-centred.</p>`;
+  let html = '';
   SC_REFERENCE.debrief.forEach((s, i) => {
     const title = String(s[0]).replace(/^\s*\d+[.)]?\s*/, '');
-    html += `<div class="rn-debrief-step"><div class="rn-debrief-h">${i + 1}. ${title}</div><p class="sc-p">${s[1]}</p></div>`;
+    html += `<!--SEC:${i + 1}. ${title}--><p class="sc-p">${s[1]}</p>`;
   });
   if (rnDetail.brief.debriefPrompts) {
-    html += `<div class="sc-h2">Scenario-specific prompts</div>
-      <ul class="sc-list">${rnDetail.brief.debriefPrompts.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    html += `<!--SEC:Scenario prompts--><ul class="sc-list">${rnDetail.brief.debriefPrompts.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   }
-  return html;
+  return `<p class="sc-p">The sequence is fixed. The feedback within it stays fluid and learner-centred.</p>` + scAccordion(html);
 }
 
 function rnRecordHTML() {
+  const courses = rnCourses();
   return `<div class="sc-h2" style="margin-top:0;">Save this session</div>
-    <p class="sc-p">Saves to this device. If a course is selected on the Assessment step, the session is linked to that course automatically.</p>
+    <div class="rn-learner-field" style="max-width:520px;"><label>Course (required)</label>
+      <select class="rn-name-select" id="rnRecordCourse" onchange="rnSetCourse(this.value)">
+        <option value="">— Choose the course —</option>
+        ${courses.map(c => `<option value="${c.id}" ${c.id === rnSession.courseId ? 'selected' : ''}>${rnCourseLabel(c)}</option>`).join('')}
+      </select></div>
+    ${courses.length ? '' : `<div class="sc-note">No courses yet. Create one in the Course Matrix first.</div>`}
     <div id="rnRecordSummary"></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;" class="rn-no-print">
       <button class="rn-nav-btn primary" onclick="rnSaveSession()">Save to course record</button>
@@ -7388,9 +7421,21 @@ function rnPushToSkills(sess, course) {
   return added;
 }
 
+// Opened from a course: every new session defaults to that course
+let rnPendingCourseId = '';
+function rnRunForCourse(courseId) {
+  rnPendingCourseId = courseId;
+  showView('run'); rnRenderPick();
+}
+
 function rnSaveSession() {
   const named = rnSession.learners.filter(l => l.name);
   const msg = document.getElementById('rnSaveMsg');
+  if (!rnSession.courseId) {
+    msg.style.color = '#C74444';
+    msg.textContent = 'Choose the course this session belongs to before saving.';
+    return;
+  }
   if (!named.length) {
     msg.style.color = '#C74444';
     msg.textContent = 'Add at least one learner name before saving.';
@@ -7449,7 +7494,7 @@ function rnEmailSummary() {
 
 // ---- Course matrix ----
 function rnShowMatrix() {
-  // Scenario sessions now feed into the single Learner Matrix view
+  // Scenario sessions now feed into the single Course Matrix view
   showView('lpm');
   lpmShowFullMatrix();
 }
@@ -7534,7 +7579,7 @@ function rnClearMatrix() {
 </script>
 <script>
 // ============================================================
-// LEARNER MATRIX
+// COURSE MATRIX
 // ============================================================
 
 const LPM_STORE_KEY = 'lpm_courses';
@@ -7671,6 +7716,7 @@ const LPM_COURSE_NAMES = ['FREC 3 - RPL - 3 Day', 'FREC 3 - 5 Day'];
 const LPM_LOCATIONS = ['Beckton', 'Park Royal', 'Croydon', 'Harrow'];
 const LPM_INSTRUCTOR_NAMES = ['Miles Ward', 'Neil Fossett', 'Tom Hales'];
 const LPM_COURSE_LENGTH_DAYS = { 'FREC 3 - RPL - 3 Day': 3, 'FREC 3 - 5 Day': 5 };
+const LPM_HOURS_PER_DAY = 8;
 
 function lpmOpt(list, current) {
   return '<option value="">Select…</option>' + list.map(v =>
@@ -7696,7 +7742,7 @@ function lpmRenderDetails() {
       </div>
     </div>
     <div class="lpm-field">
-      <label>Course date</label>
+      <label>Course start date</label>
       <input type="date" id="lpmStartDateInput" value="${c.startDate||''}" oninput="lpmSetDetail('startDate', this.value); lpmApplyCourseLength();">
     </div>
     <p id="lpmDateNote" style="font-size:0.8rem;color:#6B7A94;margin:-8px 0 16px;">${lpmCourseLengthNote(c)}</p>
@@ -7718,13 +7764,41 @@ function lpmRenderDetails() {
         </div>`).join('')}
       <button class="lpm-more-btn rn-no-print" onclick="lpmAddExtraInstructor()">+ More instructors</button>
     </div>
+    ${lpmInstructorDaysHTML(c)}
   `;
+}
+
+// Which days each instructor taught — drives their CPD hours
+function lpmCourseDays(c) { return LPM_COURSE_LENGTH_DAYS[c.courseName] || 1; }
+function lpmDaysFor(c, name) {
+  const all = Array.from({ length: lpmCourseDays(c) }, (_, i) => i + 1);
+  return (c.instructorDays && c.instructorDays[name]) ? c.instructorDays[name] : all;
+}
+function lpmInstructorDaysHTML(c) {
+  const team = lpmAllInstructors(c);
+  if (!team.length) return '';
+  const n = lpmCourseDays(c);
+  return `<div class="lpm-field"><label>Days taught (each day adds ${LPM_HOURS_PER_DAY} hours to that instructor's CPD log)</label>
+    <div class="lpm-days">${team.map(name => {
+      const on = lpmDaysFor(c, name);
+      return `<div class="lpm-days-row"><span class="lpm-days-name">${lpmEsc(name)}</span>
+        ${Array.from({ length: n }, (_, i) => i + 1).map(d => `<button class="lpm-day ${on.includes(d) ? 'on' : ''}" onclick="lpmToggleDay('${lpmEsc(name).replace(/'/g, "\\'")}', ${d})">Day ${d}</button>`).join('')}
+      </div>`; }).join('')}</div></div>`;
+}
+function lpmToggleDay(name, d) {
+  const c = lpmCourse;
+  c.instructorDays = c.instructorDays || {};
+  const cur = lpmDaysFor(c, name).slice();
+  const i = cur.indexOf(d);
+  if (i >= 0) cur.splice(i, 1); else cur.push(d);
+  c.instructorDays[name] = cur.sort((a, b) => a - b);
+  lpmPersist(); lpmRenderDetails();
 }
 
 function lpmCourseLengthNote(c) {
   const days = LPM_COURSE_LENGTH_DAYS[c.courseName];
   if (!days) return '';
-  if (!c.startDate) return 'This course runs over ' + days + ' consecutive days. Pick a course date to see the full range.';
+  if (!c.startDate) return 'This course runs over ' + days + ' consecutive days. Pick a course start date to see the full range.';
   const start = new Date(c.startDate + 'T00:00:00');
   const end = new Date(start);
   end.setDate(start.getDate() + (days - 1));
@@ -7767,7 +7841,14 @@ function lpmInstructorLine(c) {
   return names.length ? names.join(', ') : '';
 }
 
+function lpmFillCourseSwitch() {
+  const sel = document.getElementById('lpmCourseSwitch');
+  if (!sel || !lpmCourse) return;
+  const list = lpmLoadCourses().slice().sort((a, b) => (b.startDate || '').localeCompare(a.startDate || ''));
+  sel.innerHTML = `<option value="">Select course…</option>` + list.map(c => `<option value="${c.id}" ${c.id === lpmCourse.id ? 'selected' : ''}>${lpmEsc((c.courseName || 'Untitled course') + ' — ' + fmtD(c.startDate))}</option>`).join('');
+}
 function lpmUpdateCourseSub() {
+  lpmFillCourseSwitch();
   const c = lpmCourse;
   const dates = c.startDate ? (c.endDate && c.endDate !== c.startDate ? fmtD(c.startDate) + ' – ' + fmtD(c.endDate) : fmtD(c.startDate)) : 'Date not set';
   document.getElementById('lpmCourseDate').textContent = dates;
@@ -8434,7 +8515,8 @@ function lpmRenderSessions() {
   const linked = allSessions.filter(s => lpmCourse.linkedSessionIds.includes(s.id));
   const unlinked = allSessions.filter(s => !lpmCourse.linkedSessionIds.includes(s.id));
 
-  let html = `<div class="sc-h2" style="margin-top:0;">Scenario sessions run for this course</div>
+  let html = `<button class="rn-nav-btn primary rn-no-print" style="margin-bottom:14px;" onclick="rnRunForCourse('${lpmCourse.id}')">Run a scenario for this course</button>
+    <div class="sc-h2" style="margin-top:0;">Scenario sessions run for this course</div>
     <div class="sc-note">Sessions saved from Run a Scenario with this course selected are added here automatically. You can also add, remove or delete sessions below.</div>`;
 
   if (!linked.length) {
@@ -8939,8 +9021,8 @@ async function qsGenerateRecordSheet() {
     const a = document.getElementById('qsLink');
     a.href = url; a.download = fname; a.style.display = 'inline-flex';
     const referredCount = rows.filter(r => r.overall === 'R').length;
-    say(referredCount > 3 ? 'Record sheet ready. Note: more than 3 learners referred — only the first 3 fit the referral table.' : 'Record sheet ready — open it to print or save.');
-    window.open(url, '_blank');
+    say(referredCount > 3 ? 'Record sheet ready. Note: more than 3 learners referred — only the first 3 fit the referral table.' : 'Record sheet ready — tap "Open / download PDF".');
+    // opened from the button, not automatically
   } catch (e) {
     say('Could not create the record sheet: ' + (e.message || e), true);
   }
@@ -9060,7 +9142,9 @@ async function packAddPhoto(file, kind, title, learnerName) {
 
 const PACK_KINDS = { feedback:'Learner feedback form', anat:'Applied anatomy and physiology exam', mc:'Multiple choice exam', register:'Delegate register', other:'Other paperwork' };
 // ---- Theory exams: a grid of learners against the two papers ----
-const EXAM_KINDS = { anat:'Applied anatomy and physiology', mc:'Multiple choice' };
+const EXAM_KINDS = { anat:'Applied anatomy and physiology', anat_ref:'Applied A&P — referred paper', mc:'Multiple choice', mc_ref:'Multiple choice — referred paper', prac_ref:'Practical — referred assessment' };
+// Grid columns, in the order papers appear in the course pack
+const EXAM_COLS = [['anat','A&P',2],['anat_ref','A&P referred',2],['mc','MCQ',2],['mc_ref','MCQ referred',2],['prac_ref','Practical referred',1]];
 let lpmExamPending = null;
 
 function lpmExamAdd() { document.getElementById('lpmExamInput').click(); }
@@ -9068,46 +9152,99 @@ function lpmExamAdd() { document.getElementById('lpmExamInput').click(); }
 async function lpmExamCapture(input) {
   const files = Array.from(input.files || []); input.value = '';
   if (!files.length) return;
-  const msg = document.getElementById('lpmExamMsg');
+  const msg = { set textContent(t) { const el = document.getElementById('lpmExamMsg'); if (el) el.textContent = t; } };
   for (const f of files) {
     msg.textContent = 'Reading the paper…';
     let guess = { kind:'', learner:'' };
     try { guess = await lpmExamRead(f); } catch (e) {}
     lpmExamPending = { file: f, guess };
+    if (guess.kind && guess.learner) {
+      // Read cleanly — file it straight away; the instructor can still change it from the grid
+      await lpmExamStore(f, guess.kind, guess.learner, guess.score, guess);
+      const nm = ((lpmCourse.learners || []).find(l => l.id === guess.learner) || {}).name || '';
+      msg.textContent = 'Filed: ' + EXAM_KINDS[guess.kind] + (guess.page ? ' page ' + guess.page : '') + ' — ' + nm + (guess.score ? ' (score ' + guess.score.score + '/' + guess.score.total + ')' : '') + '. Tap the cell to change it.';
+      await lpmRenderTheory(true);
+      if (guess.kind.startsWith('anat') && guess.page === 2) {
+        await lpmAskResult(guess.learner, guess.kind, nm);
+      }
+      if (guess.kind.startsWith('mc') && guess.page === 2) {
+        await lpmAskScore(guess.learner, guess.kind, nm);
+      }
+      continue;
+    }
     await lpmExamConfirm();
     await new Promise(r => { lpmExamResolve = r; });
   }
-  msg.textContent = '';
-  lpmRenderTheory();
+  lpmRenderTheory(true);
 }
 let lpmExamResolve = null;
 
 // Quick read of the top of the paper: which exam it is, and whose name is on it
+// Reads a Qualsafe FREC 3 theory paper quickly by looking only where the details are printed.
+//  A&P page 1: top strip  — "Invigilated exam", "Respiratory system", "Learner's name: …", "Answer paper number: ABC1234"
+//  A&P page 2: top strip  — "Burn severity" / "Circulatory system"; learner name sits in the bottom strip ("Learner name: …")
+//  MCQ answer paper: top strip — "Answer Paper ABC1234", "Pass Mark: 28", "Question Paper Number PHC91", "Learner Name …";
+//                    "Page 1 of 2" / "Page 2 of 2" printed at ~85% down; TOTAL SCORE box on page 2
 async function lpmExamRead(file) {
   await lpmLoadTesseract();
   const img = await new Promise((res, rej) => { const i = new Image(); const u = URL.createObjectURL(file); i.onload = () => { URL.revokeObjectURL(u); res(i); }; i.onerror = rej; i.src = u; });
-  const cv = document.createElement('canvas');
-  const sc = Math.min(1.6, 1500 / img.width);
-  cv.width = Math.round(img.width * sc); cv.height = Math.round(img.height * sc * 0.45); // top of the page only
-  const ctx = cv.getContext('2d');
-  ctx.drawImage(img, 0, 0, img.width, img.height * 0.45, 0, 0, cv.width, cv.height);
   if (!window.lpmWorker) window.lpmWorker = await Tesseract.createWorker('eng');
   await window.lpmWorker.setParameters({ tessedit_pageseg_mode: '6' });
-  const r = await window.lpmWorker.recognize(cv);
-  const text = (r.data.text || '').toLowerCase();
-  let kind = '';
-  if (/anatom|physiolog|applied a/.test(text)) kind = 'anat';
-  else if (/multiple\s*choice|mcq/.test(text)) kind = 'mc';
-  // Match any roster name that appears in the text
-  let learner = '';
-  let best = 99;
+  const strip = async (from, to) => {
+    const sc = Math.min(1.4, 1300 / img.width);
+    const cv = document.createElement('canvas');
+    cv.width = Math.round(img.width * sc); cv.height = Math.round(img.height * (to - from) * sc);
+    cv.getContext('2d').drawImage(img, 0, img.height * from, img.width, img.height * (to - from), 0, 0, cv.width, cv.height);
+    const r = await window.lpmWorker.recognize(cv);
+    return r.data.text || '';
+  };
+  const nameFrom = t => {
+    const m = t.match(/learner'?s?\s*name\s*[:;.]?\s*([A-Za-z'\-]+(?:\s+[A-Za-z'\-]+){0,3}?)\s*(?=learner\s*signature|answer\s*paper|\n|$)/i);
+    if (!m) return '';
+    // drop stray short fragments picked up from nearby boxes (e.g. the QR code)
+    return m[1].trim().split(/\s+/).filter((w, i) => i < 2 || /^[A-Z][a-z]{2,}/.test(w)).join(' ');
+  };
+
+  const top = await strip(0, 0.22);
+  const low = top.toLowerCase();
+  let kind = '', page = 0, rawName = nameFrom(top);
+  const paperNo = (top.match(/\b([A-Z]{3}\d{4})\b/) || [])[1] || '';
+  if (/invigilated exam|respiratory system/.test(low)) { kind = 'anat'; page = 1; }
+  else if (/burn severity|circulatory system|name each of the burn/.test(low)) { kind = 'anat'; page = 2; }
+  else if (/pass\s*mark|question\s*paper\s*number|multiple\s*choice|mcq/.test(low)) {
+    kind = 'mc';
+    const pg = (await strip(0.82, 0.885)).match(/page\s*(\d)\s*of\s*2/i);
+    page = pg ? Number(pg[1]) : 0;
+  }
+  const passMark = Number((top.match(/pass\s*mark\s*[:;]?\s*(\d{1,3})/i) || [])[1]) || 0;
+  const questionPaper = (top.match(/\b(PHC\d{1,4})\b/i) || [])[1] || '';
+  if (!rawName && kind !== 'mc') rawName = nameFrom(await strip(0.9, 0.99));
+
+  // Match the written name to the course list, allowing for small reading errors
+  let learner = '', best = 99;
+  const target = rawName.toLowerCase().replace(/[^a-z ]/g, '');
   (lpmCourse.learners || []).forEach(l => {
-    const n = (l.name || '').trim(); if (!n) return;
-    const parts = n.toLowerCase().split(/\s+/);
-    const hit = parts.filter(w => w.length > 2 && text.includes(w)).length;
-    if (hit && parts.length - hit < best) { best = parts.length - hit; learner = l.id; }
+    const n = (l.name || '').trim().toLowerCase().replace(/[^a-z ]/g, '');
+    if (!n) return;
+    let d = target ? lpmEditDistance(n, target) : 99;
+    if (d > 3) { // fall back to surname + first-name words anywhere in the text
+      const parts = n.split(/\s+/), hit = parts.filter(w => w.length > 2 && low.includes(w)).length;
+      d = hit === parts.length ? 2 : hit ? 4 : 99;
+    }
+    if (d < best) { best = d; learner = l.id; }
   });
-  return { kind, learner };
+  if (best > 3) learner = '';
+  if (!learner && paperNo && lpmCourse.paperIndex && lpmCourse.paperIndex[paperNo]) learner = lpmCourse.paperIndex[paperNo];
+
+  // A learner who already has both first-attempt pages is on their referred paper
+  if (kind && learner) {
+    const have = (await packList(lpmCourse.id, kind)).filter(f => f.learnerId === learner);
+    if (have.length >= 2 || (page && have.some(f => f.page === page))) kind = kind + '_ref';
+  }
+  let score = null;
+  const sm = low.match(/(?:score|mark|total)[^0-9]{0,12}(\d{1,3})\s*(?:\/|out of)\s*(\d{1,3})/);
+  if (sm && Number(sm[1]) <= Number(sm[2])) score = { score: Number(sm[1]), total: Number(sm[2]) };
+  return { kind, learner, score, page, paperNo, rawName, passMark, questionPaper };
 }
 
 async function lpmExamConfirm() {
@@ -9116,12 +9253,22 @@ async function lpmExamConfirm() {
   const names = (lpmCourse.learners || []).filter(l => (l.name || '').trim());
   el.innerHTML = `<div class="lpm-confirm">
       <div class="sc-h2" style="margin-top:0;">Which paper is this?</div>
-      ${g.kind || g.learner ? `<div class="sc-note">Read from the paper: ${g.kind ? EXAM_KINDS[g.kind] : 'exam not recognised'}${g.learner ? ' · ' + lpmEsc((names.find(n => n.id === g.learner) || {}).name || '') : ' · name not recognised'}. Check and change if needed.</div>` : `<div class="sc-note">Couldn't read the paper — choose the exam and learner.</div>`}
+      ${g.kind || g.learner ? `<div class="sc-note">Read from the paper: ${g.kind ? EXAM_KINDS[g.kind] : 'exam not recognised'}${g.learner ? ' · ' + lpmEsc((names.find(n => n.id === g.learner) || {}).name || '') : (g.rawName ? ' · name read as "' + lpmEsc(g.rawName) + '" — not on this course' : ' · name not recognised')}. Check and change if needed.</div>` : `<div class="sc-note">Couldn't read the paper — choose the exam and learner.</div>`}
       <div class="rn-learner-field"><label>Exam</label>
         <select id="lpmExamKindSel" class="rn-name-select">
-          <option value="anat" ${g.kind==='anat'?'selected':''}>Applied anatomy and physiology</option>
-          <option value="mc" ${g.kind==='mc'?'selected':''}>Multiple choice</option>
+          ${Object.entries(EXAM_KINDS).map(([k, v]) => `<option value="${k}" ${g.kind===k?'selected':''}>${v}</option>`).join('')}
         </select></div>
+      <div class="rn-learner-field" style="margin-top:10px;" id="lpmExamResultRow"><label>Overall result written on the paper</label>
+        <div class="lpm-res-pick">
+          <button class="lpm-res-btn" data-v="P" onclick="lpmPickRes(this)">Pass</button>
+          <button class="lpm-res-btn" data-v="R" onclick="lpmPickRes(this)">Referral</button>
+          <button class="lpm-res-btn sel" data-v="" onclick="lpmPickRes(this)">Not marked yet</button>
+        </div></div>
+      <div class="rn-learner-field" style="margin-top:10px;" id="lpmExamScoreRow"><label>Score (MCQ only)</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="lpmExamScore" type="number" min="0" style="max-width:90px;" value="${g.score ? g.score.score : ''}"> <span>out of</span>
+          <input id="lpmExamTotal" type="number" min="1" style="max-width:90px;" value="${g.score ? g.score.total : ''}">
+        </div></div>
       <div class="rn-learner-field" style="margin-top:10px;"><label>Learner</label>
         <select id="lpmExamLearnerSel" class="rn-name-select">
           <option value="">— Select learner —</option>
@@ -9133,15 +9280,90 @@ async function lpmExamConfirm() {
       </div>
     </div>`;
 }
+async function lpmExamStore(file, kind, lid, score, extra) {
+  const name = ((lpmCourse.learners || []).find(l => l.id === lid) || {}).name || '';
+  await packAddPhoto(file, kind, EXAM_KINDS[kind], name);
+  const files = await packList(lpmCourse.id, kind);
+  const rec = files[files.length - 1];
+  if (rec) { rec.learnerId = lid; if (extra) { rec.page = extra.page || 0; rec.paperNo = extra.paperNo || ''; } await packAdd(rec); }
+  if (extra && extra.paperNo) {
+    lpmCourse.paperNumbers = lpmCourse.paperNumbers || {}; lpmCourse.paperNumbers[lid] = extra.paperNo;
+    lpmCourse.paperIndex = lpmCourse.paperIndex || {}; lpmCourse.paperIndex[extra.paperNo] = lid;
+  }
+  if (extra && extra.passMark) { lpmCourse.mcPassMark = extra.passMark; }
+  if (extra && (extra.paperNo || extra.passMark)) lpmPersist();
+  if (score && score.total) lpmSetExamScore(lid, kind, score.score, score.total);
+}
+function lpmSetExamScore(lid, kind, score, total) {
+  lpmCourse.examScores = lpmCourse.examScores || {};
+  lpmCourse.examScores[lid] = lpmCourse.examScores[lid] || {};
+  if (score === '' || score == null) delete lpmCourse.examScores[lid][kind];
+  else lpmCourse.examScores[lid][kind] = { score: Number(score), total: Number(total) || Number((lpmCourse.examScores[lid][kind] || {}).total) || 0 };
+  lpmPersist();
+}
+// After MCQ page 2: enter the TOTAL SCORE written on the paper; pass/referral follows from the pass mark
+function lpmAskScore(lid, kind, name) {
+  return new Promise(resolve => {
+    const pm = lpmCourse.mcPassMark || 28;
+    const el = document.getElementById('lpmExamConfirm');
+    el.innerHTML = `<div class="lpm-confirm">
+      <div class="sc-h2" style="margin-top:0;">${lpmEsc(name)} — MCQ total score</div>
+      <p class="sc-p">Enter the total score written on page 2. Pass mark: ${pm} out of 40.</p>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <input id="lpmMcTotal" type="number" inputmode="numeric" min="0" max="40" style="max-width:110px;font-size:1.2rem;padding:10px;"> <span>/ 40</span>
+        <button class="rn-nav-btn primary" onclick="lpmAnswerScore(document.getElementById('lpmMcTotal').value)">Save</button>
+        <button class="rn-nav-btn" onclick="lpmAnswerScore('')">Not marked yet</button>
+      </div></div>`;
+    setTimeout(() => { const i = document.getElementById('lpmMcTotal'); if (i) i.focus(); }, 50);
+    window.lpmAnswerScore = v => {
+      if (v !== '' && !isNaN(v)) lpmSetExamScore(lid, kind, Number(v), 40);
+      el.innerHTML = '';
+      lpmRenderTheory(true).then(resolve);
+    };
+  });
+}
+
+// One-tap prompt for the overall result the instructor has written on page 2
+function lpmAskResult(lid, kind, name) {
+  return new Promise(resolve => {
+    const el = document.getElementById('lpmExamConfirm');
+    el.innerHTML = `<div class="lpm-confirm">
+      <div class="sc-h2" style="margin-top:0;">${lpmEsc(name)} — A&amp;P overall result</div>
+      <p class="sc-p">Enter the result you marked on the paper.</p>
+      <div class="lpm-res-pick">
+        <button class="lpm-res-btn" onclick="lpmAnswerResult('P')">Pass</button>
+        <button class="lpm-res-btn" onclick="lpmAnswerResult('R')">Referral</button>
+        <button class="lpm-res-btn" onclick="lpmAnswerResult('')">Not marked yet</button>
+      </div></div>`;
+    window.lpmAnswerResult = v => {
+      if (v) {
+        lpmCourse.examScores = lpmCourse.examScores || {};
+        lpmCourse.examScores[lid] = lpmCourse.examScores[lid] || {};
+        lpmCourse.examScores[lid][kind] = { result: v };
+        lpmPersist();
+      }
+      el.innerHTML = '';
+      lpmRenderTheory(true).then(resolve);
+    };
+  });
+}
+function lpmPickRes(btn) {
+  btn.parentNode.querySelectorAll('.lpm-res-btn').forEach(b => b.classList.toggle('sel', b === btn));
+}
 async function lpmExamSave() {
+  const resBtn = document.querySelector('.lpm-res-btn.sel');
+  const res = resBtn ? resBtn.dataset.v : '';
   const kind = document.getElementById('lpmExamKindSel').value;
   const lid = document.getElementById('lpmExamLearnerSel').value;
   if (!lid) { alert('Choose which learner this paper belongs to.'); return; }
-  const name = ((lpmCourse.learners || []).find(l => l.id === lid) || {}).name || '';
-  await packAddPhoto(lpmExamPending.file, kind, EXAM_KINDS[kind], name);
-  const files = await packList(lpmCourse.id, kind);
-  const rec = files[files.length - 1];
-  if (rec) { rec.learnerId = lid; await packAdd(rec); }
+  const sc = document.getElementById('lpmExamScore').value, tot = document.getElementById('lpmExamTotal').value;
+  await lpmExamStore(lpmExamPending.file, kind, lid, sc !== '' && tot ? { score: sc, total: tot } : null, lpmExamPending.guess);
+  if (res && kind.startsWith('anat')) {
+    lpmCourse.examScores = lpmCourse.examScores || {};
+    lpmCourse.examScores[lid] = lpmCourse.examScores[lid] || {};
+    lpmCourse.examScores[lid][kind] = { result: res };
+    lpmPersist();
+  }
   lpmExamDone();
 }
 function lpmExamDiscard() { lpmExamDone(); }
@@ -9162,30 +9384,51 @@ async function lpmExamCell(lid, kind) {
   if (confirm('Delete all ' + EXAM_KINDS[kind] + ' pages for ' + name + '?')) { for (const x of files) await packDelete(x.id); lpmRenderTheory(); }
 }
 
-async function lpmRenderTheory() {
+async function lpmRenderTheory(keepMsg) {
   const el = document.getElementById('lpmPanel-theory');
   if (!el) return;
+  const prevMsg = keepMsg && document.getElementById('lpmExamMsg') ? document.getElementById('lpmExamMsg').textContent : '';
   const learners = (lpmCourse.learners || []).filter(l => (l.name || '').trim());
   const files = await packList(lpmCourse.id);
-  const EXAM_PAGES = 2; // each paper is two pages
   const pagesFor = (lid, kind) => files.filter(f => f.kind === kind && f.learnerId === lid).length;
-  const unassigned = files.filter(f => (f.kind === 'anat' || f.kind === 'mc') && !f.learnerId);
-  const done = k => learners.filter(l => pagesFor(l.id, k) >= EXAM_PAGES).length;
-  el.innerHTML = `<div class="sc-note">Photograph both pages of each paper — two pages per exam. The app reads the exam and the learner's name where it can, and ticks them off below. Pages go into the course pack.</div>
+  const sc = (lid, kind) => ((lpmCourse.examScores || {})[lid] || {})[kind];
+  const unassigned = files.filter(f => EXAM_KINDS[f.kind] && !f.learnerId);
+  el.innerHTML = `<div class="sc-note">Photograph both pages of each paper. When the app can read the exam and the learner's name it files the page for you; otherwise it asks. Mark the papers by hand first. The app reads which paper and page each photo is, and the learner's name where it's legible; you tap the learner if it isn't. After page 2 of an A&amp;P paper it asks for the overall result you marked; after page 2 of the MCQ it asks for the total score (pass mark ${lpmCourse.mcPassMark || 28}/40).</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0;" class="rn-no-print">
       <button class="rn-nav-btn primary" onclick="lpmExamAdd()">📷 Add exam paper</button>
-      <span id="lpmExamMsg" style="font-size:0.85rem;color:#6B7A94;"></span>
+      <span id="lpmExamMsg" style="font-size:0.85rem;color:#6B7A94;">${prevMsg}</span>
     </div>
     <div id="lpmExamConfirm"></div>
     ${learners.length ? `<div class="sk-wrap"><table class="sk-table">
       <tr><th class="sk-corner">Learner</th>
-        <th class="sk-name" style="min-width:104px;"><div class="sk-name-txt">Applied A&amp;P</div><div class="sk-name-prog ${done('anat')===learners.length?'p':''}">${done('anat')}/${learners.length} complete</div></th>
-        <th class="sk-name" style="min-width:104px;"><div class="sk-name-txt">Multiple choice</div><div class="sk-name-prog ${done('mc')===learners.length?'p':''}">${done('mc')}/${learners.length} complete</div></th></tr>
+        ${EXAM_COLS.map(([k, label, need]) => { const done = learners.filter(l => pagesFor(l.id, k) >= need).length;
+          return `<th class="sk-name" style="min-width:96px;"><div class="sk-name-txt">${label}</div><div class="sk-name-prog">${k.endsWith('_ref') ? 'if referred' : done + '/' + learners.length}</div></th>`; }).join('')}
+      </tr>
       ${learners.map(l => `<tr><td class="sk-crit">${lpmEsc(l.name)}</td>
-        ${['anat','mc'].map(k => { const n = pagesFor(l.id, k); return `<td class="sk-cell"><button class="sk-tick ${n>=EXAM_PAGES?'c':''}" onclick="lpmExamCell('${l.id}','${k}')">${n>=EXAM_PAGES ? '✓ 2/2' : n + '/' + EXAM_PAGES}</button></td>`; }).join('')}
+        ${EXAM_COLS.map(([k, label, need]) => {
+          const n = pagesFor(l.id, k), s2 = sc(l.id, k);
+          const full = n >= need;
+          return `<td class="sk-cell"><button class="sk-tick ${full ? 'c' : ''}" onclick="lpmExamCell('${l.id}','${k}')">${n ? (full ? '✓ ' : '') + n + '/' + need : (k.endsWith('_ref') ? '' : '0/' + need)}</button>
+            ${k.startsWith('anat') ? `<button class="lpm-pr ${s2 && s2.result ? s2.result.toLowerCase() : ''}" onclick="lpmCycleResult('${l.id}','${k}')">${s2 && s2.result ? (s2.result === 'P' ? 'Pass' : 'Referral') : 'P / R'}</button>`
+              : k !== 'prac_ref' ? `<input class="lpm-score ${s2 && s2.total ? (s2.score >= (lpmCourse.mcPassMark || 28) ? 'p' : 'r') : ''}" type="text" inputmode="numeric" placeholder="score /40" value="${s2 && s2.total ? s2.score + '/' + s2.total : ''}" onchange="lpmScoreInput('${l.id}','${k}', this.value)">` : ''}</td>`;
+        }).join('')}
       </tr>`).join('')}
     </table></div>` : `<p class="sc-p">Add learner names on the Learners step first.</p>`}
-    ${unassigned.length ? `<div class="sc-note" style="border-left-color:#C8960C;">${unassigned.length} page${unassigned.length===1?'':'s'} saved without a learner. Delete and re-take them, or add them again and choose the learner.</div>` : ''}`;
+    ${unassigned.length ? `<div class="sc-note" style="border-left-color:#C8960C;">${unassigned.length} page${unassigned.length===1?'':'s'} saved without a learner.</div>` : ''}`;
+}
+function lpmCycleResult(lid, kind) {
+  lpmCourse.examScores = lpmCourse.examScores || {};
+  const ex = lpmCourse.examScores[lid] = lpmCourse.examScores[lid] || {};
+  const cur = (ex[kind] || {}).result || '';
+  const next = cur === '' ? 'P' : cur === 'P' ? 'R' : '';
+  if (next) ex[kind] = { result: next }; else delete ex[kind];
+  lpmPersist(); lpmRenderTheory(true);
+}
+function lpmScoreInput(lid, kind, v) {
+  const m = String(v).match(/(\d+)\s*(?:\/|of)\s*(\d+)/);
+  if (!v.trim()) lpmSetExamScore(lid, kind, '', 0);
+  else if (m) lpmSetExamScore(lid, kind, m[1], m[2]);
+  else alert('Enter the score as, for example, 34/40.');
 }
 
 // ---- Course pack PDF ----
@@ -9235,8 +9478,20 @@ async function lpmBuildPack(action) {
     line('Instructors: ' + (lpmInstructorLine(lpmCourse) || 'Not set'), font, 11, grey);
     line('Pack created: ' + fmtD(new Date()), font, 11, grey);
     y -= 10;
-    line('Learners', bold, 13);
-    (lpmCourse.learners || []).filter(l => (l.name || '').trim()).forEach((l, i) => line((i + 1) + '. ' + l.name.trim(), font, 11));
+    line('Learners and theory scores', bold, 13);
+    const scoreTxt = (lid, k) => { const x = ((lpmCourse.examScores || {})[lid] || {})[k]; if (!x) return '—'; if (x.result) return x.result === 'P' ? 'Pass' : 'Referral'; return x.total ? x.score + '/' + x.total + ' — ' + (x.score >= (lpmCourse.mcPassMark || 28) ? 'Pass' : 'Referral') : '—'; };
+    cover.drawText('A&P', { x: 300, y, size: 9, font: bold, color: grey });
+    cover.drawText('MCQ', { x: 420, y, size: 9, font: bold, color: grey });
+    y -= 15;
+    (lpmCourse.learners || []).filter(l => (l.name || '').trim()).forEach((l, i) => {
+      const ex = (lpmCourse.examScores || {})[l.id] || {};
+      const ap = ex.anat_ref ? scoreTxt(l.id, 'anat_ref') + ' (ref.)' : scoreTxt(l.id, 'anat');
+      const mc = ex.mc_ref ? scoreTxt(l.id, 'mc_ref') + ' (ref.)' : scoreTxt(l.id, 'mc');
+      cover.drawText((i + 1) + '. ' + l.name.trim(), { x: 50, y, size: 10.5, font, color: ink });
+      cover.drawText(ap, { x: 300, y, size: 10, font, color: ink });
+      cover.drawText(mc, { x: 420, y, size: 10, font, color: ink });
+      y -= 16;
+    });
     y -= 6;
     line('Contents', bold, 13);
     const files = await packList(lpmCourse.id);
@@ -9276,16 +9531,16 @@ async function lpmBuildPack(action) {
     // 4. Theory papers, learner by learner: Applied A&P then multiple choice
     const learners = (lpmCourse.learners || []).filter(l => (l.name || '').trim());
     for (const l of learners) {
-      for (const kind of ['anat','mc']) {
-        const list = files.filter(f => f.kind === kind && f.learnerId === l.id);
+      for (const kind of ['anat','anat_ref','mc','mc_ref','prac_ref']) {
+        const list = files.filter(f => f.kind === kind && f.learnerId === l.id).sort((a, b) => (a.page || 9) - (b.page || 9));
         for (let i = 0; i < list.length; i++) {
-          await drawPhoto(list[i], l.name.trim() + '  ·  ' + PACK_KINDS[kind] + '  ·  page ' + (i + 1) + ' of ' + list.length);
+          await drawPhoto(list[i], l.name.trim() + '  ·  ' + EXAM_KINDS[kind] + '  ·  page ' + (i + 1) + ' of ' + list.length);
         }
       }
     }
     // Any exam pages that were never matched to a learner
-    const orphan = files.filter(f => (f.kind === 'anat' || f.kind === 'mc') && !learners.some(l => l.id === f.learnerId));
-    for (let i = 0; i < orphan.length; i++) await drawPhoto(orphan[i], 'Unassigned  ·  ' + PACK_KINDS[orphan[i].kind] + '  ·  page ' + (i + 1) + ' of ' + orphan.length);
+    const orphan = files.filter(f => EXAM_KINDS[f.kind] && !learners.some(l => l.id === f.learnerId));
+    for (let i = 0; i < orphan.length; i++) await drawPhoto(orphan[i], 'Unassigned  ·  ' + EXAM_KINDS[orphan[i].kind] + '  ·  page ' + (i + 1) + ' of ' + orphan.length);
 
     // 5. Other paperwork
     const other = files.filter(f => f.kind === 'other');
@@ -9573,10 +9828,12 @@ function cpdAuto(who) {
     const team = [c.instructor1, c.instructor2, ...(c.extraInstructors || [])].filter(Boolean);
     if (!team.includes(who)) return;
     const days = LPM_COURSE_LENGTH_DAYS[c.courseName] || 1;
+    const taught = lpmDaysFor(c, who);
+    if (!taught.length) return;
     const learners = (c.learners || []).filter(l => (l.name || '').trim()).length;
-    out.push({ auto:true, date: c.startDate || '', type:'Teaching / delivery', hours: days * 7,
+    out.push({ auto:true, date: c.startDate || '', type:'Teaching / delivery', hours: taught.length * LPM_HOURS_PER_DAY,
       title: (c.courseName || 'Course') + (c.location ? ' — ' + c.location : ''),
-      detail: learners + ' learner' + (learners === 1 ? '' : 's') + (team.length > 1 ? ', co-delivered with ' + team.filter(t => t !== who).join(', ') : '') });
+      detail: (taught.length === days ? 'Full course' : 'Day' + (taught.length > 1 ? 's ' : ' ') + taught.join(', ')) + ' · ' + learners + ' learner' + (learners === 1 ? '' : 's') + (team.length > 1 ? ', co-delivered with ' + team.filter(t => t !== who).join(', ') : '') });
     const assessed = (c.records || []).length + ((c.linkedSessionIds || []).length);
     if (assessed) out.push({ auto:true, date: c.startDate || '', type:'Assessment', hours: Math.max(1, Math.round(days * 1.5)),
       title: 'Practical assessment — ' + (c.courseName || 'course'), detail: assessed + ' assessment record' + (assessed === 1 ? '' : 's') + ' completed' });
