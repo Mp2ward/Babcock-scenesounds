@@ -470,6 +470,17 @@ function fmtD(v) {
            letter-spacing:0.04em; color:#0D1B4C; margin-bottom:4px; }
   .hub-p { font-size:0.9rem; color:#6B7A94; margin-bottom:26px; }
   .hub-tiles { display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
+  .lpm-exam-name { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .lpm-eye { display:inline-flex; align-items:center; gap:4px; border:1px solid #D8DEE8; background:#fff; border-radius:6px; padding:3px 7px; font-size:0.72rem; color:#2B5BD7; cursor:pointer; white-space:nowrap; }
+  .lpm-eye svg { display:block; }
+  .lpm-na { color:#B8C2D0; font-size:0.8rem; }
+  .lpm-prev-ov { position:fixed; inset:0; z-index:10000; background:rgba(13,27,76,0.55); display:flex; align-items:center; justify-content:center; padding:16px; }
+  .lpm-prev-box { background:#fff; border-radius:10px; width:100%; max-width:760px; max-height:88vh; overflow:auto; padding:16px; }
+  .lpm-prev-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; color:#0D1B4C; }
+  .lpm-prev-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+  .lpm-prev-item { border:1px solid #E6EAF0; border-radius:8px; padding:8px; display:flex; flex-direction:column; gap:6px; }
+  .lpm-prev-item img { width:100%; height:200px; object-fit:contain; background:#F2F4F8; border-radius:4px; cursor:zoom-in; }
+  .lpm-prev-cap { font-size:0.72rem; color:#6B7A94; }
   .lpm-res-pick { display:flex; gap:8px; flex-wrap:wrap; }
   .lpm-res-btn { flex:1; min-width:110px; border:1px solid #D8DEE8; background:#fff; border-radius:8px; padding:12px; font-weight:600; color:#0D1B4C; cursor:pointer; }
   .lpm-res-btn.sel { border-color:#2B5BD7; background:#EAF1FD; }
@@ -9373,15 +9384,33 @@ function lpmExamDone() {
   if (lpmExamResolve) { const r = lpmExamResolve; lpmExamResolve = null; r(); }
 }
 
-async function lpmExamCell(lid, kind) {
-  const files = (await packList(lpmCourse.id, kind)).filter(f => f.learnerId === lid);
-  const name = ((lpmCourse.learners || []).find(l => l.id === lid) || {}).name || 'this learner';
-  if (!files.length) { alert('No ' + EXAM_KINDS[kind] + ' pages saved yet for ' + name + '. Use "Add exam paper" to photograph both pages.'); return; }
-  if (confirm(files.length + ' page' + (files.length === 1 ? '' : 's') + ' saved for ' + name + '. Open them? Choose Cancel to delete them instead.')) {
-    files.forEach(f => window.open(f.dataUrl, '_blank'));
-    return;
-  }
-  if (confirm('Delete all ' + EXAM_KINDS[kind] + ' pages for ' + name + '?')) { for (const x of files) await packDelete(x.id); lpmRenderTheory(); }
+async function lpmExamCell(lid, kind) { lpmExamPreview(lid, kind); }
+
+// Quick preview of everything uploaded for a learner (optionally one paper), with open and delete
+async function lpmExamPreview(lid, only) {
+  const l = (lpmCourse.learners || []).find(x => x.id === lid) || {};
+  const files = (await packList(lpmCourse.id)).filter(f => f.learnerId === lid && EXAM_KINDS[f.kind] && (!only || f.kind === only))
+    .sort((a, b) => Object.keys(EXAM_KINDS).indexOf(a.kind) - Object.keys(EXAM_KINDS).indexOf(b.kind) || (a.page || 9) - (b.page || 9));
+  const ov = document.createElement('div');
+  ov.className = 'lpm-prev-ov';
+  ov.onclick = e => { if (e.target === ov) ov.remove(); };
+  ov.innerHTML = `<div class="lpm-prev-box">
+      <div class="lpm-prev-head"><strong>${lpmEsc(l.name || '')}</strong>${only ? ' — ' + EXAM_KINDS[only] : ''}
+        <button class="rn-nav-btn" onclick="this.closest('.lpm-prev-ov').remove()">Close</button></div>
+      ${files.length ? `<div class="lpm-prev-grid">${files.map(f => `<div class="lpm-prev-item">
+          <img src="${f.dataUrl}" alt="" onclick="window.open('${f.dataUrl}','_blank')">
+          <div class="lpm-prev-cap">${EXAM_KINDS[f.kind]}${f.page ? ' · page ' + f.page : ''}${f.paperNo ? ' · ' + f.paperNo : ''}</div>
+          <button class="lpm-learner-remove" onclick="lpmPreviewDelete('${f.id}','${lid}','${only || ''}', this)">Delete</button>
+        </div>`).join('')}</div>` : `<p class="sc-p">Nothing uploaded yet${only ? ' for this paper' : ''}. Use "Add exam paper" to photograph it.</p>`}
+    </div>`;
+  document.body.appendChild(ov);
+}
+async function lpmPreviewDelete(id, lid, only, btn) {
+  if (!confirm('Delete this page?')) return;
+  await packDelete(id);
+  btn.closest('.lpm-prev-ov').remove();
+  await lpmRenderTheory(true);
+  lpmExamPreview(lid, only || undefined);
 }
 
 async function lpmRenderTheory(keepMsg) {
@@ -9393,6 +9422,16 @@ async function lpmRenderTheory(keepMsg) {
   const pagesFor = (lid, kind) => files.filter(f => f.kind === kind && f.learnerId === lid).length;
   const sc = (lid, kind) => ((lpmCourse.examScores || {})[lid] || {})[kind];
   const unassigned = files.filter(f => EXAM_KINDS[f.kind] && !f.learnerId);
+  const pm = lpmCourse.mcPassMark || 28;
+  const referredIn = (l, k) => {
+    const x = sc(l.id, k.replace('_ref', ''));
+    if (pagesFor(l.id, k) > 0) return true;
+    if (k === 'anat_ref') return !!(x && x.result === 'R');
+    if (k === 'mc_ref') return !!(x && x.total && x.score < pm);
+    if (k === 'prac_ref') { try { const row = qsCollect().find(r => r.name === (l.name || '').trim()); return !!(row && row.overall === 'R'); } catch (e) { return false; } }
+    return false;
+  };
+  const cols = EXAM_COLS.filter(([k]) => !k.endsWith('_ref') || learners.some(l => referredIn(l, k)));
   el.innerHTML = `<div class="sc-note">Photograph both pages of each paper. When the app can read the exam and the learner's name it files the page for you; otherwise it asks. Mark the papers by hand first. The app reads which paper and page each photo is, and the learner's name where it's legible; you tap the learner if it isn't. After page 2 of an A&amp;P paper it asks for the overall result you marked; after page 2 of the MCQ it asks for the total score (pass mark ${lpmCourse.mcPassMark || 28}/40).</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0;" class="rn-no-print">
       <button class="rn-nav-btn primary" onclick="lpmExamAdd()">📷 Add exam paper</button>
@@ -9401,19 +9440,23 @@ async function lpmRenderTheory(keepMsg) {
     <div id="lpmExamConfirm"></div>
     ${learners.length ? `<div class="sk-wrap"><table class="sk-table">
       <tr><th class="sk-corner">Learner</th>
-        ${EXAM_COLS.map(([k, label, need]) => { const done = learners.filter(l => pagesFor(l.id, k) >= need).length;
+        ${cols.map(([k, label, need]) => { const done = learners.filter(l => pagesFor(l.id, k) >= need).length;
           return `<th class="sk-name" style="min-width:96px;"><div class="sk-name-txt">${label}</div><div class="sk-name-prog">${k.endsWith('_ref') ? 'if referred' : done + '/' + learners.length}</div></th>`; }).join('')}
       </tr>
-      ${learners.map(l => `<tr><td class="sk-crit">${lpmEsc(l.name)}</td>
-        ${EXAM_COLS.map(([k, label, need]) => {
+      ${learners.map(l => { const total = files.filter(f => f.learnerId === l.id && EXAM_KINDS[f.kind]).length;
+        return `<tr><td class="sk-crit"><div class="lpm-exam-name"><span>${lpmEsc(l.name)}</span>
+          ${total ? `<button class="lpm-eye" title="Preview uploads" aria-label="Preview uploads" onclick="lpmExamPreview('${l.id}')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span>${total}</span></button>` : ''}</div></td>
+        ${cols.map(([k, label, need]) => {
+          if (k.endsWith('_ref') && !referredIn(l, k)) return `<td class="sk-cell lpm-na">—</td>`;
           const n = pagesFor(l.id, k), s2 = sc(l.id, k);
           const full = n >= need;
           return `<td class="sk-cell"><button class="sk-tick ${full ? 'c' : ''}" onclick="lpmExamCell('${l.id}','${k}')">${n ? (full ? '✓ ' : '') + n + '/' + need : (k.endsWith('_ref') ? '' : '0/' + need)}</button>
             ${k.startsWith('anat') ? `<button class="lpm-pr ${s2 && s2.result ? s2.result.toLowerCase() : ''}" onclick="lpmCycleResult('${l.id}','${k}')">${s2 && s2.result ? (s2.result === 'P' ? 'Pass' : 'Referral') : 'P / R'}</button>`
               : k !== 'prac_ref' ? `<input class="lpm-score ${s2 && s2.total ? (s2.score >= (lpmCourse.mcPassMark || 28) ? 'p' : 'r') : ''}" type="text" inputmode="numeric" placeholder="score /40" value="${s2 && s2.total ? s2.score + '/' + s2.total : ''}" onchange="lpmScoreInput('${l.id}','${k}', this.value)">` : ''}</td>`;
         }).join('')}
-      </tr>`).join('')}
+      </tr>`; }).join('')}
     </table></div>` : `<p class="sc-p">Add learner names on the Learners step first.</p>`}
+    <div id="lpmPreview"></div>
     ${unassigned.length ? `<div class="sc-note" style="border-left-color:#C8960C;">${unassigned.length} page${unassigned.length===1?'':'s'} saved without a learner.</div>` : ''}`;
 }
 function lpmCycleResult(lid, kind) {
