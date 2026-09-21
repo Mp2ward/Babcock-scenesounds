@@ -1096,7 +1096,6 @@ window.addEventListener('load', function () {
       <span class="dot"></span>STANDBY
     </div>
     <button class="back-hub" id="backHub" onclick="showView('hub')">&larr; Menu</button>
-    <a href="mailto:info@sector3group.co.uk" onclick="openTicket(event)" class="header-contact" style="background:none;border:1px solid;padding:6px 14px;border-radius:6px;font-family:'Public Sans',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;flex-shrink:0;transition:all 0.2s;">Create ticket</a>
   </div>
 </header>
 
@@ -2687,8 +2686,9 @@ renderCustomScenarios();
       <a href="/terms.html">Terms</a>
       <a href="/privacy.html">Privacy</a>
       <a href="mailto:info@sector3group.co.uk">Contact</a>
+      <a href="mailto:info@sector3group.co.uk" onclick="openTicket(event)">Create ticket</a>
     </div>
-    <div class="footer-meta">Digital Training Centre is powered by Scene Sounds, a Sector 3 Group Ltd product &nbsp;·&nbsp; Licensed to Babcock International</div>
+    <div class="footer-meta">Digital Training Centre by Sector 3 Group Ltd &nbsp;·&nbsp; Licensed to Babcock International &nbsp;·&nbsp; &copy; 2026</div>
   </div>
 </div>
 
@@ -7732,14 +7732,9 @@ function lpmRenderCourseList() {
   const reviewer = typeof cloudIsReviewer === 'function' && cloudIsReviewer();
   let filterHtml = '';
   if (reviewer) {
-    const owners = [...new Map(list.filter(c => c.owner).map(c => [c.owner, c.ownerName || 'Unnamed instructor'])).entries()];
-    filterHtml = `<div class="rn-learner-field" style="max-width:360px;margin-bottom:12px;"><label>Instructor</label>
-      <select class="rn-name-select" onchange="lpmOwnerFilter=this.value;lpmRenderCourseList()">
-        <option value="">All instructors (${list.length} courses)</option>
-        ${owners.map(([id, n]) => `<option value="${id}" ${id === lpmOwnerFilter ? 'selected' : ''}>${lpmEsc(n)}</option>`).join('')}
-      </select></div>`;
-    if (lpmOwnerFilter) list = list.filter(c => c.owner === lpmOwnerFilter);
-    list = list.slice().sort((a, b) => (a.startDate || '').localeCompare(b.startDate || ''));
+    // Admins search and filter all courses in Course Admin; here they see their own, like any instructor
+    list = list.filter(c => !c.owner || c.owner === cloudMe());
+    filterHtml = `<div class="sc-note" style="margin-bottom:12px;">Showing your own courses. To see every instructor's courses, use <a href="#" onclick="event.preventDefault();admOpenCourses()">Course Admin</a>.</div>`;
   }
   if (!list.length) {
     wrap.innerHTML = filterHtml + `<div class="rn-empty">No course records yet. Start a new one above.</div>`;
