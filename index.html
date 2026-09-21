@@ -470,6 +470,26 @@ function fmtD(v) {
            letter-spacing:0.04em; color:#0D1B4C; margin-bottom:4px; }
   .hub-p { font-size:0.9rem; color:#6B7A94; margin-bottom:26px; }
   .hub-tiles { display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
+  #cloudLogin { position:fixed; inset:0; z-index:20000; background:#0D1B4C; display:flex; align-items:center; justify-content:center; padding:20px; }
+  .cl-box { background:#fff; border-radius:10px; padding:28px 24px; width:100%; max-width:380px; }
+  .cl-brand { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.3rem; color:#0D1B4C; }
+  .cl-sub { font-size:0.82rem; color:#6B7A94; margin:4px 0 18px; }
+  .cl-box label { display:block; font-size:0.8rem; color:#6B7A94; margin:10px 0 4px; }
+  .cl-box input { width:100%; box-sizing:border-box; padding:12px; border:1px solid #D8DEE8; border-radius:8px; font-size:1rem; }
+  .cl-link { background:none; border:0; color:#2B5BD7; font-size:0.82rem; margin-top:10px; cursor:pointer; padding:0; }
+  .cl-msg { font-size:0.85rem; color:#C74444; margin-top:10px; min-height:18px; }
+  #cloudBadge { display:flex; align-items:center; gap:8px; color:#B8CBEC; font-size:0.72rem; margin-left:auto; margin-right:10px; white-space:nowrap; }
+  #cloudBadge .cl-dot { width:8px; height:8px; border-radius:50%; background:#4ADE80; }
+  #cloudBadge .cl-dot.busy { background:#FBBF24; }
+  #cloudBadge .cl-dot.warn { background:#F87171; }
+  #cloudBadge .cl-who { color:#fff; font-weight:600; }
+  #cloudBadge .cl-out { background:none; border:1px solid rgba(255,255,255,0.28); color:#B8CBEC; border-radius:6px; padding:4px 8px; font-size:0.68rem; cursor:pointer; }
+  @media (max-width:820px) { #cloudBadge .cl-st, #cloudBadge .cl-who { display:none; } }
+  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview) input,
+  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview) select,
+  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview) textarea,
+  .lpm-ro #lpm-course .rn-panel:not(#lpmPanel-pack):not(#lpmPanel-overview) button:not(.lpm-eye):not(.sk-tab):not(.lpm-learner-remove) { pointer-events:none; opacity:0.75; }
+  .lpm-ro .sk-tick, .lpm-ro .lpm-ov-tick { pointer-events:none; }
   .lpm-exam-name { display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .lpm-eye { display:inline-flex; align-items:center; gap:4px; border:1px solid #D8DEE8; background:#fff; border-radius:6px; padding:3px 7px; font-size:0.72rem; color:#2B5BD7; cursor:pointer; white-space:nowrap; }
   .lpm-eye svg { display:block; }
@@ -1458,6 +1478,7 @@ window.addEventListener('load', function () {
 
       <div class="rn-head">
         <div class="lpm-main-title">Course Matrix</div>
+        <div id="lpmRoBanner"></div>
         <div class="lpm-course-name" id="lpmCourseTitle">Course record</div>
         <div class="lpm-course-date" id="lpmCourseDate"></div>
         <div class="rn-head-sub" id="lpmCourseSub"></div>
@@ -6744,10 +6765,11 @@ function rnLoadSessions() {
   try { return JSON.parse(localStorage.getItem(RN_STORE_KEY) || '[]'); }
   catch(e) { return []; }
 }
-function rnSaveSessions(list) {
+function rnSaveSessionsRaw(list) {
   try { localStorage.setItem(RN_STORE_KEY, JSON.stringify(list)); return true; }
   catch(e) { return false; }
 }
+function rnSaveSessions(list) { const ok = rnSaveSessionsRaw(list); if (typeof cloudQueue === 'function') cloudQueue(); return ok; }
 
 function rnShowView(name) {
   document.querySelectorAll('.rn-view').forEach(v => v.classList.remove('active'));
@@ -7604,9 +7626,16 @@ function lpmLoadCourses() {
   try { return JSON.parse(localStorage.getItem(LPM_STORE_KEY) || '[]'); }
   catch(e) { return []; }
 }
-function lpmSaveCourses(list) {
+function lpmSaveCoursesRaw(list) {
   try { localStorage.setItem(LPM_STORE_KEY, JSON.stringify(list)); return true; }
   catch(e) { return false; }
+}
+function lpmSaveCourses(list) {
+  if (lpmReadOnlyNow()) return true; // reviewers can look but not change someone else's course
+  const ok = lpmSaveCoursesRaw(list); if (typeof cloudQueue === 'function') cloudQueue(); return ok;
+}
+function lpmReadOnlyNow() {
+  return typeof CLOUD_ON !== 'undefined' && CLOUD_ON && typeof lpmCourse !== 'undefined' && lpmCourse && lpmCourse.owner && lpmCourse.owner !== cloudMe() && document.getElementById('view-lpm') && document.getElementById('view-lpm').classList.contains('active');
 }
 function lpmPersist() {
   const list = lpmLoadCourses();
@@ -7627,18 +7656,31 @@ function lpmShowPick() {
   lpmShowView('pick');
 }
 
+let lpmOwnerFilter = '';
 function lpmRenderCourseList() {
-  const list = lpmLoadCourses();
+  let list = lpmLoadCourses();
   const wrap = document.getElementById('lpmCourseList');
+  const reviewer = typeof cloudIsReviewer === 'function' && cloudIsReviewer();
+  let filterHtml = '';
+  if (reviewer) {
+    const owners = [...new Map(list.filter(c => c.owner).map(c => [c.owner, c.ownerName || 'Unnamed instructor'])).entries()];
+    filterHtml = `<div class="rn-learner-field" style="max-width:360px;margin-bottom:12px;"><label>Instructor</label>
+      <select class="rn-name-select" onchange="lpmOwnerFilter=this.value;lpmRenderCourseList()">
+        <option value="">All instructors (${list.length} courses)</option>
+        ${owners.map(([id, n]) => `<option value="${id}" ${id === lpmOwnerFilter ? 'selected' : ''}>${lpmEsc(n)}</option>`).join('')}
+      </select></div>`;
+    if (lpmOwnerFilter) list = list.filter(c => c.owner === lpmOwnerFilter);
+    list = list.slice().sort((a, b) => (a.startDate || '').localeCompare(b.startDate || ''));
+  }
   if (!list.length) {
-    wrap.innerHTML = `<div class="rn-empty">No course records yet. Start a new one above.</div>`;
+    wrap.innerHTML = filterHtml + `<div class="rn-empty">No course records yet. Start a new one above.</div>`;
     return;
   }
-  wrap.innerHTML = list.slice().reverse().map(c => `
+  wrap.innerHTML = filterHtml + list.slice().reverse().map(c => `
     <div class="lpm-course-row-wrap">
       <button class="lpm-course-row" onclick="lpmOpenCourse('${c.id}')">
         <div class="lpm-course-name">${c.courseName || 'Untitled course'}</div>
-        <div class="lpm-course-meta">${fmtD(c.startDate)} · ${(c.learners||[]).length} learner${(c.learners||[]).length===1?'':'s'} · ${lpmRecordCount(c)} recorded observations</div>
+        <div class="lpm-course-meta">${fmtD(c.startDate)} · ${(c.learners||[]).length} learner${(c.learners||[]).length===1?'':'s'} · ${lpmRecordCount(c)} recorded observations${reviewer && c.ownerName ? ' · ' + lpmEsc(c.ownerName) : ''}</div>
       </button>
       <button class="lpm-course-delete" onclick="event.stopPropagation();lpmDeleteCourseFromList('${c.id}')" aria-label="Delete course record">🗑</button>
     </div>`).join('');
@@ -7682,6 +7724,11 @@ function lpmOpenCourse(id) {
   if (!found) return;
   lpmCourse = found;
   lpmCurrentId = id;
+  const ro = CLOUD_ON && found.owner && found.owner !== cloudMe();
+  document.getElementById('view-lpm').classList.toggle('lpm-ro', !!ro);
+  const rob = document.getElementById('lpmRoBanner');
+  if (rob) rob.innerHTML = ro ? `<div class="sc-note" style="margin:8px 0 0;">Read-only — ${lpmEsc(found.ownerName || 'another instructor')}'s course. You can view everything and build the course pack, but not change it.</div>` : '';
+  if (CLOUD_ON && typeof cloudPullFiles === 'function') cloudPullFiles(id).then(n => { if (n && lpmCourse && lpmCourse.id === id) { try { lpmShowStep(LPM_STEPS[lpmStepIdx]); } catch (e) {} } });
   if (LPM_COURSE_LENGTH_DAYS[lpmCourse.courseName] && lpmCourse.startDate) {
     const st = new Date(lpmCourse.startDate + 'T00:00:00');
     st.setDate(st.getDate() + LPM_COURSE_LENGTH_DAYS[lpmCourse.courseName] - 1);
@@ -8716,7 +8763,8 @@ let skCourseId = '';
 let skTab = 1; // 1–6 = assessment, 0 = summary
 
 function skLoadAll() { try { return JSON.parse(localStorage.getItem(SK_STORE_KEY) || '{}'); } catch (e) { return {}; } }
-function skSaveAll(all) { try { localStorage.setItem(SK_STORE_KEY, JSON.stringify(all)); } catch (e) {} }
+function skSaveAllRaw(all) { try { localStorage.setItem(SK_STORE_KEY, JSON.stringify(all)); } catch (e) {} }
+function skSaveAll(all) { if (lpmReadOnlyNow()) return; skSaveAllRaw(all); if (typeof cloudQueue === 'function') cloudQueue(); }
 function skData() {
   const all = skLoadAll();
   if (!all[skCourseId]) all[skCourseId] = { marks:{}, overrides:{}, signoff:{ centre:'Babcock International', centreNo:'123456', date:'', trainer:((skCourse()||{}).instructor1||'') } };
@@ -9126,8 +9174,14 @@ async function packList(courseId, kind) {
   const all = await packTx('readonly', st => st.getAll());
   return (all || []).filter(f => f.courseId === courseId && (!kind || f.kind === kind)).sort((a, b) => (a.addedAt || '').localeCompare(b.addedAt || ''));
 }
-async function packAdd(rec) { await packTx('readwrite', st => st.put(rec)); }
-async function packDelete(id) { await packTx('readwrite', st => st.delete(id)); }
+async function packAdd(rec) { if (lpmReadOnlyNow()) return; await packTx('readwrite', st => st.put(rec)); if (typeof cloudQueue === 'function') cloudQueue(); }
+async function packDelete(id) {
+  if (lpmReadOnlyNow()) { alert('This course belongs to another instructor and is read-only.'); return; }
+  const all = await packTx('readonly', st => st.getAll()) || [];
+  const rec = all.find(f => f.id === id);
+  await packTx('readwrite', st => st.delete(id));
+  if (typeof cloudDeleteFile === 'function') cloudDeleteFile(rec);
+}
 
 // Shrink a photo so a whole course pack stays a sensible size
 function packShrink(file, maxSide) {
@@ -9859,7 +9913,8 @@ let cpdWho = '';
 let cpdEdit = null;
 
 function cpdLoad() { try { return JSON.parse(localStorage.getItem(CPD_KEY) || '{}'); } catch (e) { return {}; } }
-function cpdSave(all) { try { localStorage.setItem(CPD_KEY, JSON.stringify(all)); } catch (e) {} }
+function cpdSaveRaw(all) { try { localStorage.setItem(CPD_KEY, JSON.stringify(all)); } catch (e) {} }
+function cpdSave(all) { cpdSaveRaw(all); if (typeof cloudQueue === 'function') cloudQueue(); }
 function cpdManual(who) { return (cpdLoad()[who] || []); }
 
 // Everything the instructor has actually delivered in the app counts automatically
@@ -9981,7 +10036,7 @@ function cpdRender() {
     <p class="sc-p">A rolling record of teaching, assessment and updates, built from the courses delivered in this app. Qualsafe expects a CPD portfolio kept for at least three years and available for external quality assurance.</p>
     <div class="rn-learner-field" style="max-width:320px;"><label>Instructor</label>
       <select class="rn-name-select" onchange="cpdWho=this.value;cpdRender()">
-        ${LPM_INSTRUCTOR_NAMES.map(n => `<option ${n===cpdWho?'selected':''}>${lpmEsc(n)}</option>`).join('')}
+        ${(CLOUD_ON && cloud.profile && !cloudIsReviewer() ? [cloud.profile.full_name] : LPM_INSTRUCTOR_NAMES).map(n => `<option ${n===cpdWho?'selected':''}>${lpmEsc(n)}</option>`).join('')}
       </select></div>
     <div class="cpd-cards">
       ${card(teachHours + ' hrs', 'Teaching in the last 3 years', teachHours >= 36, 'Qualsafe log of experience: 36 hours')}
@@ -10079,6 +10134,312 @@ async function cpdExport() {
     say('CPD portfolio ready.');
   } catch (e) { say('Could not build the portfolio: ' + (e.message || e), true); }
 }
+
+// =====================================================================
+// CLOUD ACCOUNTS AND SYNC (Supabase)
+// Fill in the two values from Supabase → Project Settings → API.
+// Until they are filled in, the app runs on this device only, as before.
+// =====================================================================
+const CLOUD = {
+  url: 'https://nnzvzehywrzapinrdfrq.supabase.co',
+  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5uenZ6ZWh5d3J6YXBpbnJkZnJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwMDY5MTcsImV4cCI6MjEwNTU4MjkxN30.zHJm6LEMbji781FCsDW1EKoEspQesjAfgXsI4a_aBxE'
+};
+const CLOUD_ON = !/YOUR-PROJECT|YOUR-ANON-KEY/.test(CLOUD.url + CLOUD.key);
+const CLOUD_SESSION_KEY = 'dtc_cloud_session';
+const CLOUD_SYNCED_KEY = 'dtc_cloud_synced'; // fingerprints of what the server already has
+let cloud = { session:null, profile:null, status:'', timer:null, busy:false };
+
+function cloudMe() { return cloud.session && cloud.session.user ? cloud.session.user.id : ''; }
+function cloudIsReviewer() { return !!(cloud.profile && (cloud.profile.role === 'iqa' || cloud.profile.role === 'admin')); }
+function cloudHash(o) { const s = JSON.stringify(o || null); let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return String(h); }
+function cloudSynced() { try { return JSON.parse(localStorage.getItem(CLOUD_SYNCED_KEY) || '{}'); } catch (e) { return {}; } }
+function cloudSetSynced(m) { try { localStorage.setItem(CLOUD_SYNCED_KEY, JSON.stringify(m)); } catch (e) {} }
+
+// ---------- Auth ----------
+async function cloudAuth(path, body) {
+  const res = await fetch(CLOUD.url + '/auth/v1/' + path, { method:'POST', headers:{ apikey: CLOUD.key, 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(j.error_description || j.msg || j.message || 'Sign-in failed');
+  return j;
+}
+function cloudSaveSession(j) {
+  cloud.session = { access_token: j.access_token, refresh_token: j.refresh_token, expires_at: Date.now() + (j.expires_in || 3600) * 1000, user: j.user };
+  localStorage.setItem(CLOUD_SESSION_KEY, JSON.stringify(cloud.session));
+}
+async function cloudToken() {
+  if (!cloud.session) throw new Error('Not signed in');
+  if (Date.now() > cloud.session.expires_at - 60000) {
+    const j = await cloudAuth('token?grant_type=refresh_token', { refresh_token: cloud.session.refresh_token });
+    cloudSaveSession(j);
+  }
+  return cloud.session.access_token;
+}
+async function cloudFetch(path, opts) {
+  opts = opts || {};
+  const token = await cloudToken();
+  const res = await fetch(CLOUD.url + path, Object.assign({}, opts, {
+    headers: Object.assign({ apikey: CLOUD.key, Authorization: 'Bearer ' + token }, opts.json !== false ? { 'Content-Type':'application/json' } : {}, opts.headers || {})
+  }));
+  if (!res.ok) { const t = await res.text(); const e = new Error(t || ('Server error ' + res.status)); e.status = res.status; throw e; }
+  return res;
+}
+async function cloudRest(path, method, body, prefer) {
+  const res = await cloudFetch('/rest/v1/' + path, { method: method || 'GET', body: body ? JSON.stringify(body) : undefined, headers: prefer ? { Prefer: prefer } : {} });
+  const t = await res.text();
+  return t ? JSON.parse(t) : null;
+}
+
+async function cloudSignIn(email, password) {
+  const j = await cloudAuth('token?grant_type=password', { email, password });
+  cloudSaveSession(j);
+  await cloudLoadProfile();
+}
+async function cloudLoadProfile() {
+  const rows = await cloudRest('profiles?select=*&id=eq.' + cloudMe());
+  cloud.profile = rows && rows[0] ? rows[0] : { role:'instructor', full_name: (cloud.session.user.email || '').split('@')[0] };
+}
+async function cloudSignOut() {
+  const pending = cloudPendingCount();
+  if (pending && !confirm(pending + ' change' + (pending === 1 ? ' has' : 's have') + ' not synced yet. Signing out now will lose ' + (pending === 1 ? 'it' : 'them') + ' from this iPad. Sign out anyway?')) return;
+  try { await fetch(CLOUD.url + '/auth/v1/logout', { method:'POST', headers:{ apikey: CLOUD.key, Authorization:'Bearer ' + cloud.session.access_token } }); } catch (e) {}
+  // Shared iPads: remove the previous person's records from this device
+  [CLOUD_SESSION_KEY, CLOUD_SYNCED_KEY, LPM_STORE_KEY, RN_STORE_KEY, SK_STORE_KEY, CPD_KEY].forEach(k => localStorage.removeItem(k));
+  try { indexedDB.deleteDatabase(PACK_DB); } catch (e) {}
+  location.reload();
+}
+
+// ---------- Sign-in screen ----------
+function cloudShowLogin(msg) {
+  let ov = document.getElementById('cloudLogin');
+  if (!ov) { ov = document.createElement('div'); ov.id = 'cloudLogin'; document.body.appendChild(ov); }
+  ov.innerHTML = `<div class="cl-box">
+      <div class="cl-brand">Digital Training Centre</div>
+      <div class="cl-sub">Babcock International — sign in with the account you were issued</div>
+      <label>Email</label><input id="clEmail" type="email" autocomplete="username" autocapitalize="off">
+      <label>Password</label><input id="clPass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')cloudDoLogin()">
+      <button class="rn-nav-btn primary" style="width:100%;margin-top:14px;" onclick="cloudDoLogin()">Sign in</button>
+      <button class="cl-link" onclick="cloudForgot()">Forgotten password</button>
+      <div id="clMsg" class="cl-msg">${msg || ''}</div>
+    </div>`;
+  setTimeout(() => { const e = document.getElementById('clEmail'); if (e) e.focus(); }, 50);
+}
+async function cloudDoLogin() {
+  const email = document.getElementById('clEmail').value.trim(), pw = document.getElementById('clPass').value;
+  const m = document.getElementById('clMsg');
+  if (!email || !pw) { m.textContent = 'Enter your email and password.'; return; }
+  m.textContent = 'Signing in…';
+  try {
+    await cloudSignIn(email, pw);
+    document.getElementById('cloudLogin').remove();
+    await cloudAfterLogin();
+  } catch (e) { m.textContent = /invalid/i.test(e.message) ? 'Email or password not recognised.' : 'Could not sign in: ' + e.message; }
+}
+async function cloudForgot() {
+  const email = document.getElementById('clEmail').value.trim();
+  const m = document.getElementById('clMsg');
+  if (!email) { m.textContent = 'Enter your email first, then tap Forgotten password.'; return; }
+  try { await cloudAuth('recover', { email }); m.textContent = 'If that account exists, a reset link has been emailed.'; }
+  catch (e) { m.textContent = 'Could not send the reset email.'; }
+}
+
+// ---------- Header: who's signed in and sync status ----------
+function cloudRenderBadge() {
+  let el = document.getElementById('cloudBadge');
+  if (!el) {
+    const header = document.querySelector('header');
+    if (!header) return;
+    el = document.createElement('div'); el.id = 'cloudBadge';
+    const contact = header.querySelector('.header-contact');
+    if (contact && contact.parentNode) contact.parentNode.insertBefore(el, contact); else header.appendChild(el);
+  }
+  if (!cloud.session) { el.innerHTML = ''; return; }
+  const role = cloud.profile ? ({ instructor:'Instructor', iqa:'IQA', admin:'Admin' })[cloud.profile.role] || '' : '';
+  const st = cloud.status || 'Saved';
+  el.innerHTML = `<span class="cl-dot ${/offline|error|not/i.test(st) ? 'warn' : /sync/i.test(st) ? 'busy' : ''}"></span>
+    <span class="cl-who">${lpmEsc(cloud.profile ? cloud.profile.full_name : '')}${role ? ' · ' + role : ''}</span>
+    <span class="cl-st">${st}</span>
+    <button class="cl-out" onclick="cloudSignOut()">Sign out</button>`;
+}
+function cloudSetStatus(s) { cloud.status = s; cloudRenderBadge(); }
+
+// ---------- Push local changes ----------
+function cloudCourseRows() {
+  const me = cloudMe(), sk = skLoadAll(), synced = cloudSynced();
+  return lpmLoadCourses().filter(c => !c.owner || c.owner === me).map(c => {
+    const course = Object.assign({}, c); delete course.owner; delete course.ownerName;
+    const row = { id: c.id, owner: me, owner_name: (cloud.profile && cloud.profile.full_name) || '', course, skills: sk[c.id] || null };
+    return { row, hash: cloudHash([course, row.skills]), dirty: synced['c:' + c.id] !== cloudHash([course, row.skills]) };
+  });
+}
+function cloudPendingCount() {
+  if (!cloud.session) return 0;
+  const synced = cloudSynced();
+  let n = cloudCourseRows().filter(r => r.dirty).length;
+  n += rnLoadSessions().filter(s => (!s.owner || s.owner === cloudMe()) && synced['s:' + s.id] !== cloudHash(s)).length;
+  if (synced.cpd !== cloudHash(cpdLoad())) n++;
+  return n + (cloud.pendingFiles || 0);
+}
+function cloudQueue() {
+  if (!CLOUD_ON || !cloud.session) return;
+  clearTimeout(cloud.timer);
+  cloudSetStatus('Syncing…');
+  cloud.timer = setTimeout(cloudPush, 1200);
+}
+async function cloudPush() {
+  if (!cloud.session || cloud.busy) return;
+  if (!navigator.onLine) { cloudSetStatus('Offline — will sync'); return; }
+  cloud.busy = true;
+  try {
+    const synced = cloudSynced(), me = cloudMe();
+    // Courses (must exist before their photos)
+    const rows = cloudCourseRows();
+    const dirty = rows.filter(r => r.dirty);
+    if (dirty.length) {
+      await cloudRest('courses?on_conflict=id', 'POST', dirty.map(r => Object.assign({}, r.row, { updated_at: new Date().toISOString() })), 'resolution=merge-duplicates,return=minimal');
+      dirty.forEach(r => { synced['c:' + r.row.id] = r.hash; });
+      lpmSaveCoursesRaw(lpmLoadCourses().map(c => (!c.owner ? Object.assign(c, { owner: me }) : c)));
+    }
+    // Courses deleted on this iPad
+    const localIds = new Set(lpmLoadCourses().map(c => c.id));
+    for (const k of Object.keys(synced)) {
+      if (k.startsWith('c:') && !localIds.has(k.slice(2))) {
+        await cloudRest('courses?id=eq.' + encodeURIComponent(k.slice(2)) + '&owner=eq.' + me, 'DELETE', null, 'return=minimal');
+        delete synced[k];
+      }
+    }
+    // Scenario sessions
+    const sess = rnLoadSessions().filter(s => !s.owner || s.owner === me);
+    const sd = sess.filter(s => synced['s:' + s.id] !== cloudHash(s));
+    if (sd.length) {
+      await cloudRest('sessions?on_conflict=id', 'POST', sd.map(s => ({ id: s.id, owner: me, data: s, updated_at: new Date().toISOString() })), 'resolution=merge-duplicates,return=minimal');
+      sd.forEach(s => { synced['s:' + s.id] = cloudHash(s); });
+    }
+    const sIds = new Set(sess.map(s => s.id));
+    for (const k of Object.keys(synced)) {
+      if (k.startsWith('s:') && !sIds.has(k.slice(2))) { await cloudRest('sessions?id=eq.' + encodeURIComponent(k.slice(2)) + '&owner=eq.' + me, 'DELETE', null, 'return=minimal'); delete synced[k]; }
+    }
+    // CPD log
+    const cpd = cpdLoad();
+    if (synced.cpd !== cloudHash(cpd)) {
+      await cloudRest('cpd?on_conflict=owner', 'POST', [{ owner: me, data: cpd, updated_at: new Date().toISOString() }], 'resolution=merge-duplicates,return=minimal');
+      synced.cpd = cloudHash(cpd);
+    }
+    cloudSetSynced(synced);
+    // Photos not yet uploaded
+    await cloudPushFiles();
+    cloudSetStatus('Saved');
+  } catch (e) {
+    cloudSetStatus(navigator.onLine ? 'Sync error — retrying' : 'Offline — will sync');
+    setTimeout(cloudQueue, 20000);
+  } finally { cloud.busy = false; }
+}
+async function cloudPushFiles() {
+  const me = cloudMe();
+  const all = await packTx('readonly', st => st.getAll()) || [];
+  const mine = new Set(lpmLoadCourses().filter(c => !c.owner || c.owner === me).map(c => c.id));
+  const todo = all.filter(f => !f.remotePath && mine.has(f.courseId));
+  cloud.pendingFiles = todo.length;
+  for (const f of todo) {
+    const path = me + '/' + f.courseId + '/' + f.id + '.jpg';
+    const blob = await (await fetch(f.dataUrl)).blob();
+    await cloudFetch('/storage/v1/object/course-files/' + path, { method:'POST', body: blob, json:false, headers:{ 'Content-Type':'image/jpeg', 'x-upsert':'true' } });
+    const meta = Object.assign({}, f); delete meta.dataUrl; delete meta.remotePath;
+    await cloudRest('pack_files?on_conflict=id', 'POST', [{ id: f.id, course_id: f.courseId, owner: me, kind: f.kind, meta, path }], 'resolution=merge-duplicates,return=minimal');
+    f.remotePath = path;
+    await packTx('readwrite', st => st.put(f));
+    cloud.pendingFiles--;
+  }
+}
+async function cloudDeleteFile(rec) {
+  if (!CLOUD_ON || !cloud.session || !rec || !rec.remotePath) return;
+  try {
+    await cloudFetch('/storage/v1/object/course-files/' + rec.remotePath, { method:'DELETE' });
+    await cloudRest('pack_files?id=eq.' + encodeURIComponent(rec.id), 'DELETE', null, 'return=minimal');
+  } catch (e) {}
+}
+
+// ---------- Pull from the server ----------
+async function cloudPull() {
+  if (!cloud.session || !navigator.onLine) return;
+  cloudSetStatus('Syncing…');
+  try {
+    const me = cloudMe(), synced = cloudSynced();
+    const rows = await cloudRest('courses?select=id,owner,owner_name,course,skills,updated_at&order=updated_at.desc') || [];
+    const local = lpmLoadCourses(), sk = skLoadAll();
+    rows.forEach(r => {
+      const i = local.findIndex(c => c.id === r.id);
+      const localHasUnsynced = i >= 0 && r.owner === me && synced['c:' + r.id] !== cloudHash([Object.assign({}, local[i], { owner: undefined, ownerName: undefined }), sk[r.id] || null]);
+      if (localHasUnsynced) return; // keep this iPad's newer edits; they will be pushed
+      const c = Object.assign({}, r.course, { owner: r.owner, ownerName: r.owner_name });
+      if (i >= 0) local[i] = c; else local.push(c);
+      if (r.skills) sk[r.id] = r.skills;
+      if (r.owner === me) synced['c:' + r.id] = cloudHash([r.course, r.skills || null]);
+    });
+    lpmSaveCoursesRaw(local); skSaveAllRaw(sk);
+    const srows = await cloudRest('sessions?select=id,owner,data') || [];
+    const ls = rnLoadSessions();
+    srows.forEach(r => {
+      const d = Object.assign({}, r.data, { owner: r.owner });
+      const i = ls.findIndex(s => s.id === r.id);
+      if (i >= 0) ls[i] = d; else ls.push(d);
+      if (r.owner === me) synced['s:' + r.id] = cloudHash(r.data);
+    });
+    rnSaveSessionsRaw(ls);
+    const crow = await cloudRest('cpd?select=data&owner=eq.' + me) || [];
+    if (crow[0]) { cpdSaveRaw(crow[0].data); synced.cpd = cloudHash(crow[0].data); }
+    cloudSetSynced(synced);
+    cloudSetStatus('Saved');
+  } catch (e) { cloudSetStatus('Sync error — retrying'); }
+}
+// Photos for one course are fetched when the course is opened
+async function cloudPullFiles(courseId) {
+  if (!cloud.session || !navigator.onLine) return;
+  try {
+    const rows = await cloudRest('pack_files?select=id,course_id,owner,kind,meta,path&course_id=eq.' + encodeURIComponent(courseId)) || [];
+    const have = new Set(((await packTx('readonly', st => st.getAll())) || []).map(f => f.id));
+    let added = 0;
+    for (const r of rows) {
+      if (have.has(r.id)) continue;
+      const res = await cloudFetch('/storage/v1/object/authenticated/course-files/' + r.path, { json:false });
+      const blob = await res.blob();
+      const dataUrl = await new Promise(ok => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.readAsDataURL(blob); });
+      await packTx('readwrite', st => st.put(Object.assign({}, r.meta, { id: r.id, courseId: r.course_id, kind: r.kind, dataUrl, remotePath: r.path })));
+      added++;
+    }
+    return added;
+  } catch (e) { return 0; }
+}
+
+// ---------- First sign-in on an iPad that already has courses ----------
+async function cloudOfferImport() {
+  const orphan = lpmLoadCourses().filter(c => !c.owner);
+  if (!orphan.length) return;
+  if (!confirm(orphan.length + ' course record' + (orphan.length === 1 ? ' is' : 's are') + ' saved on this iPad but not in any account. Add ' + (orphan.length === 1 ? 'it' : 'them') + ' to your account now?')) return;
+  cloudQueue();
+}
+
+async function cloudAfterLogin() {
+  cloudRenderBadge();
+  await cloudPull();
+  if (!cloudIsReviewer()) await cloudOfferImport();
+  if (cloud.profile && cloud.profile.full_name && typeof cpdWho !== 'undefined') cpdWho = cloud.profile.full_name;
+  cloudQueue();
+  try { lpmRenderCourseList(); } catch (e) {}
+}
+
+// ---------- Start-up ----------
+async function cloudInit() {
+  if (!CLOUD_ON) return;
+  try { cloud.session = JSON.parse(localStorage.getItem(CLOUD_SESSION_KEY) || 'null'); } catch (e) {}
+  if (!cloud.session) { cloudShowLogin(); return; }
+  try { await cloudLoadProfile(); } catch (e) {
+    if (e.status === 401 || /refresh/i.test(e.message)) { localStorage.removeItem(CLOUD_SESSION_KEY); cloud.session = null; cloudShowLogin('Your session has expired. Please sign in again.'); return; }
+  }
+  await cloudAfterLogin();
+}
+window.addEventListener('online', () => cloudQueue());
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && cloud.session) cloudPull(); });
+setTimeout(cloudInit, 0);
 </script>
 </body>
 </html>
