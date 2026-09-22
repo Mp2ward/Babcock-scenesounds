@@ -591,10 +591,106 @@ function fmtD(v) {
   .lpm-info-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.05rem; color:#0D1B4C; margin-bottom:10px; padding-right:40px; }
   .lpm-info-body { color:#3A4760; font-size:0.94rem; line-height:1.55; }
   .lpm-info-body b { color:#0D1B4C; }
+  .ss-wrap { display:flex; align-items:center; gap:18px; padding:16px 18px; }
+  .ss-play { position:relative; width:74px; height:74px; flex-shrink:0; border:0; border-radius:50%; cursor:pointer; color:#fff;
+    background:linear-gradient(140deg,#2B5BD7,#0D1B4C); box-shadow:0 10px 24px -10px rgba(43,91,215,0.8); display:flex; align-items:center; justify-content:center; transition:transform .15s; }
+  .ss-play:hover { transform:scale(1.05); }
+  .ss-play:active { transform:scale(0.96); }
+  .ss-play.empty { background:#B8C2D0; box-shadow:none; cursor:default; }
+  .ss-play.on { background:linear-gradient(140deg,#0F6E56,#0B4C3C); box-shadow:0 10px 24px -10px rgba(15,110,86,0.85); }
+  .ss-ring { position:absolute; inset:-6px; border-radius:50%; border:2px solid rgba(43,91,215,0.45); opacity:0; }
+  .ss-play.on .ss-ring { animation:ssPulse 1.8s ease-out infinite; border-color:rgba(15,110,86,0.5); }
+  @keyframes ssPulse { 0% { transform:scale(0.9); opacity:0.7; } 100% { transform:scale(1.35); opacity:0; } }
+  .ss-icon { display:flex; }
+  .ss-eq { position:absolute; bottom:12px; display:none; align-items:flex-end; gap:3px; height:14px; }
+  .ss-play.on .ss-icon { display:none; }
+  .ss-play.on .ss-eq { display:flex; }
+  .ss-eq i { display:block; width:4px; background:#fff; border-radius:2px; height:5px; animation:ssBar .9s ease-in-out infinite; }
+  .ss-eq i:nth-child(2) { animation-delay:.15s; } .ss-eq i:nth-child(3) { animation-delay:.3s; }
+  .ss-eq i:nth-child(4) { animation-delay:.45s; } .ss-eq i:nth-child(5) { animation-delay:.6s; }
+  @keyframes ssBar { 0%,100% { height:5px; } 50% { height:15px; } }
+  .ss-text { min-width:0; }
+  .ss-title { font-family:'Public Sans',sans-serif; font-weight:800; font-size:1.25rem; color:#0D1B4C; letter-spacing:-0.01em; }
+  .ss-sub { font-size:0.85rem; color:#6B7A94; margin-top:2px; }
+  .ss-adjust { margin-top:8px; border:1px solid #D8DEE8; background:#fff; color:#2B5BD7; border-radius:100px; padding:5px 12px; font-size:0.78rem; font-weight:600; cursor:pointer; }
+  .mixer-board-btn { background:none; border:1px solid var(--border); color:var(--muted); padding:6px 12px; border-radius:6px; font-family:'Public Sans',sans-serif; font-weight:600; font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; white-space:nowrap; }
+  .mixer-board-btn:hover { border-color:#2B5BD7; color:#2B5BD7; }
+  .return-fab { position:fixed; z-index:400; left:50%; transform:translateX(-50%); bottom:92px; display:inline-flex; align-items:center; gap:8px;
+    border:0; background:#0F6E56; color:#fff; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.8rem; letter-spacing:0.06em; text-transform:uppercase;
+    padding:12px 20px; border-radius:100px; cursor:pointer; box-shadow:0 12px 26px -10px rgba(15,110,86,0.9); }
+  .return-fab:hover { background:#0B5744; }
+  @media (max-width:640px) { .ss-wrap { gap:14px; padding:14px; } .ss-play { width:64px; height:64px; } .ss-title { font-size:1.1rem; } .return-fab { bottom:86px; font-size:0.74rem; padding:11px 16px; } }
+  .ss-board { display:inline-flex; align-items:center; gap:8px; border:0; border-radius:100px; padding:8px 16px; cursor:pointer;
+    background:#0D1B4C; color:#fff; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.8rem;
+    box-shadow:0 8px 18px -10px rgba(13,27,76,0.8); transition:transform .15s, background .15s; }
+  .ss-board:hover { background:#2B5BD7; }
+  .ss-board:hover { transform:translateY(-1px); }
+  .rn-mix-row.added { background:#F4F7FE; border-radius:8px; padding-left:6px; padding-right:6px; }
+  .rn-mix-tag { display:block; font-size:0.68rem; color:#2B5BD7; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+  .rn-play-btn.playing { background:#C74444 !important; border-color:#C74444 !important; color:#fff !important; }
+  .lpm-cell-res { font-size:0.72rem; font-weight:700; padding:3px 0 0; color:#6B7A94; }
+  .lpm-cell-res.p { color:#0F6E56; } .lpm-cell-res.r { color:#B06A00; }
+  .prev-res { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; border:1px solid #E6EAF0; border-radius:10px; padding:10px 12px; margin-bottom:8px; background:#F7F9FC; }
+  .prev-res > span { font-weight:600; color:#0D1B4C; font-size:0.9rem; }
+  .prev-res .lpm-res-pick { flex:0 1 auto; }
+  .prev-res .lpm-res-btn { min-width:86px; padding:8px 10px; font-size:0.8rem; }
+  .prev-score { display:flex; align-items:center; gap:8px; }
+  .prev-score input { width:74px; padding:8px; border:1px solid #D8DEE8; border-radius:8px; font:inherit; font-size:1rem; text-align:center; }
+  .prev-score em { font-style:normal; font-size:0.8rem; color:#6B7A94; font-weight:700; }
+  .prev-score em.p { color:#0F6E56; } .prev-score em.r { color:#B06A00; }
+  .adm-stats > .adm-stat { text-align:left; font:inherit; cursor:pointer; }
+  .adm-stat.on { border-left-width:6px; background:#F7F9FC; box-shadow:inset 0 0 0 1px #2B5BD7; }
+  .adm-stat.warn { border-left-color:#B06A00; } .adm-stat.ok { border-left-color:#0F6E56; }
+  .mn-ov { position:fixed; inset:0; z-index:9000; background:rgba(13,27,76,0.35); backdrop-filter:blur(2px); animation:mnFade .16s ease-out; }
+  .mn-ov.out { animation:mnFade .16s ease-in reverse; }
+  @keyframes mnFade { from { opacity:0; } to { opacity:1; } }
+  .mn-box { position:absolute; top:70px; right:20px; width:min(330px, calc(100vw - 32px)); background:#fff; border-radius:16px; padding:10px; box-shadow:0 24px 50px -18px rgba(13,27,76,0.55); transform-origin:top right; animation:mnPop .18s cubic-bezier(.2,1.2,.4,1); max-height:calc(100vh - 100px); overflow:auto; }
+  .mn-ov.out .mn-box { animation:mnPop .16s ease-in reverse; }
+  @keyframes mnPop { from { opacity:0; transform:scale(.9) translateY(-6px); } to { opacity:1; transform:none; } }
+  .mn-head { display:flex; align-items:center; justify-content:space-between; padding:6px 8px 8px; }
+  .mn-head b { font-family:'Public Sans',sans-serif; font-size:1.05rem; color:#0D1B4C; }
+  .mn-x { border:0; background:#F2F4F8; color:#0D1B4C; width:32px; height:32px; border-radius:8px; font-size:1.2rem; cursor:pointer; line-height:1; }
+  .mn-group { font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:#8494AC; font-weight:700; padding:10px 10px 4px; }
+  .mn-item { display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; text-align:left; border:0; background:transparent; border-radius:10px; padding:10px; cursor:pointer; font:inherit;
+    opacity:0; animation:mnIn .22s ease-out forwards; }
+  .mn-item:hover { background:#EEF2FA; }
+  .mn-item b { display:block; color:#0D1B4C; font-family:'Public Sans',sans-serif; font-size:0.98rem; }
+  .mn-item em { display:block; font-style:normal; font-size:0.76rem; color:#6B7A94; margin-top:1px; }
+  .mn-chev { color:#B8C2D0; font-size:1.2rem; }
+  .mn-home { background:#0D1B4C; }
+  .mn-home b, .mn-home em, .mn-home .mn-chev { color:#fff; }
+  .mn-home:hover { background:#16266b; }
+  @keyframes mnIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
+  @media (max-width:820px) { .mn-box { top:auto; bottom:80px; right:14px; transform-origin:bottom right; } }
+  .ss-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .rn-mix-icon { font-size:1.15rem; width:26px; text-align:center; flex-shrink:0; }
+  .rn-mix-sub { display:block; font-size:0.72rem; color:#8494AC; }
   .menu-fab { position:fixed; z-index:60; top:76px; right:20px; display:inline-flex; align-items:center; gap:7px; border:1px solid #D8DEE8; background:#fff; color:#0D1B4C; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase; padding:9px 14px; border-radius:100px; cursor:pointer; box-shadow:0 8px 20px -12px rgba(13,27,76,0.45); }
   .menu-fab:hover { border-color:#2B5BD7; color:#2B5BD7; }
   @media (max-width:820px) { .menu-fab { top:auto; bottom:18px; right:16px; padding:11px 16px; box-shadow:0 10px 24px -10px rgba(13,27,76,0.5); } }
   @media print { .menu-fab { display:none !important; } }
+  .lpm-search { display:flex; align-items:center; gap:10px; border:1px solid #D8DEE8; border-radius:100px; padding:6px; margin-bottom:14px; background:#fff; width:fit-content; transition:width .2s; }
+  .lpm-search.open { width:100%; border-radius:12px; }
+  .lpm-search-btn { width:36px; height:36px; flex-shrink:0; border-radius:50%; border:0; background:#EEF2FA; color:#2B5BD7; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .lpm-search-btn:hover { background:#2B5BD7; color:#fff; }
+  .lpm-search-label { color:#6B7A94; font-size:0.88rem; padding-right:14px; cursor:default; }
+  .lpm-search-in { flex:1; min-width:0; border:0; outline:none; font:inherit; font-size:1rem; color:#0D1B4C; background:transparent; }
+  .lpm-search-count { font-size:0.78rem; color:#6B7A94; white-space:nowrap; padding-right:10px; }
+  .lpm-course-row-wrap.example { border:1px solid #BBD0F5; background:#F7F9FE; border-radius:10px; }
+  .lpm-pin { display:inline-block; font-size:0.7rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:#2B5BD7; background:#EAF1FD; border-radius:100px; padding:2px 8px; margin-right:6px; vertical-align:2px; }
+  .lb-ov { position:fixed; inset:0; z-index:40000; background:rgba(8,14,36,0.94); display:flex; align-items:center; justify-content:center; padding:56px 16px; }
+  .lb-stage { flex:1; display:flex; align-items:center; justify-content:center; max-height:100%; }
+  .lb-stage img { max-width:100%; max-height:calc(100vh - 120px); border-radius:6px; box-shadow:0 20px 60px -20px rgba(0,0,0,0.8); background:#fff; }
+  .lb-x { position:absolute; top:14px; right:16px; width:48px; height:48px; border-radius:12px; border:1px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.08); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .lb-x:hover { background:rgba(255,255,255,0.18); }
+  .lb-arrow { width:56px; height:56px; flex-shrink:0; border-radius:50%; border:1px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.08); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .lb-arrow:hover { background:rgba(255,255,255,0.2); }
+  .lb-cap { position:absolute; bottom:18px; left:0; right:0; text-align:center; color:#C9D4EC; font-size:0.88rem; padding:0 20px; }
+  @media (max-width:640px) { .lb-ov { padding:52px 6px; } .lb-arrow { width:44px; height:44px; } .lb-stage img { max-height:calc(100vh - 150px); } }
+  .lpm-course-sub { font-size:0.78rem; color:#0F6E56; font-weight:700; margin-top:3px; }
+  .lpm-tick { display:inline-flex; width:16px; height:16px; border-radius:50%; background:#0F6E56; color:#fff; align-items:center; justify-content:center; font-size:0.62rem; vertical-align:-3px; margin-right:4px; }
+  .lpm-course-locked { display:inline-flex; align-items:center; justify-content:center; width:38px; color:#B8C2D0; font-size:0.9rem; }
+  .adm-chips span.ok b { color:#0F6E56; }
   .aln-btn { border:1px dashed #B8C2D0; background:#fff; color:#6B7A94; border-radius:6px; padding:7px 10px; font-size:0.78rem; cursor:pointer; white-space:nowrap; }
   .aln-btn.on { border-style:solid; border-color:#2B5BD7; color:#2B5BD7; background:#EAF1FD; font-weight:700; }
   .aln-line { font-size:0.78rem; color:#2B5BD7; margin:-6px 0 10px 4px; }
@@ -1090,7 +1186,13 @@ function fmtD(v) {
 
   .lpm-field { margin-bottom:16px; }
   .lpm-field label { display:block; font-family:'Public Sans',sans-serif; font-size:0.8rem; color:#6B7A94; margin-bottom:5px; }
-  .lpm-field input, .lpm-field select, .lpm-field textarea { width:100%; box-sizing:border-box; }
+  .lpm-field input, .lpm-field select, .lpm-field textarea,
+  .rn-learner-field input, .rn-learner-field select, .rn-learner-field textarea {
+    width:100%; box-sizing:border-box; padding:11px 14px; border:1px solid #D8DEE8; border-radius:8px;
+    font-family:'Public Sans',sans-serif; font-size:0.95rem; color:#0D1B4C; background:#fff; }
+  .lpm-field select, .rn-learner-field select { padding-right:34px; }
+  .lpm-field input:focus, .lpm-field select:focus, .lpm-field textarea:focus,
+  .rn-learner-field input:focus, .rn-learner-field select:focus, .rn-learner-field textarea:focus { outline:2px solid #2B5BD7; outline-offset:-1px; }
   .lpm-field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 
   .lpm-learner-card { border:1px solid #D8DEE8; padding:14px 16px; margin-bottom:10px; display:flex; align-items:center; gap:12px; }
@@ -1454,8 +1556,12 @@ window.addEventListener('load', function () {
 </div><!-- /view-sounds -->
 
 <!-- ============ SCENARIO CARDS ============ -->
-<button class="menu-fab rn-no-print" id="menuFab" onclick="showView('hub')" aria-label="Back to menu">
+<button class="menu-fab rn-no-print" id="menuFab" onclick="openMenu()" aria-haspopup="menu" aria-label="Open menu">
   <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Menu</span>
+</button>
+
+<button class="return-fab rn-no-print" id="returnFab" onclick="rnReturnToScenario()" style="display:none;">
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span>Return to scenario</span>
 </button>
 
 <div class="app-view" id="view-cards">
@@ -1507,6 +1613,7 @@ window.addEventListener('load', function () {
 
   <div class="rn-view active" id="rn-pick">
     <div class="rn-wrap">
+      <button class="sc-back rn-no-print rn-course-back" style="display:none;" onclick="rnBackToCourse()">&larr; Back to course</button>
       <div class="hub-eyebrow">Babcock International</div>
       <div class="hub-h">Run a scenario</div>
       <div class="hub-p">Choose a scenario to run.</div>
@@ -1517,6 +1624,7 @@ window.addEventListener('load', function () {
   <div class="rn-view" id="rn-session">
     <div class="rn-wrap">
 
+      <button class="sc-back rn-no-print rn-course-back" style="display:none;" onclick="rnBackToCourse()">&larr; Back to course</button>
       <button class="sc-back rn-no-print" id="rnBack" onclick="rnBackToList()">&larr; All scenarios</button>
 
       <div class="rn-head">
@@ -1526,12 +1634,27 @@ window.addEventListener('load', function () {
       </div>
 
       <div class="rn-sound rn-no-print" id="rnSoundTile">
-        <div class="rn-sound-bar" onclick="rnToggleSound()">
-          <div class="rn-sound-label">
-            <div class="rn-sound-title">Scene sound mix</div>
-            <div class="rn-sound-sub" id="rnSoundSub">Tap to open</div>
+        <div class="ss-wrap">
+          <button class="ss-play" id="ssPlay" onclick="rnScenarioSounds()" aria-label="Play the scenario sounds">
+            <span class="ss-ring"></span>
+            <span class="ss-icon" id="ssIcon">
+              <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+            </span>
+            <span class="ss-eq" id="ssEq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          </button>
+          <div class="ss-text">
+            <div class="ss-title">Scenario Sounds</div>
+            <div class="ss-sub" id="rnSoundSub">Tap to play</div>
+            <div class="ss-actions">
+              <button class="ss-adjust" onclick="rnToggleSound()">Adjust mix <span id="rnSoundChevron">▾</span></button>
+              <button class="ss-adjust" onclick="pauseAll()">⏸ Pause</button>
+              <button class="ss-adjust" onclick="rnStopAll();rnSoundsState(false)">■ Stop</button>
+              <button class="ss-board" onclick="rnOpenBoard()">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>
+                Full sound board <span aria-hidden="true">→</span>
+              </button>
+            </div>
           </div>
-          <span id="rnSoundChevron" style="color:#6B7A94;transition:transform 0.25s;">▾</span>
         </div>
         <div class="rn-sound-body" id="rnSoundBody">
           <div class="rn-sound-inner" id="rnSoundInner"></div>
@@ -1684,6 +1807,7 @@ window.addEventListener('load', function () {
       <div id="mixerTitle" style="font-family:'Public Sans',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.05em;">ACTIVE MIXER</div>
       <div id="mixerCount" style="font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:1px;">0 sounds looping</div>
     </div>
+    <button onclick="event.stopPropagation();rnOpenBoard()" class="mixer-board-btn">Open full sound board</button>
     <div id="mixerChevron" style="color:var(--muted);font-size:0.8rem;transition:transform 0.3s;">▲</div>
     <button onclick="event.stopPropagation();pauseAll()" id="pauseAllBtn" style="
       background:none;border:1px solid var(--border);color:var(--muted);
@@ -2111,6 +2235,7 @@ function toggleMixer() {
 }
 
 function updateMixer() {
+  if (typeof rnSyncMix === 'function') { try { rnSyncMix(); } catch (e) {} }
   const ids = Object.keys(activeNodes);
   const count = ids.length;
   const btn = document.getElementById('mixerBtn');
@@ -2126,7 +2251,8 @@ function updateMixer() {
     statusBar.innerHTML = '<span class="dot"></span>STANDBY';
     statusBar.style.display = onSoundOrRun ? 'flex' : 'none';
   } else {
-    btn.style.display = 'block';
+    const inRun = document.getElementById('view-run') && document.getElementById('view-run').classList.contains('active');
+    btn.style.display = inRun ? 'none' : 'block';   // during a scenario the controls live in the Scenario Sounds card
     statusBar.className = 'status-bar playing';
     statusBar.style.display = 'flex';
     statusBar.innerHTML = `<span class="dot"></span>${count} ACTIVE`;
@@ -2817,6 +2943,66 @@ function pauseAll() {
 
 
 <script>
+const MENU_ITEMS = [
+  { g:'Admin', reviewer:true, items:[
+    { label:'Course Admin', sub:'Search every course and course pack', go:"admOpenCourses()" },
+    { label:'Instructor Admin', sub:"Instructors' courses and CPD", go:"admOpenInstructors()" } ] },
+  { g:'Training', items:[
+    { label:'Course Matrix', sub:'Course records, exams, packs', go:"showView('lpm');lpmShowPick()" },
+    { label:'Scenario Cards', sub:'Briefs, roles, assessment criteria', go:"showView('cards');scRenderGrid()" },
+    { label:'Run a Scenario', sub:'Deliver and assess in one flow', go:"showView('run');rnRenderPick()" } ] },
+  { g:'Tools', items:[
+    { label:'Soundboard', sub:'Live scene sound mixer', go:"showView('sounds')" },
+    { label:'CPD Log', sub:'Your teaching and learning record', go:"showView('cpd');cpdOpen()" },
+    { label:'Knowledge Centre', sub:'Coming soon', go:"showView('knowledge')" } ] },
+];
+function openMenu() {
+  if (document.getElementById('menuOv')) return closeMenu();
+  const reviewer = typeof cloudIsReviewer === 'function' && cloudIsReviewer();
+  const groups = MENU_ITEMS.filter(g => !g.reviewer || reviewer);
+  let n = 0;
+  const html = groups.map(g => `<div class="mn-group">${g.g}</div>` + g.items.map(it => {
+    const d = (n++) * 0.045;
+    return `<button class="mn-item" style="animation-delay:${d.toFixed(3)}s" onclick="menuGo(&quot;${it.go.replace(/"/g, '&quot;')}&quot;)">
+        <span><b>${it.label}</b><em>${it.sub}</em></span>
+        <span class="mn-chev">&rsaquo;</span></button>`;
+  }).join('')).join('');
+  const ov = document.createElement('div');
+  ov.id = 'menuOv'; ov.className = 'mn-ov';
+  ov.onclick = e => { if (e.target === ov) closeMenu(); };
+  ov.innerHTML = `<div class="mn-box" role="menu">
+      <div class="mn-head"><b>Menu</b><button class="mn-x" onclick="closeMenu()" aria-label="Close">&times;</button></div>
+      <button class="mn-item mn-home" style="animation-delay:0s" onclick="menuGo(&quot;showView('hub')&quot;)"><span><b>Home</b><em>All sections</em></span><span class="mn-chev">&rsaquo;</span></button>
+      ${html}
+    </div>`;
+  document.body.appendChild(ov);
+  document.addEventListener('keydown', menuEsc);
+}
+function menuEsc(e) { if (e.key === 'Escape') closeMenu(); }
+function closeMenu() {
+  const ov = document.getElementById('menuOv');
+  if (ov) { ov.classList.add('out'); setTimeout(() => ov.remove(), 160); }
+  document.removeEventListener('keydown', menuEsc);
+}
+function menuGo(js) { closeMenu(); setTimeout(() => { try { eval(js); } catch (e) {} }, 60); }
+function rnOpenBoard() {
+  window.rnCameFromScenario = document.getElementById('view-run') && document.getElementById('view-run').classList.contains('active') && rnScenarioId;
+  showView('sounds');
+}
+function rnReturnToScenario() {
+  showView('run');
+  if (typeof rnShowView === 'function') rnShowView('session');
+}
+function returnFabSync() {
+  const fab = document.getElementById('returnFab');
+  if (!fab) return;
+  const onSounds = document.getElementById('view-sounds') && document.getElementById('view-sounds').classList.contains('active');
+  fab.style.display = (onSounds && window.rnCameFromScenario) ? '' : 'none';
+}
+function mixerBarSync() {
+  if (typeof updateMixer === 'function') { try { updateMixer(); } catch (e) {} }
+  if (typeof rnSyncMix === 'function') { try { rnSyncMix(); } catch (e) {} }
+}
 function menuFabSync() {
   const fab = document.getElementById('menuFab');
   if (!fab) return;
@@ -2834,6 +3020,10 @@ function showView(name) {
   window.scrollTo(0, 0);
   try { history.replaceState(null, '', name === 'hub' ? location.pathname : '?go=' + name); } catch(e) {}
   menuFabSync();
+  returnFabSync();
+  mixerBarSync();
+  if (name !== 'run' && name !== 'lpm') { window.rnFromCourseId = ''; }
+  if (typeof rnCourseBackSync === 'function') rnCourseBackSync();
 }
 window.addEventListener('load', function () {
   var go = new URLSearchParams(location.search).get('go');
@@ -6951,6 +7141,7 @@ function rnRenderPick() {
 }
 
 function rnBackToList() {
+  rnCourseBackSync();
   const dirty = rnSession && (rnSession.learners || []).some(l => l.name || Object.keys(l.results || {}).length);
   if (dirty && !rnSession.savedId && !confirm('Leave this scenario? Anything not saved on the Record step will be lost.')) return;
   rnShowView('pick');
@@ -7037,6 +7228,22 @@ function rnGo(delta) {
 }
 
 // ---- Sound tile ----
+function rnScenarioSounds() {
+  const playing = document.getElementById('ssPlay').classList.contains('on');
+  if (playing) { rnStopAll(); rnSoundsState(false); }
+  else { rnPlayAll(); rnSoundsState(true); }
+}
+function rnSoundsState(on) {
+  const btn = document.getElementById('ssPlay'); if (!btn) return;
+  btn.classList.toggle('on', on);
+  const mix = RN_MIXES[rnScenarioId];
+  document.getElementById('ssIcon').innerHTML = on
+    ? '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="7" y="5.5" width="3.6" height="13" rx="1.2" fill="currentColor"/><rect x="13.4" y="5.5" width="3.6" height="13" rx="1.2" fill="currentColor"/></svg>'
+    : '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>';
+  btn.setAttribute('aria-label', on ? 'Stop the scenario sounds' : 'Play the scenario sounds');
+  const sub = document.getElementById('rnSoundSub');
+  if (sub) sub.textContent = on ? 'Playing — ' + (mix ? mix.label : 'scene mix') : (mix ? 'Tap to play · ' + mix.label : 'No preset mix for this scenario');
+}
 function rnToggleSound() {
   rnSoundOpen = !rnSoundOpen;
   document.getElementById('rnSoundBody').classList.toggle('open', rnSoundOpen);
@@ -7047,33 +7254,48 @@ function rnFindSound(id) {
   return sounds.find(s => s.id === id) || null;
 }
 
+function rnMixRow(id, vol, extra) {
+  const s = rnFindSound(id);
+  if (!s) return '';
+  const on = !!activeNodes[id];
+  return `<div class="rn-mix-row${extra ? ' added' : ''}">
+      <span class="rn-mix-icon">${s.icon || '🔊'}</span>
+      <div class="rn-mix-name">${s.label}${s.sub ? `<span class="rn-mix-sub">${s.sub}</span>` : ''}${extra ? '<span class="rn-mix-tag">Added from sound board</span>' : ''}</div>
+      <input type="range" class="rn-mix-slider" min="0" max="100" step="1" value="${Math.round(vol * 100)}" oninput="rnSetVol('${id}', this.value)">
+      <button class="rn-play-btn btn-${id}${on ? ' playing' : ''}" id="rnPlay-${id}" onclick="rnTogglePlay('${id}')">${on ? 'Stop' : 'Play'}</button>
+    </div>`;
+}
 function rnRenderSound() {
   const mix = RN_MIXES[rnScenarioId];
   const inner = document.getElementById('rnSoundInner');
-  if (!mix) {
+  const preset = mix ? mix.sounds : [];
+  const ids = preset.map(m => m.id);
+  const extras = Object.keys(activeNodes).filter(id => !ids.includes(id));
+  if (!mix && !extras.length) {
+    const p = document.getElementById('ssPlay'); if (p) p.classList.add('empty');
     document.getElementById('rnSoundSub').textContent = 'No preset mix for this scenario';
-    inner.innerHTML = '<p class="sc-p">No preset sound mix has been defined.</p>';
+    inner.innerHTML = '<p class="sc-p">No preset mix for this scenario. Use <b>Open full sound board</b> to add any sounds you need.</p>';
     return;
   }
-  document.getElementById('rnSoundSub').textContent = mix.label + ' · ' + mix.sounds.length + ' sounds';
-
-  let html = mix.sounds.map(m => {
-    const s = rnFindSound(m.id);
-    if (!s) return '';
-    return `<div class="rn-mix-row">
-      <div class="rn-mix-name">${s.label}</div>
-      <input type="range" class="rn-mix-slider" min="0" max="100" step="1" value="${Math.round(m.vol*100)}"
-             oninput="rnSetVol('${m.id}', this.value)">
-      <button class="rn-play-btn btn-${m.id}" id="rnPlay-${m.id}" onclick="rnTogglePlay('${m.id}')">Play</button>
-    </div>`;
-  }).join('');
-
+  rnSoundsState(Object.keys(activeNodes).length > 0);
+  let html = preset.map(m => rnMixRow(m.id, soundVolumes[m.id] != null ? soundVolumes[m.id] : m.vol)).join('');
+  html += extras.map(id => rnMixRow(id, soundVolumes[id] != null ? soundVolumes[id] : 0.7, true)).join('');
   html += `<div class="rn-mix-actions">
     <button class="rn-mix-all" onclick="rnPlayAll()">Play full mix</button>
-    <button class="rn-mix-stop" onclick="rnStopAll()">Stop all</button>
+    <button class="rn-mix-stop" onclick="rnStopAll();rnSoundsState(false)">Stop all</button>
   </div>`;
-
   inner.innerHTML = html;
+}
+// Keep the scenario mix in step with whatever is playing
+function rnSyncMix() {
+  const run = document.getElementById('view-run');
+  if (!run || !run.classList.contains('active') || !rnScenarioId) return;
+  if (!document.getElementById('rnSoundInner')) return;
+  rnRenderSound();
+  const open = document.getElementById('rnSoundBody');
+  if (Object.keys(activeNodes).length && open && !open.classList.contains('open')) {
+    // let the instructor see what was added without opening it for them
+  }
 }
 
 function rnSetVol(id, val) {
@@ -7609,7 +7831,27 @@ function rnPushToSkills(sess, course) {
 let rnPendingCourseId = '';
 function rnRunForCourse(courseId) {
   rnPendingCourseId = courseId;
-  showView('run'); rnRenderPick();
+  window.rnFromCourseId = courseId;
+  showView('run'); rnRenderPick(); rnCourseBackSync();
+}
+// Came in from a course: offer a way straight back to it
+function rnCourseBackSync() {
+  const on = !!window.rnFromCourseId;
+  document.querySelectorAll('.rn-course-back').forEach(b => {
+    b.style.display = on ? '' : 'none';
+    if (on) {
+      const c = lpmLoadCourses().find(x => x.id === window.rnFromCourseId);
+      b.textContent = '\u2190 Back to ' + (c ? (c.courseName || 'course') + ' — ' + fmtShort(c.startDate) : 'course');
+    }
+  });
+}
+function rnBackToCourse() {
+  const id = window.rnFromCourseId;
+  window.rnFromCourseId = '';
+  rnCourseBackSync();
+  showView('lpm');
+  lpmOpenCourse(id);
+  lpmShowStep('sessions');
 }
 
 function rnSaveSession() {
@@ -7818,31 +8060,70 @@ function lpmShowPick() {
 }
 
 let lpmOwnerFilter = '';
+let lpmSearchOpen = false, lpmSearchQ = '';
+function lpmToggleSearch() {
+  lpmSearchOpen = !lpmSearchOpen;
+  if (!lpmSearchOpen) lpmSearchQ = '';
+  lpmRenderCourseList();
+  if (lpmSearchOpen) setTimeout(() => { const i = document.getElementById('lpmSearchIn'); if (i) i.focus(); }, 40);
+}
+function lpmSearchInput(v) {
+  lpmSearchQ = v;
+  const pos = (document.getElementById('lpmSearchIn') || {}).selectionStart;
+  lpmRenderCourseList();
+  const i = document.getElementById('lpmSearchIn');
+  if (i) { i.focus(); try { i.setSelectionRange(pos, pos); } catch (e) {} }
+}
+function lpmCourseHay(c) {
+  return [c.courseName, c.courseRef, c.location, c.ownerName, lpmInstructorLine(c), fmtShort(c.startDate), fmtD(c.startDate),
+    ...(c.learners || []).map(l => l.name)].filter(Boolean).join(' ').toLowerCase();
+}
 function lpmRenderCourseList() {
   let list = lpmLoadCourses();
   const wrap = document.getElementById('lpmCourseList');
   const reviewer = typeof cloudIsReviewer === 'function' && cloudIsReviewer();
   let filterHtml = '';
   if (reviewer) {
-    // Admins search and filter all courses in Course Admin; here they see their own, like any instructor
     list = list.filter(c => !c.owner || c.owner === cloudMe() || lpmOnTeam(c));
     filterHtml = `<div class="sc-note" style="margin-bottom:12px;">Showing courses you run or teach on. To see every instructor's courses, use <a href="#" onclick="event.preventDefault();admOpenCourses()">Course Admin</a>.</div>`;
   }
-  if (!list.length) {
-    wrap.innerHTML = filterHtml + `<div class="rn-empty">No course records yet. Start a new one above.</div>`;
-    return;
-  }
-  wrap.innerHTML = filterHtml + list.slice().reverse().map(c => `
-    <div class="lpm-course-row-wrap">
-      <button class="lpm-course-row" onclick="lpmOpenCourse('${c.id}')">
-        <div class="lpm-course-name">${c.courseName || 'Untitled course'}</div>
-        <div class="lpm-course-meta">${fmtD(c.startDate)} · ${(c.learners||[]).length} learner${(c.learners||[]).length===1?'':'s'} · ${lpmRecordCount(c)} recorded observations${reviewer && c.ownerName ? ' · ' + lpmEsc(c.ownerName) : ''}</div>
+  const example = list.length ? list[0] : null;      // the first course ever created is kept as the example
+  let rest = list.slice(1).reverse();
+  const q = (lpmSearchQ || '').toLowerCase().trim();
+  if (q) rest = rest.filter(c => lpmCourseHay(c).includes(q));
+  const search = `<div class="lpm-search ${lpmSearchOpen ? 'open' : ''}">
+      <button class="lpm-search-btn" onclick="lpmToggleSearch()" aria-label="${lpmSearchOpen ? 'Close search' : 'Search courses'}">
+        ${lpmSearchOpen
+          ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>'
+          : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>'}
       </button>
-      <button class="lpm-course-delete" onclick="event.stopPropagation();lpmDeleteCourseFromList('${c.id}')" aria-label="Delete course record">🗑</button>
-    </div>`).join('');
+      ${lpmSearchOpen ? `<input id="lpmSearchIn" class="lpm-search-in" placeholder="Search course, reference, learner, venue or date" value="${lpmEsc(lpmSearchQ)}" oninput="lpmSearchInput(this.value)">
+        <span class="lpm-search-count">${rest.length} of ${Math.max(list.length - 1, 0)}</span>` : '<span class="lpm-search-label">Search course history</span>'}
+    </div>`;
+  const row = (c, isExample) => `
+    <div class="lpm-course-row-wrap${isExample ? ' example' : ''}">
+      <button class="lpm-course-row" onclick="lpmOpenCourse('${c.id}')">
+        <div class="lpm-course-name">${isExample ? '<span class="lpm-pin">📌 Example</span> ' : ''}${lpmEsc(c.courseName || 'Untitled course')}</div>
+        <div class="lpm-course-meta">${fmtShort(c.startDate)}${c.endDate && c.endDate !== c.startDate ? ' – ' + fmtShort(c.endDate) : ''}${c.courseRef ? ' · ' + lpmEsc(c.courseRef) : ''}${c.location ? ' · ' + lpmEsc(c.location) : ''}${reviewer && c.ownerName ? ' · ' + lpmEsc(c.ownerName) : ''}</div>
+        ${c.submission ? `<div class="lpm-course-sub"><span class="lpm-tick">✓</span> Submitted ${fmtShort(c.submission.at)}${iqaFor(c.id) ? ' · IQA ' + lpmEsc(iqaFor(c.id).outcome.toLowerCase()) : ' · awaiting IQA'}</div>` : ''}
+      </button>
+      ${isExample ? `<span class="lpm-course-locked" title="Example course — kept for reference and cannot be deleted">🔒</span>`
+        : (!c.submission || reviewer) ? `<button class="lpm-course-delete" onclick="event.stopPropagation();lpmDeleteCourseFromList('${c.id}')" aria-label="Delete course record">🗑</button>`
+        : `<span class="lpm-course-locked" title="Submitted for IQA review — only an IQA or admin can delete it">🔒</span>`}
+    </div>`;
+  if (!list.length) { wrap.innerHTML = filterHtml + `<div class="rn-empty">No course records yet. Start a new one above.</div>`; return; }
+  wrap.innerHTML = filterHtml + search +
+    (example ? row(example, true) : '') +
+    (rest.length ? rest.map(c => row(c, false)).join('')
+      : (q ? `<div class="rn-empty">No courses match “${lpmEsc(lpmSearchQ)}”.</div>` : (list.length === 1 ? '' : `<div class="rn-empty">No other course records yet.</div>`)));
 }
 
 function lpmDeleteCourseFromList(id) {
+  const all = lpmLoadCourses();
+  if (all.length && all[0].id === id) { alert('This is the example course. It is kept for reference and can\'t be deleted.'); return; }
+  const c0 = all.find(x => x.id === id);
+  const rev = typeof cloudIsReviewer === 'function' && cloudIsReviewer();
+  if (c0 && c0.submission && !rev) { alert('This course pack has been submitted for IQA review. Only an IQA or admin can delete it.'); return; }
   const list = lpmLoadCourses();
   const course = list.find(c => c.id === id);
   const name = course ? (course.courseName || 'this course record') : 'this course record';
@@ -7927,6 +8208,53 @@ function lpmInfoify(panel) {
     if (head && head.classList.contains('sc-h2')) { head.classList.add('with-info'); head.appendChild(btn); note.remove(); }
     else note.replaceWith(btn);
   });
+}
+// Full-screen photo viewer: arrows to move between photos, X to close
+let lbList = [], lbAt = 0;
+function lpmLightbox(list, at) {
+  lbList = (list || []).filter(Boolean); lbAt = at || 0;
+  let ov = document.getElementById('lbOv');
+  if (!ov) {
+    ov = document.createElement('div'); ov.id = 'lbOv'; ov.className = 'lb-ov';
+    ov.onclick = e => { if (e.target === ov || e.target.classList.contains('lb-stage')) lpmLightboxClose(); };
+    ov.innerHTML = `<button class="lb-x" onclick="lpmLightboxClose()" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+      <button class="lb-arrow prev" onclick="lpmLightboxGo(-1)" aria-label="Previous photo">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-8 7 8 7"/></svg></button>
+      <div class="lb-stage"><img id="lbImg" alt=""></div>
+      <button class="lb-arrow next" onclick="lpmLightboxGo(1)" aria-label="Next photo">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l8 7-8 7"/></svg></button>
+      <div class="lb-cap" id="lbCap"></div>`;
+    document.body.appendChild(ov);
+    document.addEventListener('keydown', lpmLightboxKeys);
+    let x0 = null;
+    ov.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    ov.addEventListener('touchend', e => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 50) lpmLightboxGo(dx < 0 ? 1 : -1);
+    });
+  }
+  ov.style.display = 'flex';
+  lpmLightboxShow();
+}
+function lpmLightboxShow() {
+  const it = lbList[lbAt] || {};
+  document.getElementById('lbImg').src = it.src || '';
+  document.getElementById('lbCap').textContent = (it.cap || '') + (lbList.length > 1 ? '   ·   ' + (lbAt + 1) + ' of ' + lbList.length : '');
+  document.querySelectorAll('#lbOv .lb-arrow').forEach(b => b.style.display = lbList.length > 1 ? '' : 'none');
+}
+function lpmLightboxGo(n) { if (!lbList.length) return; lbAt = (lbAt + n + lbList.length) % lbList.length; lpmLightboxShow(); }
+function lpmLightboxClose() { const ov = document.getElementById('lbOv'); if (ov) ov.style.display = 'none'; }
+function lpmLightboxKeys(e) {
+  const ov = document.getElementById('lbOv');
+  if (!ov || ov.style.display === 'none') return;
+  if (e.key === 'Escape') lpmLightboxClose();
+  if (e.key === 'ArrowLeft') lpmLightboxGo(-1);
+  if (e.key === 'ArrowRight') lpmLightboxGo(1);
+}
+function lpmOpenPhotos(files, at) {
+  lpmLightbox(files.map(f => ({ src: f.dataUrl, cap: [f.learnerName, f.title || EXAM_KINDS[f.kind] || '', f.page ? 'page ' + f.page : ''].filter(Boolean).join(' · ') })), at);
 }
 function lpmShowInfo(html) {
   const ov = document.createElement('div');
@@ -8244,10 +8572,11 @@ async function lpmRenderRegisterPhotos() {
   const el = document.getElementById('lpmRegisterPhotos');
   if (!el) return;
   const files = await packList(lpmCourse.id, 'register');
+  window.lpmRegisterFiles = files;
   if (!files.length) { el.innerHTML = ''; return; }
   el.innerHTML = `<div class="sc-h2">Register photos <span style="font-weight:400;color:#6B7A94;font-size:0.85rem;">· saved to the course pack</span></div>
     <div class="lpm-pack-grid">${files.map(f => `<div class="lpm-pack-item">
-      <a href="${f.dataUrl}" target="_blank"><img src="${f.dataUrl}" alt="Register photo"></a>
+      <img src="${f.dataUrl}" alt="Register photo — tap to enlarge" style="cursor:zoom-in;" onclick="lpmOpenPhotos(window.lpmRegisterFiles || [], ${files.indexOf(f)})">
       <div style="font-size:0.75rem;color:#6B7A94;">${fmtD(f.addedAt)}</div>
       <button class="lpm-learner-remove" onclick="lpmDeleteRegisterPhoto('${f.id}')">Delete photo</button>
     </div>`).join('')}</div>`;
@@ -8977,7 +9306,7 @@ function skSaveAllRaw(all) { try { localStorage.setItem(SK_STORE_KEY, JSON.strin
 function skSaveAll(all) { if (lpmReadOnlyNow()) return; skSaveAllRaw(all); if (typeof cloudQueue === 'function') cloudQueue(); }
 function skData() {
   const all = skLoadAll();
-  if (!all[skCourseId]) all[skCourseId] = { marks:{}, overrides:{}, signoff:{ centre:'Babcock International', centreNo:'123456', date:'', trainer:((skCourse()||{}).instructor1||'') } };
+  if (!all[skCourseId]) all[skCourseId] = { marks:{}, overrides:{}, signoff:{ centre:'Babcock', centreNo:'908571', date:'', trainer:((skCourse()||{}).instructor1||'') } };
   return all[skCourseId];
 }
 function skUpdate(fn) {
@@ -9214,8 +9543,8 @@ async function qsRecordSheetBytes(rows) {
     const top = t => H - t; // convert top-down measurements to PDF coordinates
 
     // Trainer/assessor details, written on the lines of the form
-    page.drawText('Babcock International', { x: 98, y: 128, size: 11, font, color: ink });
-    page.drawText('123456', { x: 414, y: 128, size: 11, font, color: ink });
+    page.drawText('Babcock', { x: 98, y: 128, size: 11, font, color: ink });
+    page.drawText('908571', { x: 414, y: 128, size: 11, font, color: ink });
     page.drawText((lpmCourse.instructor1 || '').trim(), { x: 100, y: 84, size: 11, font, color: ink });
     if (lpmCourse.signature) {
       const png = await pdf.embedPng(lpmCourse.signature);
@@ -9657,17 +9986,54 @@ async function lpmExamPreview(lid, only) {
     .sort((a, b) => Object.keys(EXAM_KINDS).indexOf(a.kind) - Object.keys(EXAM_KINDS).indexOf(b.kind) || (a.page || 9) - (b.page || 9));
   const ov = document.createElement('div');
   ov.className = 'lpm-prev-ov';
+  if (only) ov.dataset.only = only;
   ov.onclick = e => { if (e.target === ov) ov.remove(); };
+  const kinds = (only ? [only] : ['anat','anat_ref','mc','mc_ref']).filter(k => k !== 'prac_ref' && (only || files.some(f => f.kind === k)));
+  const pm = lpmCourse.mcPassMark || 28;
+  const resultBlock = kinds.map(k => {
+    const x = ((lpmCourse.examScores || {})[lid] || {})[k];
+    if (k.startsWith('anat')) {
+      return `<div class="prev-res"><span>${EXAM_KINDS[k]} result</span>
+        <div class="lpm-res-pick">
+          <button class="lpm-res-btn ${x && x.result === 'P' ? 'sel' : ''}" onclick="lpmPreviewResult('${lid}','${k}','P')">Pass</button>
+          <button class="lpm-res-btn ${x && x.result === 'R' ? 'sel' : ''}" onclick="lpmPreviewResult('${lid}','${k}','R')">Referral</button>
+          <button class="lpm-res-btn ${!x ? 'sel' : ''}" onclick="lpmPreviewResult('${lid}','${k}','')">Not marked</button>
+        </div></div>`;
+    }
+    return `<div class="prev-res"><span>${EXAM_KINDS[k]} score</span>
+      <div class="prev-score"><input type="number" min="0" max="40" value="${x && x.total ? x.score : ''}" onchange="lpmPreviewScore('${lid}','${k}', this.value)"> <b>/ 40</b>
+        <em class="${x && x.total ? (x.score >= pm ? 'p' : 'r') : ''}">${x && x.total ? (x.score >= pm ? 'Pass' : 'Referral') : 'Pass mark ' + pm}</em></div></div>`;
+  }).join('');
+  window.lpmPreviewFiles = files;
   ov.innerHTML = `<div class="lpm-prev-box">
       <div class="lpm-prev-head"><strong>${lpmEsc(l.name || '')}</strong>${only ? ' — ' + EXAM_KINDS[only] : ''}
         <button class="rn-nav-btn" onclick="this.closest('.lpm-prev-ov').remove()">Close</button></div>
+      ${resultBlock}
       ${files.length ? `<div class="lpm-prev-grid">${files.map(f => `<div class="lpm-prev-item">
-          <img src="${f.dataUrl}" alt="" onclick="window.open('${f.dataUrl}','_blank')">
+          <img src="${f.dataUrl}" alt="Tap to enlarge" onclick="lpmOpenPhotos(window.lpmPreviewFiles || [], ${files.indexOf(f)})">
           <div class="lpm-prev-cap">${EXAM_KINDS[f.kind]}${f.page ? ' · page ' + f.page : ''}${f.paperNo ? ' · ' + f.paperNo : ''}</div>
           <button class="lpm-learner-remove" onclick="lpmPreviewDelete('${f.id}','${lid}','${only || ''}', this)">Delete</button>
         </div>`).join('')}</div>` : `<p class="sc-p">Nothing uploaded yet${only ? ' for this paper' : ''}. Use "Add exam paper" to photograph it.</p>`}
     </div>`;
   document.body.appendChild(ov);
+}
+function lpmPreviewRefresh(lid) {
+  const ov = document.querySelector('.lpm-prev-ov');
+  const only = ov && ov.dataset.only ? ov.dataset.only : undefined;
+  if (ov) ov.remove();
+  lpmRenderTheory(true).then(() => lpmExamPreview(lid, only));
+}
+function lpmPreviewResult(lid, kind, v) {
+  lpmCourse.examScores = lpmCourse.examScores || {};
+  const ex = lpmCourse.examScores[lid] = lpmCourse.examScores[lid] || {};
+  if (v) ex[kind] = { result: v }; else delete ex[kind];
+  lpmPersist();
+  lpmPreviewRefresh(lid);
+}
+function lpmPreviewScore(lid, kind, v) {
+  if (v === '' || isNaN(v)) lpmSetExamScore(lid, kind, '', 0);
+  else lpmSetExamScore(lid, kind, Math.max(0, Math.min(40, Number(v))), 40);
+  lpmPreviewRefresh(lid);
 }
 async function lpmPreviewDelete(id, lid, only, btn) {
   if (!confirm('Delete this page?')) return;
@@ -9696,7 +10062,7 @@ async function lpmRenderTheory(keepMsg) {
     return false;
   };
   const cols = EXAM_COLS.filter(([k]) => !k.endsWith('_ref') || learners.some(l => referredIn(l, k)));
-  el.innerHTML = `<div class="sc-note">Photograph both pages of each paper. When the app can read the exam and the learner's name it files the page for you; otherwise it asks. Mark the papers by hand first. The app reads which paper and page each photo is, and the learner's name where it's legible; you tap the learner if it isn't. After page 2 of an A&amp;P paper it asks for the overall result you marked; after page 2 of the MCQ it asks for the total score (pass mark ${lpmCourse.mcPassMark || 28}/40).</div>
+  el.innerHTML = `<div class="sc-note">Tap a learner's preview to see their papers and record the result. Photograph both pages of each paper. When the app can read the exam and the learner's name it files the page for you; otherwise it asks. Mark the papers by hand first. The app reads which paper and page each photo is, and the learner's name where it's legible; you tap the learner if it isn't. After page 2 of an A&amp;P paper it asks for the overall result you marked; after page 2 of the MCQ it asks for the total score (pass mark ${lpmCourse.mcPassMark || 28}/40).</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0;" class="rn-no-print">
       <button class="rn-nav-btn primary" onclick="lpmExamAdd()">📷 Add exam paper</button>
       <span id="lpmExamMsg" style="font-size:0.85rem;color:#6B7A94;">${prevMsg}</span>
@@ -9715,8 +10081,7 @@ async function lpmRenderTheory(keepMsg) {
           const n = pagesFor(l.id, k), s2 = sc(l.id, k);
           const full = n >= need;
           return `<td class="sk-cell"><button class="sk-tick ${full ? 'c' : ''}" onclick="lpmExamCell('${l.id}','${k}')">${n ? (full ? '✓ ' : '') + n + '/' + need : (k.endsWith('_ref') ? '' : '0/' + need)}</button>
-            ${k.startsWith('anat') ? `<button class="lpm-pr ${s2 && s2.result ? s2.result.toLowerCase() : ''}" onclick="lpmCycleResult('${l.id}','${k}')">${s2 && s2.result ? (s2.result === 'P' ? 'Pass' : 'Referral') : 'P / R'}</button>`
-              : k !== 'prac_ref' ? `<input class="lpm-score ${s2 && s2.total ? (s2.score >= (lpmCourse.mcPassMark || 28) ? 'p' : 'r') : ''}" type="text" inputmode="numeric" placeholder="score /40" value="${s2 && s2.total ? s2.score + '/' + s2.total : ''}" onchange="lpmScoreInput('${l.id}','${k}', this.value)">` : ''}</td>`;
+            ${s2 ? `<div class="lpm-cell-res ${s2.result === 'P' ? 'p' : s2.result === 'R' ? 'r' : (s2.total && s2.score >= (lpmCourse.mcPassMark || 28)) ? 'p' : s2.total ? 'r' : ''}">${s2.result ? (s2.result === 'P' ? 'Pass' : 'Referral') : s2.total ? s2.score + '/' + s2.total : ''}</div>` : ''}</td>`;
         }).join('')}
       </tr>`; }).join('')}
     </table></div>` : `<p class="sc-p">Add learner names on the Learners step first.</p>`}
@@ -9943,7 +10308,9 @@ async function lpmRenderPack() {
       <tr><td>Learner feedback forms</td><td>${(lpmCourse.feedback || []).length + c('feedback')}</td></tr>
     </table>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;" class="rn-no-print">
-      <button class="rn-nav-btn primary" id="lpmPackBuild" onclick="lpmBuildPack('save')">Complete course</button>
+      ${lpmCourse.submission ? `<button class="rn-nav-btn primary" onclick="lpmShowStep('details')">Edit course</button>
+        <button class="rn-nav-btn" id="lpmPackBuild" onclick="lpmBuildPack('save')">Rebuild course pack</button>`
+        : `<button class="rn-nav-btn primary" id="lpmPackBuild" onclick="lpmBuildPack('save')">Complete course</button>`}
       <a id="lpmPackLink" class="rn-nav-btn" style="display:none;text-decoration:none;" target="_blank">Open course pack</a>
       <button class="rn-nav-btn" id="lpmPackSubmit" style="display:none;" onclick="lpmSubmitPack()">Submit course pack</button>
     </div>
@@ -9969,6 +10336,7 @@ async function lpmRenderFeedback() {
   if (!el) return;
   const learners = (lpmCourse.learners || []).filter(l => (l.name || '').trim()).length;
   const photos = await packList(lpmCourse.id, 'feedback');
+  window.lpmFeedbackFiles = photos;
   const forms = fbList().length;
   const total = forms + photos.length;
   el.innerHTML = `<div class="sc-note">Feedback is anonymous. Learners can scan the QR code, or you can photograph completed paper forms. Everything is added to the course pack.</div>
@@ -9992,7 +10360,7 @@ async function lpmRenderFeedback() {
             <button class="lpm-learner-remove" onclick="fbOpen('', '${f.id}')">Open / edit</button>
           </div>`).join('') : ''}
         ${photos.map((f, i) => `<div class="lpm-pack-item">
-            <a href="${f.dataUrl}" target="_blank"><img src="${f.dataUrl}" alt="Feedback form"></a>
+            <img src="${f.dataUrl}" alt="Feedback form — tap to enlarge" style="cursor:zoom-in;" onclick="lpmOpenPhotos(window.lpmFeedbackFiles || [], ${i})">
             <div style="font-size:0.75rem;color:#6B7A94;">Photo · ${fmtD(f.addedAt)}</div>
             <button class="lpm-learner-remove" onclick="fbDeletePhoto('${f.id}')">Delete</button>
           </div>`).join('')}
@@ -10876,7 +11244,7 @@ function admCourseStatusBase(c) {
   const finished = (c.endDate || c.startDate || '') < today;
   let label = 'Upcoming', cls = 'up';
   if ((c.startDate || '') <= today) { label = 'In progress'; cls = 'prog'; }
-  if (finished) { label = signed && n && theory === n ? 'Ready to submit' : 'Paperwork outstanding'; cls = signed && n && theory === n ? 'ok' : 'warn'; }
+  if (finished) { label = 'Paperwork outstanding — not submitted'; cls = 'warn'; }   // finished, and no pack submitted
   return { n, theory, fb, signed, label, cls };
 }
 function admLearnerNames(c) { return (c.learners || []).map(l => (l.name || '').trim()).filter(Boolean); }
@@ -10900,9 +11268,7 @@ function admRenderCourses() {
     const hay = [c.courseName, c.courseRef, c.location, c.ownerName, lpmInstructorLine(c), fmtD(c.startDate), ...admLearnerNames(c)].join(' ').toLowerCase();
     return hay.includes(q);
   }).sort((a, b) => ((admCourseStatus(b).cls === 'sub') - (admCourseStatus(a).cls === 'sub')) || (b.startDate || '').localeCompare(a.startDate || ''));
-  const totalLearners = all.reduce((t, c) => t + admLearnerNames(c).length, 0);
-  const month = isoLocal().slice(0, 7);
-  const thisMonth = all.filter(c => (c.startDate || '').startsWith(month)).length;
+
   const outstanding = all.filter(c => admCourseStatus(c).cls === 'warn').length;
   const awaiting = all.filter(c => admCourseStatus(c).cls === 'sub').length;
   const learnerHit = c => q ? admLearnerNames(c).filter(n => n.toLowerCase().includes(q)) : [];
@@ -10912,11 +11278,10 @@ function admRenderCourses() {
     <div class="hub-h" style="margin-bottom:4px;">Course Admin</div>
     <p class="sc-p">Every course recorded in the Digital Training Centre, across all instructors.</p>
     <div class="adm-stats">
-      <div><b>${all.length}</b><span>Courses</span></div>
-      <div><b>${totalLearners}</b><span>Learners</span></div>
-      <div><b>${thisMonth}</b><span>This month</span></div>
-      <div class="${awaiting ? 'warn' : ''}" style="cursor:pointer;" onclick="admState.status='sub';admRenderCourses()"><b>${awaiting}</b><span>Awaiting IQA review</span></div>
-      <div class="${outstanding ? 'warn' : ''}"><b>${outstanding}</b><span>Paperwork outstanding</span></div>
+      <button class="adm-stat ${admState.status === '' ? 'on' : ''}" onclick="admState.status='';admRenderCourses()"><b>${all.length}</b><span>All courses</span></button>
+      <button class="adm-stat ${admState.status === 'sub' ? 'on' : ''}" onclick="admState.status='sub';admRenderCourses()"><b>${awaiting}</b><span>Awaiting IQA review</span></button>
+      <button class="adm-stat warn ${admState.status === 'warn' ? 'on' : ''}" onclick="admState.status='warn';admRenderCourses()"><b>${outstanding}</b><span>Paperwork outstanding</span></button>
+      <button class="adm-stat ok ${admState.status === 'ok' ? 'on' : ''}" onclick="admState.status='ok';admRenderCourses()"><b>${all.filter(c => admCourseStatus(c).cls === 'ok').length}</b><span>Reviewed / ready</span></button>
     </div>
     <div class="adm-filters">
       <input class="adm-search" placeholder="Search course, learner, instructor, location or reference" value="${lpmEsc(admState.q)}" oninput="admState.q=this.value;admRenderCoursesDebounced()">
@@ -10932,10 +11297,10 @@ function admRenderCourses() {
     <div class="adm-list">${list.length ? list.map(c => { const s = admCourseStatus(c), hits = learnerHit(c); return `
       <div class="adm-row">
         <div class="adm-main" onclick="admOpen('${c.id}','overview')">
-          <div class="adm-title">${lpmEsc(c.courseName || 'Untitled course')}${c.courseRef ? ` <span class="adm-ref">${lpmEsc(c.courseRef)}</span>` : ''}</div>
-          <div class="adm-meta">${fmtD(c.startDate)}${c.endDate && c.endDate !== c.startDate ? ' – ' + fmtD(c.endDate) : ''} · ${lpmEsc(c.ownerName || lpmInstructorLine(c) || '—')}${c.location ? ' · ' + lpmEsc(c.location) : ''}</div>
+          <div class="adm-title">${lpmEsc(c.courseName || 'Untitled course')}</div>
+          <div class="adm-meta">${fmtShort(c.startDate)}${c.endDate && c.endDate !== c.startDate ? ' – ' + fmtShort(c.endDate) : ''}${c.courseRef ? ' · ' + lpmEsc(c.courseRef) : ''} · ${lpmEsc(c.ownerName || lpmInstructorLine(c) || '—')}${c.location ? ' · ' + lpmEsc(c.location) : ''}</div>
           ${hits.length ? `<div class="adm-hit">Learner: ${hits.map(lpmEsc).join(', ')}</div>` : ''}
-          <div class="adm-chips"><span>${s.n} learner${s.n === 1 ? '' : 's'}</span><span>Theory ${s.theory}/${s.n}</span><span>Feedback ${s.fb}/${s.n}</span><span class="${s.signed ? 'ok' : ''}">${s.signed ? 'Signed' : 'Not signed'}</span></div>
+          <div class="adm-chips">${c.submission ? `<span class="ok"><b>✓</b> Submitted ${fmtShort(c.submission.at)}</span>` : `<span>Not submitted</span>`}<span>Theory ${s.theory}/${s.n}</span><span>Feedback ${s.fb}/${s.n}</span><span class="${s.signed ? 'ok' : ''}">${s.signed ? 'Signed' : 'Not signed'}</span></div>
         </div>
         <div class="adm-side">
           <span class="adm-status ${s.cls}">${s.label}</span>
