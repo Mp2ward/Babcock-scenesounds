@@ -689,6 +689,7 @@ function fmtD(v) {
   @media (max-width:640px) { .lb-ov { padding:52px 6px; } .lb-arrow { width:44px; height:44px; } .lb-stage img { max-height:calc(100vh - 150px); } }
   .lpm-course-sub { font-size:0.78rem; color:#0F6E56; font-weight:700; margin-top:3px; }
   .lpm-tick { display:inline-flex; width:16px; height:16px; border-radius:50%; background:#0F6E56; color:#fff; align-items:center; justify-content:center; font-size:0.62rem; vertical-align:-3px; margin-right:4px; }
+  .lpm-no-delete { display:inline-flex; align-items:center; justify-content:center; width:40px; color:#C74444; opacity:0.85; }
   .lpm-course-locked { display:inline-flex; align-items:center; justify-content:center; width:38px; color:#B8C2D0; font-size:0.9rem; }
   .adm-chips span.ok b { color:#0F6E56; }
   .aln-btn { border:1px dashed #B8C2D0; background:#fff; color:#6B7A94; border-radius:6px; padding:7px 10px; font-size:0.78rem; cursor:pointer; white-space:nowrap; }
@@ -8107,9 +8108,17 @@ function lpmRenderCourseList() {
         <div class="lpm-course-meta">${fmtShort(c.startDate)}${c.endDate && c.endDate !== c.startDate ? ' – ' + fmtShort(c.endDate) : ''}${c.courseRef ? ' · ' + lpmEsc(c.courseRef) : ''}${c.location ? ' · ' + lpmEsc(c.location) : ''}${reviewer && c.ownerName ? ' · ' + lpmEsc(c.ownerName) : ''}</div>
         ${c.submission ? `<div class="lpm-course-sub"><span class="lpm-tick">✓</span> Submitted ${fmtShort(c.submission.at)}${iqaFor(c.id) ? ' · IQA ' + lpmEsc(iqaFor(c.id).outcome.toLowerCase()) : ' · awaiting IQA'}</div>` : ''}
       </button>
-      ${isExample ? `<span class="lpm-course-locked" title="Example course — kept for reference and cannot be deleted">🔒</span>`
+      ${isExample ? `<span class="lpm-no-delete" title="Example course — kept for reference and cannot be deleted" aria-label="Cannot be deleted">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true">
+          <g transform="translate(12 12) scale(0.58) translate(-12 -12)" stroke-width="2.6"><path d="M5 7h14M9.5 7V4.8h5V7M7 7l1 12.5h8L17 7"/></g>
+          <circle cx="12" cy="12" r="10.2" stroke-width="1.9"/><path d="M4.8 19.2L19.2 4.8" stroke-width="1.9"/>
+        </svg></span>`
         : (!c.submission || reviewer) ? `<button class="lpm-course-delete" onclick="event.stopPropagation();lpmDeleteCourseFromList('${c.id}')" aria-label="Delete course record">🗑</button>`
-        : `<span class="lpm-course-locked" title="Submitted for IQA review — only an IQA or admin can delete it">🔒</span>`}
+        : `<span class="lpm-no-delete" title="Submitted for IQA review — it can still be edited, but only an IQA or admin can delete it" aria-label="Cannot be deleted">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true">
+          <g transform="translate(12 12) scale(0.58) translate(-12 -12)" stroke-width="2.6"><path d="M5 7h14M9.5 7V4.8h5V7M7 7l1 12.5h8L17 7"/></g>
+          <circle cx="12" cy="12" r="10.2" stroke-width="1.9"/><path d="M4.8 19.2L19.2 4.8" stroke-width="1.9"/>
+        </svg></span>`}
     </div>`;
   if (!list.length) { wrap.innerHTML = filterHtml + `<div class="rn-empty">No course records yet. Start a new one above.</div>`; return; }
   wrap.innerHTML = filterHtml + search +
@@ -9110,28 +9119,13 @@ function lpmRenderSessions() {
   if (!lpmCourse.linkedSessionIds) lpmCourse.linkedSessionIds = [];
   const allSessions = (typeof rnLoadSessions === 'function') ? rnLoadSessions() : [];
   const linked = allSessions.filter(s => lpmCourse.linkedSessionIds.includes(s.id));
-  const unlinked = allSessions.filter(s => !lpmCourse.linkedSessionIds.includes(s.id));
 
   let html = `<button class="rn-nav-btn primary rn-no-print" style="margin-bottom:14px;" onclick="rnRunForCourse('${lpmCourse.id}')">Run a scenario for this course</button>
     <div class="sc-h2" style="margin-top:0;">Scenario sessions run for this course</div>
-    <div class="sc-note">Sessions saved from Run a Scenario with this course selected are added here automatically. You can also add, remove or delete sessions below.</div>`;
+    <div class="sc-note">Sessions are added here automatically when they are saved in Run a Scenario with this course selected.</div>`;
 
-  if (!linked.length) {
-    html += `<div class="rn-empty">No scenario sessions added to this course yet.</div>`;
-  } else {
-    linked.forEach(s => {
-      html += lpmSessionCard(s, true);
-    });
-  }
-
-  html += `<div class="sc-h2">Add a saved session to this course</div>`;
-  if (!unlinked.length) {
-    html += `<div class="rn-empty">${allSessions.length ? 'Every saved session is already added to this course.' : 'No scenario sessions have been saved yet. Run a scenario and save it from the Record step first.'}</div>`;
-  } else {
-    unlinked.forEach(s => {
-      html += lpmSessionCard(s, false);
-    });
-  }
+  html += linked.length ? linked.map(s => lpmSessionCard(s, true)).join('')
+    : `<div class="rn-empty">No scenario sessions run for this course yet.</div>`;
 
   document.getElementById('lpmPanel-sessions').innerHTML = html;
 }
@@ -9157,10 +9151,7 @@ function lpmSessionCard(s, isLinked) {
     <div class="rn-summary-name">${lpmEsc(s.scenarioTitle)} <span style="font-weight:400;color:#8494AC;font-size:0.8rem;">— ${fmtD(s.date)}</span></div>
     <div style="font-size:0.82rem;color:#6B7A94;margin-top:4px;">${learnerLine || 'No named learners recorded'}</div>
     <div style="margin-top:10px;" class="rn-no-print">
-      ${isLinked
-        ? `<button class="lpm-learner-remove" onclick="lpmUnlinkSession('${s.id}')">Remove from this course</button>`
-        : `<button class="rn-nav-btn primary" onclick="lpmLinkSession('${s.id}')">Add to this course</button>`}
-      <button class="lpm-learner-remove" style="margin-left:8px;" onclick="lpmDeleteSession('${s.id}')">Delete session</button>
+      <button class="lpm-learner-remove" onclick="lpmDeleteSession('${s.id}')">Delete session</button>
     </div>
   </div>`;
 }
@@ -10308,8 +10299,7 @@ async function lpmRenderPack() {
       <tr><td>Learner feedback forms</td><td>${(lpmCourse.feedback || []).length + c('feedback')}</td></tr>
     </table>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;" class="rn-no-print">
-      ${lpmCourse.submission ? `<button class="rn-nav-btn primary" onclick="lpmShowStep('details')">Edit course</button>
-        <button class="rn-nav-btn" id="lpmPackBuild" onclick="lpmBuildPack('save')">Rebuild course pack</button>`
+      ${(lpmCourse.submission && !lpmCourse.editing) ? `<button class="rn-nav-btn primary" onclick="lpmEditCourse()">Edit course</button>`
         : `<button class="rn-nav-btn primary" id="lpmPackBuild" onclick="lpmBuildPack('save')">Complete course</button>`}
       <a id="lpmPackLink" class="rn-nav-btn" style="display:none;text-decoration:none;" target="_blank">Open course pack</a>
       <button class="rn-nav-btn" id="lpmPackSubmit" style="display:none;" onclick="lpmSubmitPack()">Submit course pack</button>
@@ -10854,8 +10844,17 @@ function cloudRenderBadge() {
   const st = cloud.status || 'Saved';
   el.innerHTML = `<span class="cl-dot ${/offline|error|not/i.test(st) ? 'warn' : /sync/i.test(st) ? 'busy' : ''}"></span>
     <span class="cl-who">${lpmEsc(cloud.profile ? cloud.profile.full_name : '')}${role ? ' · ' + role : ''}</span>
-    <span class="cl-st">${st}</span>
+    <span class="cl-st" ${/error/i.test(st) ? 'style="cursor:pointer;text-decoration:underline" onclick="cloudShowError()"' : ''}>${st}</span>
     <button class="cl-out" onclick="cloudSignOut()">Sign out</button>`;
+}
+function cloudShowError() {
+  const raw = cloud.lastError || 'No details recorded.';
+  const hint = /team|column .* does not exist|42703|PGRST204/.test(raw)
+    ? 'The database is missing the co-instructor update. In Supabase → SQL Editor, run the "Co-instructors" section at the end of supabase_setup.sql, then reload.'
+    : /row-level security|42501/.test(raw) ? 'The access rules are blocking this save. Check the setup SQL has been run for every table.'
+    : /JWT|401/.test(raw) ? 'Your sign-in has expired. Sign out and back in.'
+    : 'Check the internet connection, then reload.';
+  alert('Sync problem\n\n' + hint + '\n\nDetails:\n' + raw);
 }
 function cloudSetStatus(s) { cloud.status = s; cloudRenderBadge(); }
 
@@ -10927,6 +10926,7 @@ async function cloudPush() {
     await cloudPushFiles();
     cloudSetStatus('Saved');
   } catch (e) {
+    cloud.lastError = String(e && e.message || e).slice(0, 400);
     cloudSetStatus(navigator.onLine ? 'Sync error — retrying' : 'Offline — will sync');
     setTimeout(cloudQueue, 20000);
   } finally { cloud.busy = false; }
@@ -11461,6 +11461,11 @@ async function iqaPull() {
 }
 
 // ---------- Instructor: submit the finished pack ----------
+function lpmEditCourse() {
+  lpmCourse.editing = true;
+  lpmPersist();
+  lpmShowStep('details');
+}
 async function lpmSubmitPack() {
   const msg = document.getElementById('lpmPackMsg');
   const say = (t, err) => { msg.style.color = err ? '#C74444' : '#0F6E56'; msg.textContent = t; };
@@ -11475,6 +11480,7 @@ async function lpmSubmitPack() {
     const path = cloudMe() + '/' + lpmCourse.id + '/course-pack.pdf';
     await cloudFetch('/storage/v1/object/course-files/' + path, { method:'POST', body: lpmPackFile.blob, json:false, headers:{ 'Content-Type':'application/pdf', 'x-upsert':'true' } });
     lpmCourse.submission = { at: new Date().toISOString(), by: (cloud.profile && cloud.profile.full_name) || '', pages: lpmPackFile.pages, path };
+    delete lpmCourse.editing;
     lpmPersist();
     await cloudPush();
     lpmRenderPack();
@@ -11487,7 +11493,7 @@ async function lpmSubmitPack() {
 function lpmSubmissionHTML(c) {
   const s = c.submission, r = iqaFor(c.id);
   if (!s) return '';
-  let h = `<div class="iqa-state sub"><b>Submitted for IQA review</b> — ${fmtD(s.at)}${s.by ? ' by ' + lpmEsc(s.by) : ''} · ${s.pages || '?'} pages</div>`;
+  let h = `<div class="iqa-state sub"><b>Submitted for IQA review</b> — ${fmtD(s.at)}${s.by ? ' by ' + lpmEsc(s.by) : ''} · ${s.pages || '?'} pages${c.editing ? ' · <b>being edited</b> — complete the course again and resubmit' : ''}</div>`;
   if (r) {
     const cls = r.outcome === 'Accepted' ? 'ok' : r.outcome === 'Returned to instructor' ? 'ret' : 'act';
     h += `<div class="iqa-state ${cls}"><b>IQA: ${lpmEsc(r.outcome)}</b> — ${lpmEsc(r.iqa_name)}, ${fmtD(r.review_date)}${r.notes ? `<div class="iqa-notes">${lpmEsc(r.notes)}</div>` : ''}</div>`;
@@ -11576,7 +11582,7 @@ function fbLinkUrl(token) {
   const base = location.origin + location.pathname.replace(/[^/]*$/, '');
   return base + 'feedback.html?t=' + token;
 }
-function fbCanQr() { return CLOUD_ON && cloud.session && lpmCourse && (!lpmCourse.owner || lpmCourse.owner === cloudMe()); }
+function fbCanQr() { return CLOUD_ON && cloud.session && lpmCourse && !lpmCourse.isExample && (!lpmCourse.owner || lpmCourse.owner === cloudMe()); }
 
 async function fbEnsureLink() {
   const l = lpmCourse.feedbackLink;
@@ -11584,6 +11590,10 @@ async function fbEnsureLink() {
   const ch = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const token = Array.from(crypto.getRandomValues(new Uint8Array(22))).map(b => ch[b % ch.length]).join('');
   await cloudPush(); // the course must exist on the server before a link can point to it
+  try {
+    const rows = await cloudRest('courses?select=id&id=eq.' + encodeURIComponent(lpmCourse.id));
+    if (!rows || !rows.length) throw new Error('This course hasn\'t synced to the server yet. Check the sync indicator by your name, then try again.');
+  } catch (e) { if (/hasn\'t synced/.test(e.message)) throw e; }
   const expires = new Date(Date.now() + 14 * 864e5).toISOString();
   await cloudRest('feedback_links', 'POST', [{ token, course_id: lpmCourse.id, owner: cloudMe(), expires_at: expires }], 'return=minimal');
   lpmCourse.feedbackLink = { token, expires };
@@ -11604,6 +11614,11 @@ async function fbRenderQrCard() {
   const box = document.getElementById('fbQrCard');
   if (!box) return;
   if (!CLOUD_ON || !cloud.session) { box.innerHTML = `<div class="fb-qr-title">Scan to give feedback</div><p class="sc-p">Sign in to show the feedback QR code.</p>`; return; }
+  if (lpmCourse && lpmCourse.isExample) {
+    box.innerHTML = `<div class="fb-qr-title">Scan to give feedback</div>
+      <p class="sc-p">This is the example course, so the QR code is switched off. Open one of your own courses to show a live QR code to learners.</p>`;
+    return;
+  }
   if (!fbCanQr()) { box.innerHTML = `<div class="fb-qr-title">Learner feedback by QR</div><p class="sc-p">Only the course's instructor can show the QR code. Responses appear here automatically.</p>`; return; }
   if (!navigator.onLine) { box.innerHTML = `<div class="fb-qr-title">Scan to give feedback</div><p class="sc-p">Connect to the internet to show the QR code.</p>`; return; }
   box.innerHTML = `<div class="fb-qr-title">Scan to give feedback</div><div class="fb-qr-wait">Preparing QR code…</div>`;
@@ -11617,7 +11632,12 @@ async function fbRenderQrCard() {
       <div class="fb-qr-sub">Answers appear here automatically</div>`;
     await fbDrawQr(document.getElementById('fbQrImg'), url, 190);
   } catch (e) {
-    box.innerHTML = `<div class="fb-qr-title">Scan to give feedback</div><p class="sc-p" style="color:#C74444;">Couldn't create the feedback link: ${lpmEsc(e.message || e)}</p><button class="rn-nav-btn" onclick="fbRenderQrCard()">Try again</button>`;
+    const raw = String(e.message || e);
+    const friendly = /row-level security|42501/.test(raw)
+      ? 'The feedback tables haven\'t been set up on the server yet, or this course hasn\'t finished syncing. Run supabase_feedback.sql, check the sync indicator is green, then try again.'
+      : /relation .* does not exist|PGRST20|42P01/.test(raw) ? 'The feedback tables are missing on the server. Run supabase_feedback.sql in Supabase, then try again.'
+      : raw;
+    box.innerHTML = `<div class="fb-qr-title">Scan to give feedback</div><p class="sc-p" style="color:#C74444;">${lpmEsc(friendly)}</p><button class="rn-nav-btn" onclick="fbRenderQrCard()">Try again</button>`;
   }
 }
 
