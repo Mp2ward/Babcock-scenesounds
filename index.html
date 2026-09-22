@@ -689,9 +689,67 @@ function fmtD(v) {
   @media (max-width:640px) { .lb-ov { padding:52px 6px; } .lb-arrow { width:44px; height:44px; } .lb-stage img { max-height:calc(100vh - 150px); } }
   .lpm-course-sub { font-size:0.78rem; color:#0F6E56; font-weight:700; margin-top:3px; }
   .lpm-tick { display:inline-flex; width:16px; height:16px; border-radius:50%; background:#0F6E56; color:#fff; align-items:center; justify-content:center; font-size:0.62rem; vertical-align:-3px; margin-right:4px; }
+  .lpm-search-row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+  .lpm-search-row .lpm-search { margin-bottom:0; }
+  .lpm-search-row .lpm-search.open { flex:1 1 320px; }
+
+  /* Admin panel polish: rounder cards, gentle motion */
+  .adm-stats { gap:12px; }
+  .adm-stats > div, .adm-stats > .adm-stat {
+    border-radius:14px; border:1px solid #E3E8F0; border-left-width:5px; background:linear-gradient(180deg,#fff,#FAFBFE);
+    padding:14px 16px; transition:transform .18s cubic-bezier(.2,1.2,.4,1), box-shadow .18s, border-color .18s;
+    animation:admIn .32s ease-out both; }
+  .adm-stats > *:nth-child(1) { animation-delay:.02s; } .adm-stats > *:nth-child(2) { animation-delay:.07s; }
+  .adm-stats > *:nth-child(3) { animation-delay:.12s; } .adm-stats > *:nth-child(4) { animation-delay:.17s; }
+  .adm-stats > *:nth-child(5) { animation-delay:.22s; }
+  .adm-stat:hover { transform:translateY(-2px); box-shadow:0 12px 22px -16px rgba(13,27,76,0.5); border-color:#C7D3EA; }
+  .adm-stat:active { transform:translateY(0) scale(0.99); }
+  .adm-stat.on { background:linear-gradient(180deg,#F5F8FF,#EEF3FD); }
+  .adm-stats b { letter-spacing:-0.02em; }
+  .adm-search, .adm-dates input, .adm-filters .rn-name-select { border-radius:12px; transition:border-color .15s, box-shadow .15s; }
+  .adm-search:focus, .adm-dates input:focus, .adm-filters .rn-name-select:focus { border-color:#2B5BD7; box-shadow:0 0 0 3px rgba(43,91,215,0.12); outline:none; }
+  .adm-row { border-radius:14px; transition:transform .16s, box-shadow .16s, border-color .16s; animation:admIn .3s ease-out both; }
+  .adm-list .adm-row:nth-child(1) { animation-delay:.04s; } .adm-list .adm-row:nth-child(2) { animation-delay:.08s; }
+  .adm-list .adm-row:nth-child(3) { animation-delay:.12s; } .adm-list .adm-row:nth-child(4) { animation-delay:.16s; }
+  .adm-list .adm-row:nth-child(n+5) { animation-delay:.2s; }
+  .adm-row:hover { transform:translateY(-2px); box-shadow:0 14px 26px -20px rgba(13,27,76,0.55); border-color:#C7D3EA; }
+  .adm-chips span { border-radius:100px; padding:3px 10px; }
+  .adm-status { padding:4px 11px; }
+  .adm-actions .rn-nav-btn { border-radius:10px; transition:transform .14s, background .15s; }
+  .adm-actions .rn-nav-btn:hover { transform:translateY(-1px); }
+  .adm-card { border-radius:16px; transition:transform .18s cubic-bezier(.2,1.2,.4,1), box-shadow .18s, border-color .18s; animation:admIn .3s ease-out both; }
+  .adm-card:hover { transform:translateY(-3px); box-shadow:0 16px 30px -22px rgba(13,27,76,0.6); }
+  .adm-grid .adm-card:nth-child(1) { animation-delay:.04s; } .adm-grid .adm-card:nth-child(2) { animation-delay:.09s; }
+  .adm-grid .adm-card:nth-child(3) { animation-delay:.14s; } .adm-grid .adm-card:nth-child(n+4) { animation-delay:.18s; }
+  @keyframes admIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+  @media (prefers-reduced-motion:reduce) { .adm-stats > *, .adm-row, .adm-card { animation:none !important; } .adm-row:hover, .adm-card:hover, .adm-stat:hover { transform:none; } }
+  .iqa-tiles { display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; }
+  .iqa-tile { display:flex; flex-direction:column; align-items:flex-start; border:1px solid #D8DEE8; border-left-width:4px; border-radius:8px; background:#fff; padding:6px 12px; cursor:pointer; font:inherit; min-width:96px; }
+  .iqa-tile b { font-family:'Public Sans',sans-serif; font-size:1.1rem; color:#0D1B4C; line-height:1.1; }
+  .iqa-tile span { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; color:#6B7A94; }
+  .iqa-tile.ok { border-left-color:#0F6E56; } .iqa-tile.wait { border-left-color:#2B5BD7; } .iqa-tile.act { border-left-color:#C74444; }
+  .iqa-tile.act b, .iqa-tile.act span { color:#B42318; }
+  .iqa-tile.on { box-shadow:inset 0 0 0 1px #2B5BD7; background:#F7F9FE; }
+  .iqa-returned { border:2px solid #E4A9A9; background:#FDF4F4; border-radius:10px; padding:12px 14px; margin-bottom:14px; }
+  .iqa-returned-head { color:#B42318; font-weight:800; font-size:0.85rem; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:8px; }
+  .iqa-returned-row { display:block; width:100%; text-align:left; border:0; background:transparent; padding:8px 0; cursor:pointer; font:inherit; border-top:1px solid #F0D6D6; }
+  .iqa-returned-row:first-of-type { border-top:0; }
+  .iqa-returned-row b { color:#0D1B4C; }
+  .iqa-returned-note { font-size:0.82rem; color:#B42318; margin-top:2px; }
+  @media (max-width:700px) { .iqa-tiles { margin-left:0; width:100%; } .iqa-tile { flex:1; min-width:0; } }
+  .er-row { border:1px solid #E6EAF0; border-left:4px solid #B8C2D0; border-radius:8px; padding:10px 12px; margin-bottom:8px; display:flex; gap:12px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; background:#fff; }
+  .er-row.pending { border-left-color:#B06A00; background:#FFFBF4; }
+  .er-row.approved { border-left-color:#0F6E56; } .er-row.declined { border-left-color:#C74444; }
+  .er-tag { font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; padding:1px 7px; border-radius:100px; background:#EEF1F5; color:#5A6478; }
+  .er-tag.pending { background:#FCEBD2; color:#B06A00; } .er-tag.approved { background:#DDF1E8; color:#0F6E56; } .er-tag.declined { background:#FBE3E3; color:#B42318; }
+  .er-reason { font-size:0.9rem; color:#33405C; margin-top:4px; white-space:pre-wrap; }
+  .er-note { font-size:0.8rem; color:#6B7A94; margin-top:4px; }
+  .er-btns { display:flex; gap:8px; }
+  .er-waiting { display:inline-flex; align-items:center; padding:10px 14px; border-radius:8px; background:#FFFBF4; border:1px solid #F0D6A8; color:#B06A00; font-weight:700; font-size:0.85rem; }
   .lpm-no-delete { display:inline-flex; align-items:center; justify-content:center; width:40px; color:#C74444; opacity:0.85; }
   .lpm-course-locked { display:inline-flex; align-items:center; justify-content:center; width:38px; color:#B8C2D0; font-size:0.9rem; }
   .adm-chips span.ok b { color:#0F6E56; }
+  .adm-chips span.warn { background:#FCEBD2; color:#B06A00; font-weight:700; }
   .aln-btn { border:1px dashed #B8C2D0; background:#fff; color:#6B7A94; border-radius:6px; padding:7px 10px; font-size:0.78rem; cursor:pointer; white-space:nowrap; }
   .aln-btn.on { border-style:solid; border-color:#2B5BD7; color:#2B5BD7; background:#EAF1FD; font-weight:700; }
   .aln-line { font-size:0.78rem; color:#2B5BD7; margin:-6px 0 10px 4px; }
@@ -1312,7 +1370,7 @@ window.addEventListener('load', function () {
       <div class="hub-accent" style="background:#4A6B52;"></div>
       <div style="flex:1;min-width:0;">
         <div class="hub-title">Course Matrix</div>
-        <div class="hub-sub" id="hubLpmSub">Course records, skills stations, exams and course packs</div>
+        <div class="hub-sub" id="hubLpmSub">Record competencies, upload exams and submit course paperwork</div>
       </div>
       <span class="hub-chev">&rsaquo;</span>
     </button>
@@ -1738,7 +1796,7 @@ window.addEventListener('load', function () {
   <div class="lpm-view" id="lpm-course">
     <div class="rn-wrap">
 
-      <button class="sc-back rn-no-print" onclick="lpmShowPick()">&larr; All courses</button>
+      <button class="sc-back rn-no-print" id="lpmBackBtn" onclick="lpmBackFromCourse()">&larr; All courses</button>
 
       <div class="rn-head">
         <div class="lpm-main-title">Course Matrix</div>
@@ -2949,7 +3007,7 @@ const MENU_ITEMS = [
     { label:'Course Admin', sub:'Search every course and course pack', go:"admOpenCourses()" },
     { label:'Instructor Admin', sub:"Instructors' courses and CPD", go:"admOpenInstructors()" } ] },
   { g:'Training', items:[
-    { label:'Course Matrix', sub:'Course records, exams, packs', go:"showView('lpm');lpmShowPick()" },
+    { label:'Course Matrix', sub:'Record competencies, upload exams, submit paperwork', go:"showView('lpm');lpmShowPick()" },
     { label:'Scenario Cards', sub:'Briefs, roles, assessment criteria', go:"showView('cards');scRenderGrid()" },
     { label:'Run a Scenario', sub:'Deliver and assess in one flow', go:"showView('run');rnRenderPick()" } ] },
   { g:'Tools', items:[
@@ -8036,6 +8094,11 @@ function lpmOnTeam(c) {
 }
 function lpmReadOnlyNow() {
   if (typeof CLOUD_ON === 'undefined' || !CLOUD_ON) return false;
+  if (typeof cloudIsReviewer === 'function' && cloudIsReviewer()) return false;   // IQA and admin can edit anything
+  if (typeof lpmLocked === 'function' && lpmLocked(lpmCourse)) {
+    const v0 = document.getElementById('view-lpm');
+    if (v0 && v0.classList.contains('active')) return true;
+  }
   if (typeof lpmCourse === 'undefined' || !lpmCourse || !lpmCourse.owner) return false;
   if (lpmCourse.owner === cloudMe() || lpmOnTeam(lpmCourse)) return false;
   const v = document.getElementById('view-lpm');
@@ -8055,13 +8118,31 @@ function lpmShowView(name) {
   window.scrollTo(0,0);
 }
 
+function lpmBackFromCourse() {
+  if (window.lpmFromAdmin) { window.lpmFromAdmin = false; admOpenCourses(); return; }
+  lpmShowPick();
+}
+function lpmSyncBackBtn() {
+  const b = document.getElementById('lpmBackBtn');
+  if (b) b.innerHTML = window.lpmFromAdmin ? '&larr; Course Admin' : '&larr; All courses';
+}
 function lpmShowPick() {
+  window.lpmFromAdmin = false;
   lpmRenderCourseList();
   lpmShowView('pick');
 }
 
 let lpmOwnerFilter = '';
-let lpmSearchOpen = false, lpmSearchQ = '';
+let lpmSearchOpen = false, lpmSearchQ = '', lpmIqaFilter = '';
+function lpmIqaState(c) {
+  if (!c || !c.submission) return '';
+  const r = iqaFor(c.id);
+  if (!r) return 'pending';
+  if (r.outcome === 'Returned to instructor') return 'action';
+  if (r.outcome === 'Accepted with actions') return 'action';
+  return 'approved';
+}
+function lpmSetIqaFilter(v) { lpmIqaFilter = (lpmIqaFilter === v) ? '' : v; lpmRenderCourseList(); }
 function lpmToggleSearch() {
   lpmSearchOpen = !lpmSearchOpen;
   if (!lpmSearchOpen) lpmSearchQ = '';
@@ -8092,6 +8173,12 @@ function lpmRenderCourseList() {
   let rest = list.filter(c => !c.isExample).reverse();
   const q = (lpmSearchQ || '').toLowerCase().trim();
   if (q) rest = rest.filter(c => lpmCourseHay(c).includes(q));
+  const live = list.filter(c => !c.isExample);
+  const counts = { approved: live.filter(c => lpmIqaState(c) === 'approved').length,
+                   pending: live.filter(c => lpmIqaState(c) === 'pending').length,
+                   action: live.filter(c => lpmIqaState(c) === 'action').length };
+  const returned = rest.filter(c => lpmIqaState(c) === 'action');
+  if (lpmIqaFilter) rest = rest.filter(c => lpmIqaState(c) === lpmIqaFilter);
   const search = `<div class="lpm-search ${lpmSearchOpen ? 'open' : ''}">
       <button class="lpm-search-btn" onclick="lpmToggleSearch()" aria-label="${lpmSearchOpen ? 'Close search' : 'Search courses'}">
         ${lpmSearchOpen
@@ -8101,6 +8188,19 @@ function lpmRenderCourseList() {
       ${lpmSearchOpen ? `<input id="lpmSearchIn" class="lpm-search-in" placeholder="Search course, reference, learner, venue or date" value="${lpmEsc(lpmSearchQ)}" oninput="lpmSearchInput(this.value)">
         <span class="lpm-search-count">${rest.length} of ${Math.max(list.length - 1, 0)}</span>` : '<span class="lpm-search-label">Search course history</span>'}
     </div>`;
+  const tiles = `<div class="iqa-tiles">
+      <button class="iqa-tile ok ${lpmIqaFilter === 'approved' ? 'on' : ''}" onclick="lpmSetIqaFilter('approved')"><b>${counts.approved}</b><span>IQA approved</span></button>
+      <button class="iqa-tile wait ${lpmIqaFilter === 'pending' ? 'on' : ''}" onclick="lpmSetIqaFilter('pending')"><b>${counts.pending}</b><span>IQA pending</span></button>
+      <button class="iqa-tile act ${lpmIqaFilter === 'action' ? 'on' : ''}" onclick="lpmSetIqaFilter('action')"><b>${counts.action}</b><span>Action required</span></button>
+    </div>`;
+  const returnedBox = returned.length && !lpmIqaFilter ? `<div class="iqa-returned">
+      <div class="iqa-returned-head">⚠ Action required from the IQA</div>
+      ${returned.map(c => { const r = iqaFor(c.id) || {};
+        return `<button class="iqa-returned-row" onclick="lpmOpenCourse('${c.id}')">
+          <div><b>${lpmEsc(c.courseName || 'Course')}</b> · ${fmtShort(c.startDate)}${c.courseRef ? ' · ' + lpmEsc(c.courseRef) : ''}</div>
+          <div class="iqa-returned-note">${lpmEsc(r.outcome || '')}${r.iqa_name ? ' — ' + lpmEsc(r.iqa_name) : ''}${r.notes ? ': ' + lpmEsc(r.notes) : ''}</div>
+        </button>`; }).join('')}
+    </div>` : '';
   const row = (c, isExample) => `
     <div class="lpm-course-row-wrap${isExample ? ' example' : ''}">
       <button class="lpm-course-row" onclick="lpmOpenCourse('${c.id}')">
@@ -8121,7 +8221,7 @@ function lpmRenderCourseList() {
         </svg></span>`}
     </div>`;
   if (!list.length) { wrap.innerHTML = filterHtml + `<div class="rn-empty">No course records yet. Start a new one above.</div>`; return; }
-  wrap.innerHTML = filterHtml + search +
+  wrap.innerHTML = filterHtml + `<div class="lpm-search-row">${search}${tiles}</div>` + returnedBox +
     (example ? row(example, true) : '') +
     (rest.length ? rest.map(c => row(c, false)).join('')
       : (q ? `<div class="rn-empty">No courses match “${lpmEsc(lpmSearchQ)}”.</div>` : (list.length === 1 ? '' : `<div class="rn-empty">No other course records yet.</div>`)));
@@ -8170,10 +8270,13 @@ function lpmOpenCourse(id) {
   if (!found) return;
   lpmCourse = found;
   lpmCurrentId = id;
-  const ro = CLOUD_ON && found.owner && found.owner !== cloudMe() && !lpmOnTeam(found);
+  const reviewer = typeof cloudIsReviewer === 'function' && cloudIsReviewer();
+  const locked = !reviewer && typeof lpmLocked === 'function' && lpmLocked(found);
+  const ro = !reviewer && (locked || (CLOUD_ON && found.owner && found.owner !== cloudMe() && !lpmOnTeam(found)));
   document.getElementById('view-lpm').classList.toggle('lpm-ro', !!ro);
   const rob = document.getElementById('lpmRoBanner');
-  if (rob) rob.innerHTML = ro ? `<div class="sc-note" style="margin:8px 0 0;">Read-only — ${lpmEsc(found.ownerName || 'another instructor')}'s course. You can view everything, build the course pack and record the IQA review, but not change the course.</div>` : '';
+  if (rob) rob.innerHTML = locked ? `<div class="sc-note" style="margin:8px 0 0;border-left-color:#0F6E56;">🔒 Accepted by the IQA — this course is locked. Use <b>Request to edit</b> on the Course pack tab if something needs changing.</div>`
+    : ro ? `<div class="sc-note" style="margin:8px 0 0;">Read-only — ${lpmEsc(found.ownerName || 'another instructor')}'s course. You can view everything, build the course pack and record the IQA review, but not change the course.</div>` : '';
   if (CLOUD_ON && typeof cloudPullFiles === 'function') cloudPullFiles(id).then(n => { if (n && lpmCourse && lpmCourse.id === id) { try { lpmShowStep(LPM_STEPS[lpmStepIdx]); } catch (e) {} } });
   if (LPM_COURSE_LENGTH_DAYS[lpmCourse.courseName] && lpmCourse.startDate) {
     const st = new Date(lpmCourse.startDate + 'T00:00:00');
@@ -8196,22 +8299,24 @@ function lpmOpenCourse(id) {
   lpmRenderSessions();
   lpmShowStep('details');
   lpmShowView('course');
+  lpmSyncBackBtn();
 }
 
 // Course Matrix: tuck the blue guidance notes behind an info icon
 function lpmInfoify(panel) {
   if (!panel) return;
   panel.querySelectorAll('.sc-note').forEach(note => {
-    if (note.dataset.info === 'done' || note.style.borderLeftColor) return;   // leave warnings visible
-    note.dataset.info = 'done';
+    if (note.dataset.done === '1' || note.style.borderLeftColor) return;   // leave warnings visible
+    note.dataset.done = '1';
     const html = note.innerHTML;
     const btn = document.createElement('button');
     btn.className = 'lpm-info rn-no-print';
+    btn.setAttribute('data-info-btn', '1');
     btn.type = 'button';
     btn.setAttribute('aria-label', 'What this section is for');
     btn.title = 'What this section is for';
     btn.innerHTML = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none"/></svg>';
-    btn.onclick = () => lpmShowInfo(html);
+    btn.dataset.info = encodeURIComponent(html);
     // sit the icon next to the heading above it where there is one
     const head = note.previousElementSibling;
     if (head && head.classList.contains('sc-h2')) { head.classList.add('with-info'); head.appendChild(btn); note.remove(); }
@@ -8276,6 +8381,10 @@ function lpmLightboxKeys(e) {
 function lpmOpenPhotos(files, at) {
   lpmLightbox(files.map(f => ({ src: packSrc(f), cap: [f.learnerName, f.title || EXAM_KINDS[f.kind] || '', f.page ? 'page ' + f.page : ''].filter(Boolean).join(' · ') })), at);
 }
+document.addEventListener('click', function (e) {
+  const b = e.target.closest && e.target.closest('[data-info-btn]');
+  if (b) { e.preventDefault(); lpmShowInfo(decodeURIComponent(b.dataset.info || '')); }
+});
 function lpmShowInfo(html) {
   const ov = document.createElement('div');
   ov.className = 'lpm-prev-ov'; ov.id = 'lpmInfoOv';
@@ -10304,7 +10413,7 @@ async function lpmRenderPack() {
   const files = await packList(lpmCourse.id);
   const c = k => files.filter(f => f.kind === k).length;
   const named = (lpmCourse.learners || []).filter(l => (l.name || '').trim()).length;
-  el.innerHTML = lpmSubmissionHTML(lpmCourse) + `<div class="sc-note">One PDF containing everything an IQA or Qualsafe needs. Tap <b>Complete course</b> to build it, check it, then <b>Submit course pack</b> to send it to the IQA team for review.</div>
+  el.innerHTML = lpmSubmissionHTML(lpmCourse) + erPanel(lpmCourse.id) + `<div class="sc-note">One PDF containing everything an IQA or Qualsafe needs. Tap <b>Complete course</b> to build it, check it, then <b>Submit course pack</b> to send it to the IQA team for review.</div>
     <table class="sc-table"><tr><th>Included</th><th>Pages</th></tr>
       <tr><td>Cover sheet — course, instructors and ${named} learner${named===1?'':'s'}</td><td>1</td></tr>
       <tr><td>Delegate register</td><td>${c('register')}</td></tr>
@@ -10316,7 +10425,11 @@ async function lpmRenderPack() {
       <tr><td>Learner feedback forms</td><td>${(lpmCourse.feedback || []).length + c('feedback')}</td></tr>
     </table>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;" class="rn-no-print">
-      ${(lpmCourse.submission && !lpmCourse.editing) ? `<button class="rn-nav-btn primary" onclick="lpmEditCourse()">Edit course</button>`
+      ${lpmLocked(lpmCourse)
+        ? (erLatest(lpmCourse.id) && erLatest(lpmCourse.id).status === 'pending'
+            ? `<span class="er-waiting">Edit request sent — waiting for the IQA</span>`
+            : `<button class="rn-nav-btn primary" onclick="erRequest('${lpmCourse.id}')">Request to edit</button>`)
+        : (lpmCourse.submission && !lpmCourse.editing) ? `<button class="rn-nav-btn primary" onclick="lpmEditCourse()">Edit course</button>`
         : `<button class="rn-nav-btn primary" id="lpmPackBuild" onclick="lpmBuildPack('save')">Complete course</button>`}
       <a id="lpmPackLink" class="rn-nav-btn" style="display:none;text-decoration:none;" target="_blank">Open course pack</a>
       <button class="rn-nav-btn" id="lpmPackSubmit" style="display:none;" onclick="lpmSubmitPack()">Submit course pack</button>
@@ -10878,7 +10991,8 @@ function cloudSetStatus(s) { cloud.status = s; cloudRenderBadge(); }
 // ---------- Push local changes ----------
 function cloudCourseRows() {
   const me = cloudMe(), sk = skLoadAll(), synced = cloudSynced();
-  return lpmLoadCourses().filter(c => !c.isExample && (!c.owner || c.owner === me || lpmOnTeam(c))).map(c => {
+  const rev = typeof cloudIsReviewer === 'function' && cloudIsReviewer();
+  return lpmLoadCourses().filter(c => !c.isExample && (rev || !c.owner || c.owner === me || lpmOnTeam(c))).map(c => {
     const course = Object.assign({}, c); delete course.owner; delete course.ownerName;
     const row = { id: c.id, owner: c.owner || me, owner_name: c.ownerName || (cloud.profile && cloud.profile.full_name) || '',
       team: lpmAllInstructors(c).map(n => (n || '').trim().toLowerCase()).filter(Boolean), course, skills: sk[c.id] || null };
@@ -11004,6 +11118,7 @@ async function cloudPull() {
     if (crow[0]) { cpdSaveRaw(crow[0].data); synced.cpd = cloudHash(crow[0].data); }
     cloudSetSynced(synced);
     await iqaPull();
+    await erPull();
     cloudSetStatus('Saved');
   } catch (e) { cloudSetStatus('Sync error — retrying'); }
 }
@@ -11298,7 +11413,8 @@ function admRenderCourses() {
     if (admState.owner && c.owner !== admState.owner) return false;
     if (admState.from && (c.startDate || '') < admState.from) return false;
     if (admState.to && (c.startDate || '') > admState.to) return false;
-    if (admState.status && admCourseStatus(c).cls !== admState.status) return false;
+    if (admState.status === 'req') { const r = erLatest(c.id); if (!r || r.status !== 'pending') return false; }
+    else if (admState.status && admCourseStatus(c).cls !== admState.status) return false;
     if (!q) return true;
     const hay = [c.courseName, c.courseRef, c.location, c.ownerName, lpmInstructorLine(c), fmtD(c.startDate), ...admLearnerNames(c)].join(' ').toLowerCase();
     return hay.includes(q);
@@ -11317,6 +11433,7 @@ function admRenderCourses() {
       <button class="adm-stat ${admState.status === 'sub' ? 'on' : ''}" onclick="admState.status='sub';admRenderCourses()"><b>${awaiting}</b><span>Awaiting IQA review</span></button>
       <button class="adm-stat warn ${admState.status === 'warn' ? 'on' : ''}" onclick="admState.status='warn';admRenderCourses()"><b>${outstanding}</b><span>Paperwork outstanding</span></button>
       <button class="adm-stat ok ${admState.status === 'ok' ? 'on' : ''}" onclick="admState.status='ok';admRenderCourses()"><b>${all.filter(c => admCourseStatus(c).cls === 'ok').length}</b><span>Reviewed / ready</span></button>
+      <button class="adm-stat warn ${admState.status === 'req' ? 'on' : ''}" onclick="admState.status='req';admRenderCourses()"><b>${erPendingCount()}</b><span>Edit requests</span></button>
     </div>
     <div class="adm-filters">
       <input class="adm-search" placeholder="Search course, learner, instructor, location or reference" value="${lpmEsc(admState.q)}" oninput="admState.q=this.value;admRenderCoursesDebounced()">
@@ -11324,7 +11441,7 @@ function admRenderCourses() {
         <option value="">All instructors</option>${owners.map(([id, n]) => `<option value="${id}" ${id === admState.owner ? 'selected' : ''}>${lpmEsc(n)}</option>`).join('')}</select>
       <select class="rn-name-select" onchange="admState.status=this.value;admRenderCourses()">
         <option value="">Any status</option>
-        ${[['sub','Submitted — awaiting IQA'],['up','Upcoming'],['prog','In progress'],['warn','Outstanding or returned'],['ok','Ready / reviewed']].map(([v, l]) => `<option value="${v}" ${v === admState.status ? 'selected' : ''}>${l}</option>`).join('')}</select>
+        ${[['sub','Submitted — awaiting IQA'],['req','Edit requested'],['up','Upcoming'],['prog','In progress'],['warn','Outstanding or returned'],['ok','Ready / reviewed']].map(([v, l]) => `<option value="${v}" ${v === admState.status ? 'selected' : ''}>${l}</option>`).join('')}</select>
       <div class="adm-dates"><label>From</label><input type="date" value="${admState.from}" onchange="admState.from=this.value;admRenderCourses()"><label>To</label><input type="date" value="${admState.to}" onchange="admState.to=this.value;admRenderCourses()"></div>
     </div>
     <div class="adm-bar"><span>${list.length} of ${all.length} course${all.length === 1 ? '' : 's'}</span>
@@ -11335,7 +11452,7 @@ function admRenderCourses() {
           <div class="adm-title">${lpmEsc(c.courseName || 'Untitled course')}</div>
           <div class="adm-meta">${fmtShort(c.startDate)}${c.endDate && c.endDate !== c.startDate ? ' – ' + fmtShort(c.endDate) : ''}${c.courseRef ? ' · ' + lpmEsc(c.courseRef) : ''} · ${lpmEsc(c.ownerName || lpmInstructorLine(c) || '—')}${c.location ? ' · ' + lpmEsc(c.location) : ''}</div>
           ${hits.length ? `<div class="adm-hit">Learner: ${hits.map(lpmEsc).join(', ')}</div>` : ''}
-          <div class="adm-chips">${c.submission ? `<span class="ok"><b>✓</b> Submitted ${fmtShort(c.submission.at)}</span>` : `<span>Not submitted</span>`}<span>Theory ${s.theory}/${s.n}</span><span>Feedback ${s.fb}/${s.n}</span><span class="${s.signed ? 'ok' : ''}">${s.signed ? 'Signed' : 'Not signed'}</span></div>
+          <div class="adm-chips">${(erLatest(c.id) && erLatest(c.id).status === 'pending') ? `<span class="warn"><b>✎</b> Edit requested</span>` : ''}${c.submission ? `<span class="ok"><b>✓</b> Submitted ${fmtShort(c.submission.at)}</span>` : `<span>Not submitted</span>`}<span>Theory ${s.theory}/${s.n}</span><span>Feedback ${s.fb}/${s.n}</span><span class="${s.signed ? 'ok' : ''}">${s.signed ? 'Signed' : 'Not signed'}</span></div>
         </div>
         <div class="adm-side">
           <span class="adm-status ${s.cls}">${s.label}</span>
@@ -11357,6 +11474,7 @@ function admRenderCoursesDebounced() {
   }, 250);
 }
 function admOpen(id, step) {
+  window.lpmFromAdmin = true;
   showView('lpm');
   lpmOpenCourse(id);
   lpmShowStep(step || 'overview');
@@ -11570,6 +11688,7 @@ function lpmRenderIqa() {
     </div>
     <div class="rn-learner-field" style="margin-top:10px;"><label>Outcome</label>
       <div class="lpm-res-pick">${IQA_OUTCOMES.map(o => `<button class="lpm-res-btn ${o === outcome ? 'sel' : ''}" data-v="${o}" onclick="lpmPickRes(this)">${o}</button>`).join('')}</div></div>
+    ${erPanel(c.id)}
     <div class="rn-learner-field" style="margin-top:10px;"><label>Comments and actions for the instructor</label>
       <textarea id="iqaNotes" rows="4" style="width:100%;">${lpmEsc(r.notes || '')}</textarea></div>
     <div style="display:flex;gap:10px;margin-top:14px;align-items:center;flex-wrap:wrap;">
@@ -11873,6 +11992,69 @@ async function alnPackPages(pdf, font, bold, ink, grey, A4) {
   }
   window.addEventListener('load', () => setTimeout(plant, 600));
 })();
+
+// ============ LOCKED COURSES AND REQUESTS TO EDIT ============
+const ER_KEY = 'dtc_edit_requests';
+function erAll() { try { return JSON.parse(localStorage.getItem(ER_KEY) || '[]'); } catch (e) { return []; } }
+function erSave(list) { try { localStorage.setItem(ER_KEY, JSON.stringify(list)); } catch (e) {} }
+function erFor(courseId) { return erAll().filter(r => r.course_id === courseId).sort((a, b) => (b.created_at || '').localeCompare(a.created_at || '')); }
+function erLatest(courseId) { return erFor(courseId)[0] || null; }
+function erPendingCount() { return erAll().filter(r => r.status === 'pending').length; }
+
+// A course accepted by the IQA is locked, unless an edit request has been approved since
+function lpmLocked(c) {
+  if (!c || c.isExample) return false;
+  const r = iqaFor(c.id);
+  if (!r || r.outcome !== 'Accepted') return false;
+  if (typeof cloudIsReviewer === 'function' && cloudIsReviewer()) return false;
+  const req = erLatest(c.id);
+  if (req && req.status === 'approved' && (!r.updated_at || req.decided_at > r.updated_at)) return false;   // unlocked again
+  return true;
+}
+async function erPull() {
+  if (!CLOUD_ON || !cloud.session || !navigator.onLine) return;
+  try {
+    const rows = await cloudRest('edit_requests?select=id,course_id,requester,requester_name,reason,status,decided_by,decided_at,note,created_at&order=created_at.desc') || [];
+    erSave(rows);
+  } catch (e) {}
+}
+async function erRequest(courseId) {
+  const c = lpmLoadCourses().find(x => x.id === courseId) || {};
+  const reason = prompt('Ask the IQA to unlock this course for editing.\n\nWhat needs changing?');
+  if (reason === null) return;
+  if (!reason.trim()) { alert('Add a short reason so the IQA knows what to look at.'); return; }
+  try {
+    const row = { course_id: courseId, requester: cloudMe(), requester_name: (cloud.profile && cloud.profile.full_name) || '', reason: reason.trim(), status: 'pending', created_at: new Date().toISOString() };
+    await cloudRest('edit_requests', 'POST', [row], 'return=minimal');
+    erSave(erAll().concat([Object.assign({ id: 'local' + Date.now() }, row)]));
+    alert('Request sent. The IQA will see it in Course Admin and you\'ll be able to edit once they approve it.');
+    lpmRenderPack();
+  } catch (e) { alert('Could not send the request: ' + (e.message || e)); }
+}
+async function erDecide(id, status) {
+  const note = status === 'declined' ? (prompt('Optional note for the instructor:') || '') : (prompt('Optional note for the instructor:') || '');
+  try {
+    await cloudRest('edit_requests?id=eq.' + encodeURIComponent(id), 'PATCH',
+      { status, decided_by: (cloud.profile && cloud.profile.full_name) || '', decided_at: new Date().toISOString(), note },
+      'return=minimal');
+    await erPull();
+    lpmRenderIqa();
+    if (document.getElementById('admCoursesRoot') && document.getElementById('view-admcourses').classList.contains('active')) admRenderCourses();
+  } catch (e) { alert('Could not save: ' + (e.message || e)); }
+}
+function erPanel(courseId) {
+  const reqs = erFor(courseId);
+  if (!reqs.length) return '';
+  const rows = reqs.slice(0, 4).map(r => `<div class="er-row ${r.status}">
+      <div><b>${lpmEsc(r.requester_name || 'Instructor')}</b> · ${fmtShort(r.created_at)} · <span class="er-tag ${r.status}">${r.status}</span>
+        <div class="er-reason">${lpmEsc(r.reason)}</div>
+        ${r.decided_by ? `<div class="er-note">${lpmEsc(r.status === 'approved' ? 'Approved' : 'Declined')} by ${lpmEsc(r.decided_by)}${r.note ? ' — ' + lpmEsc(r.note) : ''}</div>` : ''}</div>
+      ${r.status === 'pending' && cloudIsReviewer() ? `<div class="er-btns">
+          <button class="rn-nav-btn primary" onclick="erDecide('${r.id}','approved')">Approve</button>
+          <button class="rn-nav-btn" onclick="erDecide('${r.id}','declined')">Decline</button></div>` : ''}
+    </div>`).join('');
+  return `<div class="sc-h2">Requests to edit</div>${rows}`;
+}
 </script>
 </body>
 </html>
