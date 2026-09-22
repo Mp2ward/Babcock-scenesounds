@@ -543,6 +543,38 @@ function fmtD(v) {
   .iqa-notes { margin-top:6px; white-space:pre-wrap; color:#1F2533; }
   .adm-status.sub { background:#EAF1FD; color:#2B5BD7; }
   .adm-wrap { max-width:1100px; }
+  .lpm-head-row { position:relative; }
+  .lpm-iqa-jump { position:absolute; top:0; right:0; border-radius:10px; box-shadow:0 10px 20px -14px rgba(43,91,215,0.9); }
+  @media (max-width:820px) { .lpm-iqa-jump { position:static; display:inline-flex !important; margin-bottom:10px; } .lpm-head-row .lpm-iqa-jump[style*="none"] { display:none !important; } }
+
+  /* Home page */
+  .hub-h { letter-spacing:-0.035em; }
+  .hub-status { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:12px; margin:24px 0 6px; }
+  .hub-stat { text-align:left; background:#fff; border:1px solid #E3E8F0; border-left:5px solid #6B7A94; border-radius:14px; padding:13px 15px; cursor:pointer; font:inherit;
+    animation:hubRise .34s ease-out both; transition:transform .18s cubic-bezier(.2,1.2,.4,1), box-shadow .18s, border-color .18s; }
+  .hub-stat:hover { transform:translateY(-2px); box-shadow:0 14px 26px -20px rgba(13,27,76,0.55); }
+  .hub-stat b { display:block; font-family:'Public Sans',sans-serif; font-size:1.6rem; line-height:1; letter-spacing:-0.03em; color:#0D1B4C; }
+  .hub-stat span { display:block; margin-top:5px; font-size:0.7rem; letter-spacing:0.07em; text-transform:uppercase; color:#6B7A94; font-weight:700; }
+  .hub-stat.act { border-left-color:#C74444; } .hub-stat.act b, .hub-stat.act span { color:#B42318; }
+  .hub-stat.wait { border-left-color:#2446B8; } .hub-stat.ok { border-left-color:#1F8A5B; }
+  .hub-status .hub-stat:nth-child(2) { animation-delay:.05s; } .hub-status .hub-stat:nth-child(3) { animation-delay:.1s; } .hub-status .hub-stat:nth-child(4) { animation-delay:.15s; }
+  .hub-group { display:flex; align-items:center; gap:12px; }
+  .hub-group::after { content:''; flex:1; height:1px; background:#E3E8F0; }
+  .hub-tile { position:relative; align-items:flex-start !important; border-radius:16px !important; overflow:hidden; animation:hubRise .34s ease-out both;
+    transition:transform .18s cubic-bezier(.2,1.2,.4,1), box-shadow .18s, border-color .18s, background .18s; }
+  .hub-tile::before { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--accent, #0D1B4C); }
+  .hub-tile:hover { transform:translateY(-3px); box-shadow:0 18px 32px -24px rgba(13,27,76,0.6); border-color:#C3D0E8; background:#fff; }
+  .hub-tile:active { transform:translateY(-1px) scale(0.995); }
+  .hub-tiles .hub-tile:nth-child(2) { animation-delay:.05s; } .hub-tiles .hub-tile:nth-child(3) { animation-delay:.1s; }
+  .hub-ic { width:46px; height:46px; flex-shrink:0; border-radius:13px; display:flex; align-items:center; justify-content:center; background:var(--soft,#EEF2FA); color:var(--accent,#0D1B4C); }
+  .hub-text { flex:1; min-width:0; }
+  .hub-tile .hub-title { display:block; }
+  .hub-tile .hub-chev { align-self:center; transition:transform .18s, color .18s; }
+  .hub-tile:hover .hub-chev { transform:translateX(3px); color:var(--accent,#0D1B4C); }
+  .hub-flag { display:inline-block; margin-left:8px; font-size:0.62rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:#6B4FA8; background:#F0EAFB; border-radius:100px; padding:2px 8px; vertical-align:2px; }
+  @keyframes hubRise { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+  @media (max-width:640px) { .hub-ic { width:40px; height:40px; border-radius:11px; } .hub-stat b { font-size:1.35rem; } }
+  @media (prefers-reduced-motion:reduce) { .hub-tile, .hub-stat { animation:none; } .hub-tile:hover, .hub-stat:hover { transform:none; } }
   .adm-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin:16px 0; }
   .adm-stats > div { border:1px solid #D8DEE8; border-left:4px solid #B8C2D0; border-radius:8px; padding:12px; background:#fff; }
   .adm-stats > div.ok { border-left-color:#0F6E56; } .adm-stats > div.warn { border-left-color:#B06A00; }
@@ -1310,6 +1342,7 @@ function upgradePlan() {}
 
 window.addEventListener('load', function () {
   setTimeout(menuFabSync, 0);
+  setTimeout(() => { try { hubRender(); } catch (e) {} }, 300);
   buildGrids();
   buildScenarios();
 });
@@ -1339,94 +1372,67 @@ window.addEventListener('load', function () {
 <div class="app-view active" id="view-hub">
   <div class="hub">
     <div class="hub-eyebrow">Babcock International</div>
-    <div class="hub-h">Digital Training Centre</div>
-    <div class="hub-p">Your scenarios, sounds and learner records in one place.</div>
+    <div class="hub-h" id="hubGreeting">Digital Training Centre</div>
+    <div class="hub-p">Everything for delivering, assessing and evidencing a course — in one place.</div>
+
+    <div class="hub-status" id="hubStatus"></div>
 
     <div id="hubAdmin" style="display:none;">
-    <div class="hub-group">Admin</div>
-    <div class="hub-tiles">
-    <button class="hub-tile" onclick="admOpenCourses()">
-      <div class="hub-accent" style="background:#B06A00;"></div>
-      <div style="flex:1;min-width:0;">
-        <div class="hub-title">Course Admin</div>
-        <div class="hub-sub" id="hubAdmCoursesSub">Search every course, paperwork and course packs</div>
-      </div>
+      <div class="hub-group">Admin</div>
+      <div class="hub-tiles">
+    <button class="hub-tile" style="--accent:#B06A00;--soft:#FDF3E3;" onclick="admOpenCourses()">
+      <span class="hub-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg></span>
+      <span class="hub-text"><span class="hub-title">Course Admin</span><span class="hub-sub" id="hubAdmCoursesSub">Search every course, paperwork and course packs</span></span>
       <span class="hub-chev">&rsaquo;</span>
     </button>
-    <button class="hub-tile" onclick="admOpenInstructors()">
-      <div class="hub-accent" style="background:#B06A00;"></div>
-      <div style="flex:1;min-width:0;">
-        <div class="hub-title">Instructor Admin</div>
-        <div class="hub-sub" id="hubAdmInstrSub">Each instructor's courses and CPD logs</div>
-      </div>
+    <button class="hub-tile" style="--accent:#B06A00;--soft:#FDF3E3;" onclick="admOpenInstructors()">
+      <span class="hub-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20v-1.5A3.5 3.5 0 0 0 12.5 15h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.4"/><path d="M19 20v-1.5a3.5 3.5 0 0 0-2.6-3.4M15.5 5.2a3.4 3.4 0 0 1 0 5.6"/></svg></span>
+      <span class="hub-text"><span class="hub-title">Instructor Admin</span><span class="hub-sub" id="hubAdmInstrSub">Each instructor's courses and CPD logs</span></span>
       <span class="hub-chev">&rsaquo;</span>
     </button>
-    </div>
+      </div>
     </div>
 
     <div class="hub-group">Training</div>
     <div class="hub-tiles">
-    <button class="hub-tile" onclick="showView('lpm');lpmShowPick();">
-      <div class="hub-accent" style="background:#4A6B52;"></div>
-      <div style="flex:1;min-width:0;">
-        <div class="hub-title">Course Matrix</div>
-        <div class="hub-sub" id="hubLpmSub">Record competencies, upload exams and submit course paperwork</div>
-      </div>
+    <button class="hub-tile" style="--accent:#1F8A5B;--soft:#E6F5EE;" onclick="showView('lpm');lpmShowPick();">
+      <span class="hub-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8.5 9.5l1.8 1.8 3.7-4M8.5 16h7"/></svg></span>
+      <span class="hub-text"><span class="hub-title">Course Matrix</span><span class="hub-sub" id="hubLpmSub">Record competencies, upload exams and submit course paperwork</span></span>
       <span class="hub-chev">&rsaquo;</span>
     </button>
-
-    <button class="hub-tile" onclick="showView('cards')">
-      <div class="hub-accent" style="background:#0E7C86;"></div>
-      <div style="flex:1;min-width:0;">
-        <div class="hub-title">Scenario Cards</div>
-        <div class="hub-sub" id="hubCardsSub">Briefs, role-player cards and assessment criteria</div>
-      </div>
+    <button class="hub-tile" style="--accent:#2446B8;--soft:#E8EDFB;" onclick="showView('cards')">
+      <span class="hub-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="15" rx="2"/><path d="M19 8v9a3 3 0 0 1-3 3M7 9.5h5M7 13h5"/></svg></span>
+      <span class="hub-text"><span class="hub-title">Scenario Cards</span><span class="hub-sub" id="hubCardsSub">Briefs, role-player cards and assessment criteria</span></span>
       <span class="hub-chev">&rsaquo;</span>
     </button>
-
-    <button class="hub-tile primary" onclick="showView('run');rnRenderPick();">
-      <div class="hub-accent" style="background:#2B5BD7;"></div>
-      <div style="flex:1;min-width:0;">
-        <div class="hub-title">Run a Scenario</div>
-        <div class="hub-sub">Brief, safety, roles, sound and assessment in one flow</div>
-      </div>
+    <button class="hub-tile" style="--accent:#2446B8;--soft:#E8EDFB;" onclick="showView('run');rnRenderPick();">
+      <span class="hub-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z"/></svg></span>
+      <span class="hub-text"><span class="hub-title">Run a Scenario</span><span class="hub-sub">Brief, safety, roles, sound and assessment in one flow</span></span>
       <span class="hub-chev">&rsaquo;</span>
     </button>
     </div>
 
     <div class="hub-group">Tools</div>
     <div class="hub-tiles">
-    <button class="hub-tile" onclick="showView('sounds')">
-      <div class="hub-accent" style="background:#2B5BD7;"></div>
-      <div style="flex:1;min-width:0;">
-        <div class="hub-title">Soundboard</div>
-        <div class="hub-sub" id="hubSoundSub">68 sound effects · 4 categories · live mixer</div>
-      </div>
+    <button class="hub-tile" style="--accent:#0D1B4C;--soft:#EEF2FA;" onclick="showView('sounds')">
+      <span class="hub-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></svg></span>
+      <span class="hub-text"><span class="hub-title">Soundboard</span><span class="hub-sub" id="hubSoundsSub">Live scene sound mixer for scenarios</span></span>
       <span class="hub-chev">&rsaquo;</span>
     </button>
-
-    <button class="hub-tile" onclick="showView('cpd');cpdOpen();">
-      <div class="hub-accent" style="background:#0F6E56;"></div>
-      <div style="flex:1;min-width:0;">
-        <div class="hub-title">CPD Log</div>
-        <div class="hub-sub" id="hubCpdSub">Teaching and assessing hours, built from your courses</div>
-      </div>
+    <button class="hub-tile" style="--accent:#1F8A5B;--soft:#E6F5EE;" onclick="showView('cpd');cpdOpen();">
+      <span class="hub-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V9M5 20v-6M19 20V4"/><circle cx="12" cy="5.5" r="2.2"/></svg></span>
+      <span class="hub-text"><span class="hub-title">CPD Log</span><span class="hub-sub" id="hubCpdSub">Teaching and assessing hours, built from your courses</span></span>
       <span class="hub-chev">&rsaquo;</span>
     </button>
-
-    <button class="hub-tile kc-tile" onclick="showView('knowledge')">
-      <div class="hub-accent" style="background:#6B3FA0;"></div>
-      <div style="flex:1;min-width:0;">
-        <div class="hub-title">Knowledge Centre <span class="kc-badge">In development</span></div>
-        <div class="hub-sub">Pop quizzes for learners — not yet available</div>
-      </div>
+    <button class="hub-tile" style="--accent:#6B4FA8;--soft:#F0EAFB;" onclick="showView('knowledge')">
+      <span class="hub-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.8.3-1.4 1-1.4 1.9v.3"/><circle cx="12" cy="12" r="9"/><circle cx="11.5" cy="17" r="1" fill="currentColor" stroke="none"/></svg></span>
+      <span class="hub-text"><span class="hub-title">Knowledge Centre<span class="hub-flag">In development</span></span><span class="hub-sub">Pop quizzes for learners — not yet available</span></span>
       <span class="hub-chev">&rsaquo;</span>
     </button>
     </div>
   </div>
 </div>
 
-<!-- ============ SOUNDBOARD ============ -->
 <div class="app-view" id="view-sounds">
 
 <!-- STICKY TABS + SEARCH -->
@@ -1798,7 +1804,8 @@ window.addEventListener('load', function () {
 
       <button class="sc-back rn-no-print" id="lpmBackBtn" onclick="lpmBackFromCourse()">&larr; All courses</button>
 
-      <div class="rn-head">
+      <div class="rn-head lpm-head-row">
+        <button class="rn-nav-btn primary lpm-iqa-jump" id="lpmIqaJump" style="display:none;" onclick="lpmShowStep('iqa')">IQA review</button>
         <div class="lpm-main-title">Course Matrix</div>
         <div id="lpmRoBanner"></div>
         <div class="lpm-course-name" id="lpmCourseTitle">Course record</div>
@@ -3062,6 +3069,34 @@ function mixerBarSync() {
   if (typeof updateMixer === 'function') { try { updateMixer(); } catch (e) {} }
   if (typeof rnSyncMix === 'function') { try { rnSyncMix(); } catch (e) {} }
 }
+
+// ---------- Home page figures ----------
+function hubRender() {
+  const g = document.getElementById('hubGreeting');
+  const h = new Date().getHours();
+  const part = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+  const name = (CLOUD_ON && cloud.profile && cloud.profile.full_name) ? cloud.profile.full_name.split(' ')[0] : '';
+  if (g) g.textContent = name ? part + ', ' + name + '.' : 'Digital Training Centre';
+
+  const box = document.getElementById('hubStatus');
+  if (!box) return;
+  const mine = lpmLoadCourses().filter(c => !c.isExample);
+  const reviewer = typeof cloudIsReviewer === 'function' && cloudIsReviewer();
+  const year = String(new Date().getFullYear());
+  const thisYear = mine.filter(c => (c.startDate || '').startsWith(year)).length;
+  const awaiting = mine.filter(c => c.submission && !iqaFor(c.id)).length;
+  const action = reviewer ? awaiting + erPendingCount()
+    : mine.filter(c => { const r = iqaFor(c.id); return r && r.outcome !== 'Accepted'; }).length
+      + mine.filter(c => !c.submission && c.endDate && c.endDate < isoLocal()).length;
+  let hours = 0;
+  try { hours = Math.round((cpdEntries() || []).reduce((t, e) => t + (Number(e.hours) || 0), 0)); } catch (e) {}
+  const stat = (cls, n, label, go) => `<button class="hub-stat ${cls}" onclick="${go}"><b>${n}</b><span>${label}</span></button>`;
+  box.innerHTML =
+    stat(action ? 'act' : '', action, reviewer ? 'Needs your review' : 'Action required', reviewer ? "admOpenCourses();admState.status='sub';admRenderCourses()" : "showView('lpm');lpmShowPick()") +
+    stat('wait', awaiting, reviewer ? 'Awaiting IQA' : 'Awaiting IQA', reviewer ? "admOpenCourses();admState.status='sub';admRenderCourses()" : "showView('lpm');lpmShowPick()") +
+    stat('ok', thisYear, 'Courses this year', "showView('lpm');lpmShowPick()") +
+    stat('', hours, 'CPD hours logged', "showView('cpd');cpdOpen()");
+}
 function menuFabSync() {
   const fab = document.getElementById('menuFab');
   if (!fab) return;
@@ -3083,6 +3118,7 @@ function showView(name) {
   mixerBarSync();
   if (name !== 'run' && name !== 'lpm') { window.rnFromCourseId = ''; }
   if (typeof rnCourseBackSync === 'function') rnCourseBackSync();
+  if (name === 'hub') { try { hubRender(); } catch (e) {} }
 }
 window.addEventListener('load', function () {
   var go = new URLSearchParams(location.search).get('go');
@@ -8122,6 +8158,14 @@ function lpmBackFromCourse() {
   if (window.lpmFromAdmin) { window.lpmFromAdmin = false; admOpenCourses(); return; }
   lpmShowPick();
 }
+function lpmSyncIqaJump() {
+  const b = document.getElementById('lpmIqaJump');
+  if (!b) return;
+  const rev = typeof cloudIsReviewer === 'function' && cloudIsReviewer();
+  b.style.display = (rev && lpmCourse && !lpmCourse.isExample) ? '' : 'none';
+  const r = lpmCourse ? iqaFor(lpmCourse.id) : null;
+  b.textContent = r ? 'IQA review · ' + r.outcome : 'IQA review';
+}
 function lpmSyncBackBtn() {
   const b = document.getElementById('lpmBackBtn');
   if (b) b.innerHTML = window.lpmFromAdmin ? '&larr; Course Admin' : '&larr; All courses';
@@ -8129,6 +8173,7 @@ function lpmSyncBackBtn() {
 function lpmShowPick() {
   window.lpmFromAdmin = false;
   lpmRenderCourseList();
+  try { hubRender(); } catch (e) {}
   lpmShowView('pick');
 }
 
@@ -8300,6 +8345,7 @@ function lpmOpenCourse(id) {
   lpmShowStep('details');
   lpmShowView('course');
   lpmSyncBackBtn();
+  lpmSyncIqaJump();
 }
 
 // Course Matrix: tuck the blue guidance notes behind an info icon
@@ -10986,7 +11032,8 @@ function cloudShowError() {
     : 'Check the internet connection, then reload.';
   alert('Sync problem\n\n' + hint + '\n\nDetails:\n' + raw);
 }
-function cloudSetStatus(s) { cloud.status = s; cloudRenderBadge(); }
+function cloudSetStatus(s) {
+  try { if (document.getElementById('view-hub').classList.contains('active')) hubRender(); } catch (e) {} cloud.status = s; cloudRenderBadge(); }
 
 // ---------- Push local changes ----------
 function cloudCourseRows() {
@@ -11119,6 +11166,7 @@ async function cloudPull() {
     cloudSetSynced(synced);
     await iqaPull();
     await erPull();
+  try { hubRender(); } catch (e) {}
     cloudSetStatus('Saved');
   } catch (e) { cloudSetStatus('Sync error — retrying'); }
 }
@@ -11457,9 +11505,7 @@ function admRenderCourses() {
         <div class="adm-side">
           <span class="adm-status ${s.cls}">${s.label}</span>
           <div class="adm-actions">
-            <button class="rn-nav-btn" onclick="admOpen('${c.id}','overview')">Open</button>
-            <button class="rn-nav-btn" onclick="admOpen('${c.id}','theory')">Papers</button>
-            ${c.submission ? `<button class="rn-nav-btn primary" onclick="admOpen('${c.id}','iqa')">IQA review</button>` : `<button class="rn-nav-btn primary" onclick="admOpen('${c.id}','pack')">Course pack</button>`}
+            ${c.submission ? `<button class="rn-nav-btn primary" onclick="admOpen('${c.id}','iqa')">IQA review</button>` : `<button class="rn-nav-btn primary" onclick="admOpen('${c.id}','pack')">Open course</button>`}
           </div>
         </div>
       </div>`; }).join('') : `<div class="rn-empty">No courses match.</div>`}</div>`;
@@ -11570,7 +11616,7 @@ function admRenderInstructor(id) {
           <div class="adm-meta">${fmtD(c.startDate)}${c.location ? ' · ' + lpmEsc(c.location) : ''} · ${s.n} learners${c.owner !== inst.id ? ' · co-instructor' : ''}</div>
         </div>
         <div class="adm-side"><span class="adm-status ${s.cls}">${s.label}</span>
-          <div class="adm-actions"><button class="rn-nav-btn" onclick="admOpen('${c.id}','overview')">Open</button><button class="rn-nav-btn primary" onclick="admOpen('${c.id}','pack')">Course pack</button></div></div>
+          <div class="adm-actions"><button class="rn-nav-btn primary" onclick="admOpen('${c.id}', c.submission ? 'iqa' : 'pack')">Open course</button></div></div>
       </div>`; }).join('') : `<div class="rn-empty">No courses yet.</div>`}</div>
     <div class="sc-h2" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">CPD log
       <span><button class="rn-nav-btn primary" onclick="admCpdPdf('${inst.id}')">Download CPD portfolio (PDF)</button>
