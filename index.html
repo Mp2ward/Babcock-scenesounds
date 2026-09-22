@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20width%3D%2264%22%20height%3D%2264%22%20viewBox%3D%220%200%2064%2064%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M12%206h28l14%2014v38H12z%22%20fill%3D%22%230D1B4C%22/%3E%3Cpath%20d%3D%22M40%206v14h14z%22%20fill%3D%22%231F8A5B%22/%3E%3Crect%20x%3D%2219%22%20y%3D%2228%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22%20fill%3D%22%23FFFFFF%22/%3E%3Crect%20x%3D%2229%22%20y%3D%2228%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22%20fill%3D%22%23FFFFFF%22/%3E%3Crect%20x%3D%2239%22%20y%3D%2228%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22%20fill%3D%22%231F8A5B%22/%3E%3Crect%20x%3D%2219%22%20y%3D%2238%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22%20fill%3D%22%23FFFFFF%22/%3E%3Crect%20x%3D%2229%22%20y%3D%2238%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22%20fill%3D%22%231F8A5B%22/%3E%3Crect%20x%3D%2239%22%20y%3D%2238%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.45%22/%3E%3Crect%20x%3D%2219%22%20y%3D%2248%22%20width%3D%227%22%20height%3D%224%22%20rx%3D%221.5%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.45%22/%3E%3C/svg%3E">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -19,6 +20,13 @@
 function isoLocal(d) {
   d = d || new Date();
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function fmtShort(v) {
+  if (!v) return '';
+  const d = (v instanceof Date) ? v : new Date(String(v).length <= 10 ? v + 'T00:00:00' : v);
+  if (isNaN(d)) return '';
+  const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return String(d.getDate()).padStart(2, '0') + '-' + M[d.getMonth()] + '-' + String(d.getFullYear()).slice(2);
 }
 function fmtD(v) {
   if (!v) return '—';
@@ -493,7 +501,9 @@ function fmtD(v) {
   /* Phones: give the header room so nothing overlaps or gets cut off */
   @media (max-width:600px) {
     header > a > img.brand-logo, header > a > .brand-title, header .brand-divider { display:none !important; }
-    header .brand-title { font-size:0.82rem !important; letter-spacing:0.04em; white-space:nowrap; overflow:visible; }
+    header .brand-title { font-size:0.76rem !important; letter-spacing:0.03em; white-space:nowrap; overflow:visible; }
+    header .brand-mark svg { width:26px; height:26px; }
+    header > a { gap:9px !important; }
     header { padding:10px 12px !important; gap:8px; }
     #cloudBadge { gap:6px; margin-right:4px; }
     #cloudBadge .cl-out { padding:4px 7px; }
@@ -520,6 +530,8 @@ function fmtD(v) {
   .fb-full-img img, .fb-full-img canvas { max-width:100%; height:auto; }
   .fb-full-count { margin-top:16px; font-size:1.1rem; font-weight:600; color:#0F6E56; }
   .fb-full-close { position:absolute; top:16px; right:16px; width:48px; height:48px; border-radius:10px; border:1px solid #D8DEE8; background:#fff; color:#0D1B4C; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .brand-mark { display:flex; flex-shrink:0; }
+  @media (max-width:380px) { .brand-mark svg { width:24px; height:24px; } }
   .iqa-state { border:1px solid #D8DEE8; border-left:4px solid #B8C2D0; border-radius:8px; padding:10px 12px; margin-bottom:10px; font-size:0.88rem; color:#0D1B4C; background:#fff; }
   .iqa-state.sub { border-left-color:#2B5BD7; background:#F4F7FE; }
   .iqa-state.wait { border-left-color:#B8C2D0; color:#5A6478; }
@@ -570,6 +582,26 @@ function fmtD(v) {
   .tk-box { max-width:640px; }
   .tk-done { text-align:center; padding:18px 6px; }
   .tk-ref { font-family:'Public Sans',sans-serif; font-size:1.6rem; font-weight:800; letter-spacing:0.08em; color:#0D1B4C; margin-bottom:8px; }
+  @media (max-width:520px) { .lpm-learner-card { flex-wrap:wrap; } .lpm-learner-card input { flex:1 1 100%; } }
+  .lpm-info { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; border:1px solid #BBD0F5; background:#EAF1FD; color:#2B5BD7; cursor:pointer; vertical-align:middle; margin-left:10px; padding:0; }
+  .lpm-info:hover { background:#2B5BD7; color:#fff; border-color:#2B5BD7; }
+  .sc-h2.with-info { display:flex; align-items:center; gap:0; flex-wrap:wrap; }
+  .lpm-info-box { max-width:520px; position:relative; padding-top:22px; }
+  .lpm-info-box .login-x { position:absolute; top:12px; right:12px; left:auto; width:34px; height:34px; }
+  .lpm-info-title { font-family:'Public Sans',sans-serif; font-weight:700; font-size:1.05rem; color:#0D1B4C; margin-bottom:10px; padding-right:40px; }
+  .lpm-info-body { color:#3A4760; font-size:0.94rem; line-height:1.55; }
+  .lpm-info-body b { color:#0D1B4C; }
+  .menu-fab { position:fixed; z-index:60; top:76px; right:20px; display:inline-flex; align-items:center; gap:7px; border:1px solid #D8DEE8; background:#fff; color:#0D1B4C; font-family:'Public Sans',sans-serif; font-weight:700; font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase; padding:9px 14px; border-radius:100px; cursor:pointer; box-shadow:0 8px 20px -12px rgba(13,27,76,0.45); }
+  .menu-fab:hover { border-color:#2B5BD7; color:#2B5BD7; }
+  @media (max-width:820px) { .menu-fab { top:auto; bottom:18px; right:16px; padding:11px 16px; box-shadow:0 10px 24px -10px rgba(13,27,76,0.5); } }
+  @media print { .menu-fab { display:none !important; } }
+  .aln-btn { border:1px dashed #B8C2D0; background:#fff; color:#6B7A94; border-radius:6px; padding:7px 10px; font-size:0.78rem; cursor:pointer; white-space:nowrap; }
+  .aln-btn.on { border-style:solid; border-color:#2B5BD7; color:#2B5BD7; background:#EAF1FD; font-weight:700; }
+  .aln-line { font-size:0.78rem; color:#2B5BD7; margin:-6px 0 10px 4px; }
+  .aln-box { max-width:680px; }
+  .aln-chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .aln-chip { border:1px solid #D8DEE8; background:#fff; color:#3A4760; border-radius:100px; padding:8px 13px; font-size:0.83rem; cursor:pointer; }
+  .aln-chip.on { background:#DDF1E8; border-color:#9FD3BC; color:#0F6E56; font-weight:700; }
   .lpm-exam-name { display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .lpm-eye { display:inline-flex; align-items:center; gap:4px; border:1px solid #D8DEE8; background:#fff; border-radius:6px; padding:3px 7px; font-size:0.72rem; color:#2B5BD7; cursor:pointer; white-space:nowrap; }
   .lpm-eye svg { display:block; }
@@ -1116,6 +1148,7 @@ function closePricingModal() {}
 function upgradePlan() {}
 
 window.addEventListener('load', function () {
+  setTimeout(menuFabSync, 0);
   buildGrids();
   buildScenarios();
 });
@@ -1126,6 +1159,7 @@ window.addEventListener('load', function () {
     <img src="/babcock-logo.png" alt="Babcock" class="brand-logo"
          onerror="this.outerHTML='<span class=&quot;brand-title&quot; style=&quot;font-size:1.3rem&quot;>Babcock</span>'">
     <div class="brand-divider"></div>
+    <span class="brand-mark"><svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><path d="M12 6h28l14 14v38H12z" fill="#FFFFFF"/><path d="M40 6v14h14z" fill="#3FBF84"/><rect x="19" y="28" width="7" height="7" rx="1.5" fill="#0D1B4C"/><rect x="29" y="28" width="7" height="7" rx="1.5" fill="#0D1B4C"/><rect x="39" y="28" width="7" height="7" rx="1.5" fill="#3FBF84"/><rect x="19" y="38" width="7" height="7" rx="1.5" fill="#0D1B4C"/><rect x="29" y="38" width="7" height="7" rx="1.5" fill="#3FBF84"/><rect x="39" y="38" width="7" height="7" rx="1.5" fill="#0D1B4C" opacity="0.45"/><rect x="19" y="48" width="7" height="4" rx="1.5" fill="#0D1B4C" opacity="0.45"/></svg></span>
     <div style="min-width:0;">
       <div class="brand-title">DIGITAL TRAINING CENTRE</div>
       <div class="brand-sub">Emergency Care Training</div>
@@ -1135,7 +1169,6 @@ window.addEventListener('load', function () {
     <div class="status-bar" id="statusBar" style="display:none;">
       <span class="dot"></span>STANDBY
     </div>
-    <button class="back-hub" id="backHub" onclick="showView('hub')">&larr; Menu</button>
   </div>
 </header>
 
@@ -1421,6 +1454,10 @@ window.addEventListener('load', function () {
 </div><!-- /view-sounds -->
 
 <!-- ============ SCENARIO CARDS ============ -->
+<button class="menu-fab rn-no-print" id="menuFab" onclick="showView('hub')" aria-label="Back to menu">
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Menu</span>
+</button>
+
 <div class="app-view" id="view-cards">
 
   <!-- Scenario grid -->
@@ -1443,7 +1480,6 @@ window.addEventListener('load', function () {
       <div class="sc-detail-head">
         <div class="sc-detail-title" id="scDetailTitle">Nightclub Chest Pain</div>
         <div class="sc-detail-sub" id="scDetailSub">Suspected cocaine-associated acute coronary syndrome</div>
-        <div class="sc-meta-strip" id="scDetailMeta"></div>
       </div>
 
       <div class="sc-tabs" id="scTabs">
@@ -1481,13 +1517,12 @@ window.addEventListener('load', function () {
   <div class="rn-view" id="rn-session">
     <div class="rn-wrap">
 
-      <button class="sc-back rn-no-print" onclick="rnExit()">&larr; All scenarios</button>
+      <button class="sc-back rn-no-print" id="rnBack" onclick="rnBackToList()">&larr; All scenarios</button>
 
       <div class="rn-head">
         <div class="rn-head-meta" id="rnHeadMeta"></div>
         <div class="rn-head-title" id="rnHeadTitle"></div>
         <div class="rn-head-sub" id="rnHeadSub"></div>
-        <div class="sc-meta-strip" id="rnHeadMeta2"></div>
       </div>
 
       <div class="rn-sound rn-no-print" id="rnSoundTile">
@@ -1554,7 +1589,7 @@ window.addEventListener('load', function () {
         <div class="kc-step"><span>3</span>Question bank review</div>
         <div class="kc-step"><span>4</span>Mock exams</div>
       </div>
-      <button class="rn-nav-btn" style="margin-top:26px;" onclick="showView('hub')">← Back to hub</button>
+      <button class="rn-nav-btn" style="margin-top:26px;" onclick="showView('hub')">← Menu</button>
     </div>
   </div>
 </div>
@@ -1579,10 +1614,7 @@ window.addEventListener('load', function () {
   <div class="lpm-view" id="lpm-course">
     <div class="rn-wrap">
 
-      <div class="lpm-switch rn-no-print">
-        <button class="sc-back" onclick="lpmShowPick()">&larr; All courses</button>
-        <select class="rn-name-select" id="lpmCourseSwitch" onchange="if(this.value){lpmOpenCourse(this.value);lpmShowStep(LPM_STEPS[lpmStepIdx]||'details');}"></select>
-      </div>
+      <button class="sc-back rn-no-print" onclick="lpmShowPick()">&larr; All courses</button>
 
       <div class="rn-head">
         <div class="lpm-main-title">Course Matrix</div>
@@ -2785,6 +2817,12 @@ function pauseAll() {
 
 
 <script>
+function menuFabSync() {
+  const fab = document.getElementById('menuFab');
+  if (!fab) return;
+  const hub = document.getElementById('view-hub');
+  fab.style.display = (hub && hub.classList.contains('active')) ? 'none' : '';
+}
 function showView(name) {
   document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
   var el = document.getElementById('view-' + name);
@@ -2795,6 +2833,7 @@ function showView(name) {
   if (status) status.style.display = (name === 'sounds' || name === 'run') ? 'flex' : 'none';
   window.scrollTo(0, 0);
   try { history.replaceState(null, '', name === 'hub' ? location.pathname : '?go=' + name); } catch(e) {}
+  menuFabSync();
 }
 window.addEventListener('load', function () {
   var go = new URLSearchParams(location.search).get('go');
@@ -6380,7 +6419,6 @@ function scRenderGrid() {
       <span class="sc-tile-icon">${s.icon}</span>
       <div class="sc-tile-title">${scNumTitle(s)}</div>
       <div class="sc-tile-sub">${s.sub}</div>
-      ${SC_META[s.id] ? `<div class="sc-tile-meta">${SC_META[s.id].duration} · ${SC_META[s.id].learners} learners</div>` : ''}
     </button>
   `).join('') + `</div>`).join('');
 }
@@ -6409,8 +6447,6 @@ function scOpen(id) {
   scCurrentDetail = d;
   document.getElementById('scDetailTitle').textContent = scNum(id) + ' - ' + d.title;
   document.getElementById('scDetailSub').textContent = d.sub;
-  const m = SC_META[id], strip = document.getElementById('scDetailMeta');
-  if (strip) strip.innerHTML = m ? `<div><span>Duration</span>${m.duration}</div><div><span>Learners</span>${m.learners}</div><div><span>Level</span>${m.level}</div><div><span>Equipment</span>${m.equipment}</div><div><span>Last revised</span>${fmtD(m.revised)}</div>` : '';
 
   scRenderBrief(d);
   scRenderRoles(d);
@@ -6914,6 +6950,12 @@ function rnRenderPick() {
   wrap.innerHTML = html;
 }
 
+function rnBackToList() {
+  const dirty = rnSession && (rnSession.learners || []).some(l => l.name || Object.keys(l.results || {}).length);
+  if (dirty && !rnSession.savedId && !confirm('Leave this scenario? Anything not saved on the Record step will be lost.')) return;
+  rnShowView('pick');
+  rnRenderPick();
+}
 function rnStart(id) {
   const d = scGetDetail(id);
   if (!d) return;
@@ -6946,8 +6988,6 @@ function rnStart(id) {
   document.getElementById('rnHeadMeta').style.display = 'none';
   document.getElementById('rnHeadTitle').textContent = scNum(id) + ' - ' + d.title;
   document.getElementById('rnHeadSub').textContent = d.sub;
-  const rm = SC_META[id], rstrip = document.getElementById('rnHeadMeta2');
-  if (rstrip) rstrip.innerHTML = rm ? `<div><span>Duration</span>${rm.duration}</div><div><span>Learners</span>${rm.learners}</div><div><span>Level</span>${rm.level}</div><div><span>Last revised</span>${fmtD(rm.revised)}</div>` : '';
 
   rnBuildSteps();
   rnRenderSound();
@@ -7745,8 +7785,18 @@ function lpmSaveCourses(list) {
   if (lpmReadOnlyNow()) return true; // reviewers can look but not change someone else's course
   const ok = lpmSaveCoursesRaw(list); if (typeof cloudQueue === 'function') cloudQueue(); return ok;
 }
+// A course can be edited by whoever created it and by anyone named as an instructor on it
+function lpmOnTeam(c) {
+  const me = (typeof cloud !== 'undefined' && cloud.profile) ? (cloud.profile.full_name || '').trim().toLowerCase() : '';
+  if (!me || !c) return false;
+  return lpmAllInstructors(c).some(n => (n || '').trim().toLowerCase() === me);
+}
 function lpmReadOnlyNow() {
-  return typeof CLOUD_ON !== 'undefined' && CLOUD_ON && typeof lpmCourse !== 'undefined' && lpmCourse && lpmCourse.owner && lpmCourse.owner !== cloudMe() && document.getElementById('view-lpm') && document.getElementById('view-lpm').classList.contains('active');
+  if (typeof CLOUD_ON === 'undefined' || !CLOUD_ON) return false;
+  if (typeof lpmCourse === 'undefined' || !lpmCourse || !lpmCourse.owner) return false;
+  if (lpmCourse.owner === cloudMe() || lpmOnTeam(lpmCourse)) return false;
+  const v = document.getElementById('view-lpm');
+  return !!(v && v.classList.contains('active'));
 }
 function lpmPersist() {
   const list = lpmLoadCourses();
@@ -7775,8 +7825,8 @@ function lpmRenderCourseList() {
   let filterHtml = '';
   if (reviewer) {
     // Admins search and filter all courses in Course Admin; here they see their own, like any instructor
-    list = list.filter(c => !c.owner || c.owner === cloudMe());
-    filterHtml = `<div class="sc-note" style="margin-bottom:12px;">Showing your own courses. To see every instructor's courses, use <a href="#" onclick="event.preventDefault();admOpenCourses()">Course Admin</a>.</div>`;
+    list = list.filter(c => !c.owner || c.owner === cloudMe() || lpmOnTeam(c));
+    filterHtml = `<div class="sc-note" style="margin-bottom:12px;">Showing courses you run or teach on. To see every instructor's courses, use <a href="#" onclick="event.preventDefault();admOpenCourses()">Course Admin</a>.</div>`;
   }
   if (!list.length) {
     wrap.innerHTML = filterHtml + `<div class="rn-empty">No course records yet. Start a new one above.</div>`;
@@ -7830,7 +7880,7 @@ function lpmOpenCourse(id) {
   if (!found) return;
   lpmCourse = found;
   lpmCurrentId = id;
-  const ro = CLOUD_ON && found.owner && found.owner !== cloudMe();
+  const ro = CLOUD_ON && found.owner && found.owner !== cloudMe() && !lpmOnTeam(found);
   document.getElementById('view-lpm').classList.toggle('lpm-ro', !!ro);
   const rob = document.getElementById('lpmRoBanner');
   if (rob) rob.innerHTML = ro ? `<div class="sc-note" style="margin:8px 0 0;">Read-only — ${lpmEsc(found.ownerName || 'another instructor')}'s course. You can view everything, build the course pack and record the IQA review, but not change the course.</div>` : '';
@@ -7858,6 +7908,51 @@ function lpmOpenCourse(id) {
   lpmShowView('course');
 }
 
+// Course Matrix: tuck the blue guidance notes behind an info icon
+function lpmInfoify(panel) {
+  if (!panel) return;
+  panel.querySelectorAll('.sc-note').forEach(note => {
+    if (note.dataset.info === 'done' || note.style.borderLeftColor) return;   // leave warnings visible
+    note.dataset.info = 'done';
+    const html = note.innerHTML;
+    const btn = document.createElement('button');
+    btn.className = 'lpm-info rn-no-print';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'What this section is for');
+    btn.title = 'What this section is for';
+    btn.innerHTML = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none"/></svg>';
+    btn.onclick = () => lpmShowInfo(html);
+    // sit the icon next to the heading above it where there is one
+    const head = note.previousElementSibling;
+    if (head && head.classList.contains('sc-h2')) { head.classList.add('with-info'); head.appendChild(btn); note.remove(); }
+    else note.replaceWith(btn);
+  });
+}
+function lpmShowInfo(html) {
+  const ov = document.createElement('div');
+  ov.className = 'lpm-prev-ov'; ov.id = 'lpmInfoOv';
+  ov.onclick = e => { if (e.target === ov) ov.remove(); };
+  ov.innerHTML = `<div class="lpm-prev-box lpm-info-box">
+      <button class="login-x" onclick="document.getElementById('lpmInfoOv').remove()" aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      <div class="lpm-info-title">About this section</div>
+      <div class="lpm-info-body">${html}</div>
+    </div>`;
+  document.body.appendChild(ov);
+  document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape') { const o = document.getElementById('lpmInfoOv'); if (o) o.remove(); document.removeEventListener('keydown', esc); } });
+}
+// Panels that load photos render after the step opens, so watch for changes
+(function () {
+  const start = () => {
+    const wrap = document.getElementById('lpm-course');
+    if (!wrap) return setTimeout(start, 300);
+    new MutationObserver(ms => ms.forEach(m => {
+      const panel = m.target.closest ? m.target.closest('.rn-panel') : null;
+      if (panel && panel.id && panel.id.startsWith('lpmPanel-')) lpmInfoify(panel);
+    })).observe(wrap, { childList:true, subtree:true });
+  };
+  start();
+})();
 function lpmShowStep(key) {
   const isRev = typeof cloudIsReviewer === 'function' && cloudIsReviewer();
   document.querySelectorAll('#lpmSteps .rn-step').forEach((t, i) => { if (LPM_STEPS[i] === 'iqa') { t.classList.add('lpm-iqa-tab'); t.style.display = isRev ? '' : 'none'; } });
@@ -7877,6 +7972,7 @@ function lpmShowStep(key) {
   if (key === 'iqa') lpmRenderIqa();
   if (key === 'sessions') lpmRenderSessions();
   window.scrollTo(0,0);
+  setTimeout(() => lpmInfoify(document.getElementById('lpmPanel-' + key)), 0);
 }
 
 // ---- Course details ----
@@ -8016,9 +8112,8 @@ function lpmFillCourseSwitch() {
   sel.innerHTML = `<option value="">Select course…</option>` + list.map(c => `<option value="${c.id}" ${c.id === lpmCourse.id ? 'selected' : ''}>${lpmEsc((c.courseName || 'Untitled course') + ' — ' + fmtD(c.startDate))}</option>`).join('');
 }
 function lpmUpdateCourseSub() {
-  lpmFillCourseSwitch();
   const c = lpmCourse;
-  const dates = c.startDate ? (c.endDate && c.endDate !== c.startDate ? fmtD(c.startDate) + ' – ' + fmtD(c.endDate) : fmtD(c.startDate)) : 'Date not set';
+  const dates = c.startDate ? (c.endDate && c.endDate !== c.startDate ? fmtShort(c.startDate) + ' - ' + fmtShort(c.endDate) : fmtShort(c.startDate)) : 'Date not set';
   document.getElementById('lpmCourseDate').textContent = dates;
   document.getElementById('lpmCourseSub').textContent = (lpmInstructorLine(c) ? 'Instructor: ' + lpmInstructorLine(c) : 'No instructor set') + ' · ' + (c.learners.length) + ' learners';
 }
@@ -8166,7 +8261,7 @@ async function lpmDeleteRegisterPhoto(id) {
 function lpmRenderLearners() {
   const c = lpmCourse;
   let html = `<div class="sc-h2" style="margin-top:0;">Learners on this course</div>
-    <div class="sc-note">Add every learner once here. They'll appear automatically in the competency record.</div>
+    <div class="sc-note">Add every learner once here. They'll appear automatically in the competency record. Use <b>+ Learning needs</b> to record anything disclosed and the adjustments agreed.</div>
     <input type="file" id="lpmScanInput" accept="image/*" style="display:none;" onchange="lpmHandleScan(this)">
     <input type="file" id="lpmExamInput" accept="image/*" multiple style="display:none;" onchange="lpmExamCapture(this)">
     <button class="rn-nav-btn rn-no-print" style="margin-bottom:18px;" onclick="document.getElementById('lpmScanInput').click()">📷 Scan register (photo or screenshot)</button>
@@ -8174,10 +8269,15 @@ function lpmRenderLearners() {
     <div id="lpmRegisterPhotos"></div>`;
 
   c.learners.forEach((l, i) => {
+    const a = alnOf(l), n = a ? (a.needs || []).length : 0;
     html += `<div class="lpm-learner-card">
       <input type="text" value="${lpmEsc(l.name)}" placeholder="Full name" oninput="lpmSetLearnerName(${i}, this.value)">
+      <button class="aln-btn ${a ? 'on' : ''}" onclick="lpmOpenAln(${i})" title="Additional learning needs">${a ? 'ALN ' + (n || '✓') : '+ Learning needs'}</button>
       <button class="lpm-learner-remove" onclick="lpmRemoveLearner(${i})">Remove</button>
     </div>`;
+    if (a && ((a.adjustments || []).length || (a.needs || []).length)) {
+      html += `<div class="aln-line">${[...(a.needs || []), ...(a.adjustments || []).map(x => '→ ' + x)].map(lpmEsc).join(' · ')}</div>`;
+    }
   });
 
   html += `<button class="lpm-add-learner" onclick="lpmAddLearner()">+ Add learner</button>`;
@@ -9676,6 +9776,14 @@ async function lpmBuildPack(action) {
     const cover = pdf.addPage(A4);
     let y = 780;
     const line = (t, f, size, col) => { cover.drawText(t, { x: 50, y, size, font: f, color: col || ink }); y -= size + 8; };
+    // Digital Training Centre mark, top right of the cover
+    try {
+      const navyC = rgb(0.051, 0.106, 0.298), greenC = rgb(0.122, 0.541, 0.357), whiteC = rgb(1, 1, 1);
+      const mk = (d, color, op) => cover.drawSvgPath(d, { x: 485, y: 812, scale: 0.9, color, opacity: op == null ? 1 : op });
+      mk('M12 6h28l14 14v38H12z', navyC); mk('M40 6v14h14z', greenC);
+      [[19,28,whiteC],[29,28,whiteC],[39,28,greenC],[19,38,whiteC],[29,38,greenC]].forEach(([x, y, c]) => mk(`M${x} ${y}h7v7h-7z`, c));
+      mk('M39 38h7v7h-7z', whiteC, 0.45);
+    } catch (e) {}
     line('COURSE PACK', bold, 12, grey);
     line(lpmCourse.courseName || 'Untitled course', bold, 22);
     const dates = lpmCourse.startDate ? (lpmCourse.endDate && lpmCourse.endDate !== lpmCourse.startDate ? fmtD(lpmCourse.startDate) + ' – ' + fmtD(lpmCourse.endDate) : fmtD(lpmCourse.startDate)) : 'Dates not set';
@@ -9710,6 +9818,7 @@ async function lpmBuildPack(action) {
      'Applied anatomy and physiology papers (' + counts('anat') + ')',
      'Multiple choice exam papers (' + counts('mc') + ')',
      'Other paperwork (' + counts('other') + ')',
+     'Reasonable adjustment records (' + alnCount(lpmCourse) + ')',
      'Learner feedback forms (' + ((lpmCourse.feedback || []).length + counts('feedback')) + ')'].forEach(t => line('• ' + t, font, 11));
 
     // 2. Delegate register photos
@@ -9755,7 +9864,11 @@ async function lpmBuildPack(action) {
     const other = files.filter(f => f.kind === 'other');
     for (let i = 0; i < other.length; i++) await drawPhoto(other[i], 'Other paperwork  ·  page ' + (i + 1) + ' of ' + other.length);
 
-    // 6. Learner feedback forms
+    // 6. Reasonable adjustment records
+    let alnPages = [];
+    try { alnPages = await alnPackPages(pdf, font, bold, ink, grey, A4); } catch (e) {}
+
+    // 7. Learner feedback forms
     let feedbackPages = [];
     for (const entry of (lpmCourse.feedback || [])) {
       try {
@@ -9826,6 +9939,7 @@ async function lpmRenderPack() {
       <tr><td>Applied anatomy and physiology papers (learner order)</td><td>${c('anat')}</td></tr>
       <tr><td>Multiple choice exam papers (learner order)</td><td>${c('mc')}</td></tr>
       <tr><td>Other paperwork</td><td>${c('other')}</td></tr>
+      <tr><td>Reasonable adjustment records</td><td>${alnCount(lpmCourse)}</td></tr>
       <tr><td>Learner feedback forms</td><td>${(lpmCourse.feedback || []).length + c('feedback')}</td></tr>
     </table>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;" class="rn-no-print">
@@ -10379,9 +10493,10 @@ function cloudSetStatus(s) { cloud.status = s; cloudRenderBadge(); }
 // ---------- Push local changes ----------
 function cloudCourseRows() {
   const me = cloudMe(), sk = skLoadAll(), synced = cloudSynced();
-  return lpmLoadCourses().filter(c => !c.owner || c.owner === me).map(c => {
+  return lpmLoadCourses().filter(c => !c.owner || c.owner === me || lpmOnTeam(c)).map(c => {
     const course = Object.assign({}, c); delete course.owner; delete course.ownerName;
-    const row = { id: c.id, owner: me, owner_name: (cloud.profile && cloud.profile.full_name) || '', course, skills: sk[c.id] || null };
+    const row = { id: c.id, owner: c.owner || me, owner_name: c.ownerName || (cloud.profile && cloud.profile.full_name) || '',
+      team: lpmAllInstructors(c).map(n => (n || '').trim().toLowerCase()).filter(Boolean), course, skills: sk[c.id] || null };
     return { row, hash: cloudHash([course, row.skills]), dirty: synced['c:' + c.id] !== cloudHash([course, row.skills]) };
   });
 }
@@ -10450,7 +10565,7 @@ async function cloudPush() {
 async function cloudPushFiles() {
   const me = cloudMe();
   const all = await packTx('readonly', st => st.getAll()) || [];
-  const mine = new Set(lpmLoadCourses().filter(c => !c.owner || c.owner === me).map(c => c.id));
+  const mine = new Set(lpmLoadCourses().filter(c => !c.owner || c.owner === me || lpmOnTeam(c)).map(c => c.id));
   const todo = all.filter(f => !f.remotePath && mine.has(f.courseId));
   cloud.pendingFiles = todo.length;
   for (const f of todo) {
@@ -11132,7 +11247,7 @@ async function fbRenderQrCard() {
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>
       <div class="fb-qr-title">Scan to give feedback</div>
       <div id="fbQrImg" class="fb-qr-img"></div>
-      <div class="fb-qr-sub">Open until ${fmtD(link.expires)} · answers appear here automatically</div>`;
+      <div class="fb-qr-sub">Answers appear here automatically</div>`;
     await fbDrawQr(document.getElementById('fbQrImg'), url, 190);
   } catch (e) {
     box.innerHTML = `<div class="fb-qr-title">Scan to give feedback</div><p class="sc-p" style="color:#C74444;">Couldn't create the feedback link: ${lpmEsc(e.message || e)}</p><button class="rn-nav-btn" onclick="fbRenderQrCard()">Try again</button>`;
@@ -11197,6 +11312,102 @@ function fbStartPolling() {
     const n = await fbPullResponses();
     if (n) { if (full) fbUpdateCounts(); else lpmRenderFeedback(); }
   }, 10000);
+}
+
+// ============ ADDITIONAL LEARNING NEEDS AND REASONABLE ADJUSTMENTS ============
+const ALN_NEEDS = ['Dyslexia','Dyspraxia','Dyscalculia','ADHD','Autism spectrum','Hearing impairment','Visual impairment',
+  'Physical or mobility need','Long-term medical condition','Mental health need','English as an additional language','Literacy or numeracy support','Temporary injury','Other (see notes)'];
+const ALN_ADJUSTMENTS = ['Extra time (25%)','Extra time (50%)','Reader','Scribe','Oral language modifier','Questions read aloud','Coloured overlay or paper','Enlarged print',
+  'Separate quiet room','Supervised rest breaks','Practical task adapted','Use of own equipment or aid','Sign language interpreter','Written instructions provided','Other (see notes)'];
+let alnIdx = -1;
+
+function alnOf(l) { return l && l.aln ? l.aln : null; }
+function alnCount(c) { return (c.learners || []).filter(l => alnOf(l) && (l.aln.needs || []).length).length; }
+
+function lpmOpenAln(i) {
+  alnIdx = i;
+  const l = lpmCourse.learners[i], a = Object.assign({ needs:[], adjustments:[], notes:'', agreedBy:'', date:isoLocal() }, l.aln || {});
+  const chip = (v, list, kind) => `<button type="button" class="aln-chip ${list.includes(v) ? 'on' : ''}" onclick="alnToggle('${kind}', this)" data-v="${lpmEsc(v)}">${lpmEsc(v)}</button>`;
+  const ov = document.createElement('div');
+  ov.className = 'lpm-prev-ov'; ov.id = 'alnOv';
+  ov.onclick = e => { if (e.target === ov) ov.remove(); };
+  ov.innerHTML = `<div class="lpm-prev-box aln-box">
+    <div class="lpm-prev-head"><strong>Additional learning needs — ${lpmEsc(l.name || 'learner')}</strong>
+      <button class="rn-nav-btn" onclick="document.getElementById('alnOv').remove()">Close</button></div>
+    <div class="sc-note">Record only what the learner has disclosed and agreed to share. This supports reasonable adjustments and goes into the course pack.</div>
+    <div class="sc-h2">Needs disclosed</div>
+    <div class="aln-chips" id="alnNeeds">${ALN_NEEDS.map(v => chip(v, a.needs, 'needs')).join('')}</div>
+    <div class="sc-h2">Reasonable adjustments agreed</div>
+    <div class="aln-chips" id="alnAdj">${ALN_ADJUSTMENTS.map(v => chip(v, a.adjustments, 'adjustments')).join('')}</div>
+    <div class="rn-learner-field" style="margin-top:12px;"><label>Notes (what was agreed, and how it was put in place)</label>
+      <textarea id="alnNotes" rows="3" style="width:100%;">${lpmEsc(a.notes)}</textarea></div>
+    <div class="lpm-field-row" style="margin-top:10px;">
+      <div class="lpm-field rn-learner-field"><label>Agreed with learner by</label><input id="alnBy" value="${lpmEsc(a.agreedBy || lpmInstructorLine(lpmCourse) || '')}"></div>
+      <div class="lpm-field rn-learner-field"><label>Date</label><input id="alnDate" type="date" value="${a.date || isoLocal()}"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <button class="rn-nav-btn primary" onclick="alnSave()">Save</button>
+      ${l.aln ? `<button class="rn-nav-btn rn-danger" onclick="alnClear()">Remove record</button>` : ''}
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+}
+function alnToggle(kind, btn) { btn.classList.toggle('on'); }
+function alnPicked(id) { return [...document.querySelectorAll('#' + id + ' .aln-chip.on')].map(b => b.dataset.v); }
+function alnSave() {
+  const needs = alnPicked('alnNeeds'), adjustments = alnPicked('alnAdj');
+  const notes = document.getElementById('alnNotes').value.trim();
+  const l = lpmCourse.learners[alnIdx];
+  if (!needs.length && !adjustments.length && !notes) { delete l.aln; }
+  else l.aln = { needs, adjustments, notes, agreedBy: document.getElementById('alnBy').value.trim(), date: document.getElementById('alnDate').value, savedAt: new Date().toISOString() };
+  lpmPersist();
+  document.getElementById('alnOv').remove();
+  lpmRenderLearners();
+}
+function alnClear() {
+  if (!confirm('Remove the additional learning needs record for this learner?')) return;
+  delete lpmCourse.learners[alnIdx].aln;
+  lpmPersist();
+  document.getElementById('alnOv').remove();
+  lpmRenderLearners();
+}
+
+// Reasonable adjustment record pages for the course pack
+async function alnPackPages(pdf, font, bold, ink, grey, A4) {
+  const list = (lpmCourse.learners || []).filter(l => alnOf(l) && ((l.aln.needs || []).length || (l.aln.adjustments || []).length || l.aln.notes));
+  const pages = [];
+  for (const l of list) {
+    const a = l.aln, page = pdf.addPage(A4);
+    let y = 790;
+    const line = (t, f, size, col, x) => { page.drawText(String(t).slice(0, 96), { x: x || 50, y, size, font: f || font, color: col || ink }); y -= size + 7; };
+    line('REASONABLE ADJUSTMENT RECORD', bold, 11, grey);
+    line(l.name || 'Learner', bold, 20);
+    line((lpmCourse.courseName || '') + '  ·  ' + fmtD(lpmCourse.startDate) + (lpmCourse.location ? '  ·  ' + lpmCourse.location : ''), font, 11, grey);
+    y -= 10;
+    line('Needs disclosed by the learner', bold, 13);
+    (a.needs || []).forEach(n => line('•  ' + n, font, 11));
+    if (!(a.needs || []).length) line('•  None recorded', font, 11, grey);
+    y -= 8;
+    line('Reasonable adjustments agreed and put in place', bold, 13);
+    (a.adjustments || []).forEach(n => line('•  ' + n, font, 11));
+    if (!(a.adjustments || []).length) line('•  None recorded', font, 11, grey);
+    if (a.notes) {
+      y -= 8; line('Notes', bold, 13);
+      (a.notes.match(/.{1,92}(\s|$)/g) || []).forEach(t => line(t.trim(), font, 10.5));
+    }
+    y -= 16;
+    line('Agreed with the learner by: ' + (a.agreedBy || '________________________'), font, 11);
+    line('Date: ' + fmtD(a.date), font, 11);
+    y -= 26;
+    page.drawLine({ start:{ x:50, y: y + 16 }, end:{ x:270, y: y + 16 }, thickness: 0.8, color: grey });
+    page.drawLine({ start:{ x:320, y: y + 16 }, end:{ x:540, y: y + 16 }, thickness: 0.8, color: grey });
+    line('Learner signature', font, 9, grey);
+    page.drawText('Trainer signature', { x: 320, y: y + 7, size: 9, font, color: grey });
+    y -= 30;
+    line('Adjustments are agreed in line with the awarding organisation\'s reasonable adjustments and special considerations policy.', font, 8.5, grey);
+    pages.push(pdf.getPageCount() - 1);
+  }
+  return pages;
 }
 </script>
 </body>
