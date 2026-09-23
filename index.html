@@ -8427,7 +8427,32 @@ function lpmDeleteCourseFromList(id) {
   const list = lpmLoadCourses();
   const course = list.find(c => c.id === id);
   const name = course ? (course.courseName || 'this course record') : 'this course record';
-  if (!confirm('Delete "' + name + '"? This removes all its learners and recorded observations and cannot be undone.')) return;
+  const when = course && course.startDate ? ' (' + fmtShort(course.startDate) + ')' : '';
+  const owner = course && course.ownerName ? course.ownerName : 'an instructor';
+
+  if (course && course.submission) {
+    const r = iqaFor(course.id);
+    const lines = [
+      'WARNING — this is submitted course evidence.',
+      '',
+      name + when,
+      'Instructor: ' + owner,
+      'Submitted: ' + fmtShort(course.submission.at) + ' · ' + (course.submission.pages || '?') + ' pages',
+      r ? 'IQA outcome: ' + r.outcome : 'Awaiting IQA review',
+      '',
+      'Deleting removes the course pack, every learner record, the photographed papers and the whole status history, for the instructor as well as for you. It cannot be undone, and the evidence may be needed for external quality assurance.',
+      '',
+      'Delete it anyway?'
+    ].join('\n');
+    if (!confirm(lines)) return;
+    const typed = prompt('To confirm, type DELETE in capitals.\n\n' + name + when);
+    if (typed === null) return;
+    if ((typed || '').trim().toUpperCase() !== 'DELETE') { alert('Not deleted — the confirmation did not match.'); return; }
+  } else {
+    if (!confirm('Delete "' + name + '"' + when + '?\n\nThis removes all its learners and recorded observations and cannot be undone.')) return;
+  }
+
+  try { console.log('[audit] course deleted', { id: id, name: name, by: (cloud.profile && cloud.profile.full_name) || '', at: new Date().toISOString() }); } catch (e) {}
   lpmSaveCourses(list.filter(c => c.id !== id));
   lpmRenderCourseList();
 }
